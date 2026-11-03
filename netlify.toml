@@ -1,0 +1,11 @@
+# Netlify builds the Next.js app with its Next.js runtime (detected automatically).
+# Secrets are NOT set here: variables in this file never reach functions, and this file is
+# public. Set ANTHROPIC_API_KEY and the rest in the Netlify UI (see docs/setup-netlify.md).
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # The spike's Chromium download isn't needed to build the app.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"

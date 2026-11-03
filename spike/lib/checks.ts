@@ -5,7 +5,7 @@ import { join } from "node:path";
 import YAML from "yaml";
 import { kitDir } from "./paths.ts";
 import type { TemplateSpec } from "./templates.ts";
-import type { Slots } from "./schemas.ts";
+import type { Slots } from "../../core/schemas.ts";
 import type { OverflowReport } from "./render.ts";
 
 export type Check = { ok: boolean; check: string; detail: string };

@@ -6,12 +6,12 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import YAML from "yaml";
-import { STEPS } from "./config.ts";
+import { STEPS } from "../core/config.ts";
 import { brandDir, OUTPUT_DIR } from "./lib/paths.ts";
 import { selectChunks, formatChunks, wordmarkLines } from "./lib/kit.ts";
 import { loadPrompt } from "./lib/prompts.ts";
 import { callStructured, type Image, type Usage } from "./lib/claude.ts";
-import { PlanSchema, WriteSchema, CritiqueSchema, type Plan, type Written, type Critique } from "./lib/schemas.ts";
+import { PlanSchema, WriteSchema, CritiqueSchema, type Plan, type Written, type Critique } from "../core/schemas.ts";
 import { buildPostHtml, canvasSize, getTemplate, loadTemplates, type Look, type TemplateSpec } from "./lib/templates.ts";
 import { openRenderer, type Renderer } from "./lib/render.ts";
 import { runChecks, formatChecks, type Check } from "./lib/checks.ts";

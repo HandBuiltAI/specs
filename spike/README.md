@@ -33,4 +33,4 @@ Open `output/<run-id>/index.html` in a browser to review a run. Tick "I'd show t
 
 The render comes before the critique so the critique can see the actual post (legibility, cut-off text, red elements), not just the copy.
 
-Models, `max_tokens` and effort per step live in `spike/config.ts`. Kit chunks per step come from the kit's `_retrieval-rules.yaml` (see `spike/lib/kit.ts`).
+Models, `max_tokens` and effort per step live in `core/config.ts`. Kit chunks per step come from the kit's `_retrieval-rules.yaml` (see `spike/lib/kit.ts`).

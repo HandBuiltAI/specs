@@ -2,7 +2,7 @@
 
 Each file has a `# System` section and a `# User` section. Code fills `{{placeholders}}` in the user section and sends the result; it never adds instructions of its own.
 
-| File | Step | Model (see `spike/config.ts`) |
+| File | Step | Model (see `core/config.ts`) |
 | --- | --- | --- |
 | `plan.md` | Pick the layout, photo and copy angle | Sonnet 5.5 |
 | `write.md` | Fill the template's slots and explain each choice | Sonnet 5.5 |
