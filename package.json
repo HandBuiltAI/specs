@@ -18,7 +18,9 @@
     "tokens": "tsx spike/build-tokens.ts",
     "samples": "tsx spike/render-samples.ts",
     "review": "tsx spike/review.ts",
-    "postinstall": "node scripts/postinstall.mjs"
+    "postinstall": "node scripts/postinstall.mjs",
+    "test": "npm run content && tsx --conditions=react-server --test tests/*.test.ts",
+    "gate": "tsx scripts/check-gate.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.4.0",
