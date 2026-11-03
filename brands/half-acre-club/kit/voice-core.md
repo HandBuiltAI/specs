@@ -2,7 +2,7 @@
 chunk_id: voice-core
 domain: voice
 depends_on: [positioning-core]
-token_count: 460
+token_count: 480
 confidence: high
 sources:
   - upload: founder-interview

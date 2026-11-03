@@ -1,0 +1,54 @@
+chunk_id: terminology
+domain: voice
+depends_on: [voice-core, positioning-core]
+token_count: 370
+confidence: high
+sources:
+  - upload: founder-interview
+    location: Specs thread, 2026-11-03 (voice line, box contents)
+  - upload: photo-01-box-opened.jpg
+    location: project card wording
+version: 1
+fictional: true
+summary: >-
+  Words Half Acre Club uses (members, the box, project card, sill, first cut)
+  and words it avoids (subscriber, plant parent, journey, germinate).
+---
+use:
+  - term: Half Acre Club
+    note: Full name on first mention in a caption; "the club" after. Never "HAC".
+  - term: member
+    instead_of: [subscriber, customer]
+    why: People join a club; they subscribe to a service.
+  - term: the box
+    note: The monthly delivery. Boxes are numbered ("Box No. 014") on the card.
+  - term: project / project card
+    why: Each box is one project. "Kit" is fine in passing; "project" is the habit.
+  - term: windowsill / the sill
+    why: The one growing space every member has.
+  - term: soil puck
+    note: The compressed soil disc in the box.
+  - term: sprout
+    instead_of: [germinate]
+    why: Plain word; jargon is what made gardening feel off-limits.
+  - term: the first cut
+    note: The harvest moment for shoots and greens. Use for the payoff.
+  - term: pea shoots
+    instead_of: [microgreens, Pisum sativum]
+    why: Name the actual plant; it's more concrete and less trendy.
+
+avoid:
+  - term: [plant parent, plant mom, plant dad]
+    why: Category cliché, and it makes the reader the product.
+  - term: [journey, grow with us, growth mindset]
+    why: Abstract. The brand talks in days and windowsills.
+  - term: [green thumb, black thumb]
+    why: Treats skill as something you're born with; the box exists to prove otherwise.
+  - term: [hack, life hack]
+    why: Cheapens a real, simple process.
+  - term: [urban farming, homesteading]
+    why: Overpromises. It's a tray on a sill.
+  - term: [organic, non-GMO, heirloom, superfood]
+    why: Unverified product claims. None are in the facts.
+  - term: [even if, only have, just a]
+    why: Apologizes for small space. Small space is the setup, not a limitation.
