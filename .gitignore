@@ -1,0 +1,15 @@
+# Secrets: the API key lives only in .env
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Generated posts, PNGs and review pages
+output/
+
+# Build and OS noise
+dist/
+*.tsbuildinfo
+.DS_Store
