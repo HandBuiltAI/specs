@@ -1,0 +1,54 @@
+# Test briefs for the phase 2 quality spike: one per post intent.
+# The kit run and the no-kit baseline both get the business line, the photo list and the brief.
+# Only the kit run gets the brand kit.
+# Fictional: every fact below is invented for the Specs demo.
+brand: half-acre-club
+business_name: Half Acre Club
+business_line: A monthly subscription box with one small growing project for people without a garden.
+
+photos:
+  - file: uploads/photo-01-box-opened.jpg
+    alt: >-
+      Overhead phone photo of an opened kraft box on a kitchen counter. A printed
+      card reading "BOX No. 014" and "PEA SHOOTS" is half under a compressed soil
+      puck; a seed packet sits beside it.
+  - file: uploads/photo-02-day-six-sill.jpg
+    alt: >-
+      Pea shoots in a clear reused takeout tub on a windowsill, leaning toward a
+      rainy window. Masking tape on the tub reads "Pea Shoots Day 6 (3/14)".
+  - file: uploads/photo-03-first-cut.jpg
+    alt: >-
+      A hand cutting pea shoots with kitchen scissors over a small plate, under
+      yellowish kitchen light; the tub of shoots is beside the plate.
+
+briefs:
+  - id: announce-box-01
+    intent: announcement
+    goal: Announce that Box 01 is pea shoots and that it's shipping.
+    details: Box 01 is pea shoots. Ready to cut in about ten days.
+
+  - id: promo-join
+    intent: promo
+    goal: Get new people to join. Lead with the price and that they can cancel anytime.
+    details: Nothing beyond the standard offer. No discount.
+
+  - id: tip-watering
+    intent: tip
+    goal: Teach how wet the soil should be for pea shoots.
+    details: >-
+      Water until the soil feels like a wrung-out sponge: not dripping, not dry.
+      If water pools on top, wait a day.
+
+  - id: event-first-cut-live
+    intent: event
+    goal: Invite people to a live stream where the founder cuts her first tray of the month and answers questions.
+    details: >-
+      Event name: First Cut, Live. Date: Thursday, Nov 20. Time and place: 7pm ET on
+      Instagram Live. Host: Dana Reyes, the founder.
+
+  - id: testimonial-maya
+    intent: testimonial
+    goal: Share a member's words about their first box.
+    details: >-
+      Member quote (use exactly): "I've killed two basil plants. These ended up on my eggs."
+      Member: Maya, Box 01 member. Fictional, written for the demo.
