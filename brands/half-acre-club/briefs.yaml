@@ -29,7 +29,7 @@ briefs:
 
   - id: promo-join
     intent: promo
-    goal: Get new people to join. Lead with the price and that they can cancel anytime.
+    goal: Get new people to join. Make the price and "cancel anytime" easy to see.
     details: Nothing beyond the standard offer. No discount.
 
   - id: tip-watering

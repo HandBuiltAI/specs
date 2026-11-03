@@ -4,12 +4,17 @@
   --color-soil: #322B23; /* Potting-soil brown */
   --color-pea: #687853; /* Faded pea green */
   --color-tomato: #BD4937; /* Tomato red */
-  --font-wordmark: "Rubik", system-ui, sans-serif;
-  --weight-wordmark: 800;
-  --tracking-wordmark: -0.02em;
-  --font-heading: "Rubik", system-ui, sans-serif;
+  --font-wordmark: "Fraunces", system-ui, sans-serif;
+  --weight-wordmark: 900;
+  --tracking-wordmark: -0.01em;
+  --variation-wordmark: "SOFT" 100, "WONK" 1, "opsz" 48;
+  --wordmark-line1-style: italic;
+  --wordmark-line2-tracking: 0.32em;
+  --wordmark-line2-scale: 0.65;
+  --font-heading: "Fraunces", system-ui, sans-serif;
   --weight-heading: 700;
   --min-size-heading: 56px;
+  --variation-heading: "SOFT" 100, "WONK" 1, "opsz" 96;
   --font-body: "Atkinson Hyperlegible", system-ui, sans-serif;
   --weight-body: 400;
   --leading-body: 1.35;

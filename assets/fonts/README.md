@@ -4,7 +4,7 @@ Stand-in fonts for the demo brands, bundled so posts render the same on any mach
 
 | Font | Used for | License |
 | --- | --- | --- |
-| Rubik | Half Acre Club wordmark and headings | SIL OFL 1.1 (`OFL-rubik.txt`) |
+| Fraunces | Half Acre Club wordmark and headings | SIL OFL 1.1 (`OFL-fraunces.txt`) |
 | Atkinson Hyperlegible | Half Acre Club body copy | SIL OFL 1.1 (`OFL-atkinsonhyperlegible.txt`) |
 | Caveat | Half Acre Club handwriting | SIL OFL 1.1 (`OFL-caveat.txt`) |
 
