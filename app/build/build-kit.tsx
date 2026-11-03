@@ -1,0 +1,459 @@
+"use client";
+
+// Upload screen and Brand DNA reveal (spec, user flow steps 2 and 3). The browser only sends
+// files and structured fields; the server writes every prompt. Extraction runs as many short
+// calls (one per upload, then one per kit chunk) because the deployed function is cut off at
+// about 30 seconds, and each answer is shown as soon as it lands.
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { LIMITS, charCount } from "../../core/limits.ts";
+import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type Evidence } from "../../core/extract.ts";
+import type { Swatch } from "../../core/colors.ts";
+import { call, pool, sendForm, type ApiError } from "../lib/api.ts";
+import { prepareImage } from "../lib/images.ts";
+import { Turnstile } from "../lib/turnstile.tsx";
+
+type UploadKindApi = "image" | "logo" | "pdf" | "url" | "pasted" | "note";
+type Upload = { id: string; kind: UploadKindApi; label: string; colors?: Swatch[]; pages?: number };
+type CallState = { status: "running" | "done" | "failed"; attempts: number };
+type Item = ChunkDraft["items"][number] & { edited?: boolean };
+type ChunkRecord =
+  | { target: (typeof EXTRACT_CHUNKS)[number]["id"]; draft: ChunkDraft & { items: Item[] }; warnings: string[] }
+  | { target: "conflicts"; conflicts: Conflicts["conflicts"]; warnings: string[] };
+type Kit = {
+  uploads: Upload[];
+  extraction: { locked: boolean; reads: Record<string, CallState>; targets: Record<string, CallState> };
+  evidence: { uploadId: string; upload: string; evidence: Evidence }[];
+  chunks: ChunkRecord[];
+};
+
+const SESSION_KEY = "specs.sessionId";
+const HEX = /#[0-9a-f]{6}\b/gi;
+const KIND_NAME: Record<UploadKindApi, string> = { image: "Photo", logo: "Logo", pdf: "PDF", url: "Website", pasted: "Website text", note: "Note" };
+
+const STATE_TEXT: Record<string, string> = {
+  open: "Open",
+  off: "Switched off right now. The demo brands still work.",
+  closed_for_today: "Closed for today: the daily spending cap is reached.",
+  not_configured: "Not set up on this server yet.",
+  unreachable: "Couldn't check: the server didn't answer.",
+};
+
+const messageOf = (e: unknown) => (e as Error).message ?? "Something went wrong.";
+
+export default function BuildKit({ siteKey }: { siteKey: string }) {
+  const [generation, setGeneration] = useState("checking");
+  const [token, setToken] = useState<string | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  // The form.
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [logo, setLogo] = useState<File | null>(null);
+  const [pdf, setPdf] = useState<File | null>(null);
+  const [url, setUrl] = useState("");
+  const [pasted, setPasted] = useState("");
+  const [note, setNote] = useState("");
+
+  // What the server knows.
+  const [uploads, setUploads] = useState<Upload[]>([]);
+  const [reads, setReads] = useState<Record<string, CallState>>({});
+  const [targets, setTargets] = useState<Record<string, CallState>>({});
+  const [evidence, setEvidence] = useState<Record<string, Evidence>>({});
+  const [chunks, setChunks] = useState<Record<string, ChunkRecord>>({});
+  const [failures, setFailures] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    fetch("/api/status")
+      .then((r) => r.json())
+      .then((d) => setGeneration(d.generation ?? "unreachable"))
+      .catch(() => setGeneration("unreachable"));
+  }, []);
+
+  const loadKit = useCallback(async (sid: string) => {
+    const kit = await call<Kit>("/api/kit", { sessionId: sid });
+    setUploads(kit.uploads);
+    setReads(kit.extraction.reads);
+    setTargets(kit.extraction.targets);
+    setEvidence(Object.fromEntries(kit.evidence.map((e) => [e.uploadId, e.evidence])));
+    setChunks(Object.fromEntries(kit.chunks.map((c) => [c.target, c])));
+  }, []);
+
+  // Pick up a session after a reload; sessions last a day on the server.
+  useEffect(() => {
+    let saved: string | null = null;
+    try {
+      saved = sessionStorage.getItem(SESSION_KEY);
+    } catch {}
+    if (!saved) return;
+    loadKit(saved)
+      .then(() => setSessionId(saved))
+      .catch(() => {
+        try {
+          sessionStorage.removeItem(SESSION_KEY);
+        } catch {}
+      });
+  }, [loadKit]);
+
+  const onToken = useCallback((t: string | null) => setToken(t), []);
+
+  async function start() {
+    setError(null);
+    setBusy("Starting a session…");
+    try {
+      const d = await call<{ sessionId: string }>("/api/session", { turnstileToken: token });
+      setSessionId(d.sessionId);
+      try {
+        sessionStorage.setItem(SESSION_KEY, d.sessionId);
+      } catch {}
+    } catch (e) {
+      setError(messageOf(e));
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  // ---------- the extraction calls ----------
+
+  const markRead = (id: string, s: CallState["status"]) => setReads((r) => ({ ...r, [id]: { status: s, attempts: (r[id]?.attempts ?? 0) + (s === "running" ? 1 : 0) } }));
+  const markTarget = (t: string, s: CallState["status"]) => setTargets((r) => ({ ...r, [t]: { status: s, attempts: (r[t]?.attempts ?? 0) + (s === "running" ? 1 : 0) } }));
+
+  async function readOne(sid: string, u: Upload) {
+    markRead(u.id, "running");
+    setFailures((f) => ({ ...f, [u.id]: "" }));
+    try {
+      const d = await call<{ evidence: Evidence }>("/api/extract/read", { sessionId: sid, uploadId: u.id });
+      setEvidence((e) => ({ ...e, [u.id]: d.evidence }));
+      markRead(u.id, "done");
+    } catch (e) {
+      markRead(u.id, "failed");
+      setFailures((f) => ({ ...f, [u.id]: messageOf(e) }));
+    }
+  }
+
+  async function draftOne(sid: string, target: string) {
+    markTarget(target, "running");
+    setFailures((f) => ({ ...f, [target]: "" }));
+    try {
+      const rec = await call<ChunkRecord>("/api/extract/assemble", { sessionId: sid, target });
+      setChunks((c) => ({ ...c, [target]: rec }));
+      markTarget(target, "done");
+    } catch (e) {
+      markTarget(target, "failed");
+      setFailures((f) => ({ ...f, [target]: messageOf(e) }));
+    }
+  }
+
+  async function draftAll(sid: string, skipDone: Record<string, CallState>) {
+    const todo = [...EXTRACT_CHUNKS.map((c) => c.id as string), "conflicts"].filter((t) => skipDone[t]?.status !== "done");
+    if (!todo.length) return;
+    // The first call writes the evidence into the prompt cache; the rest read it at a tenth of the price.
+    const [first, ...rest] = todo;
+    await draftOne(sid, first!);
+    await pool(rest, 3, (t) => draftOne(sid, t));
+  }
+
+  async function buildKit() {
+    if (!sessionId) return;
+    setError(null);
+    const sid = sessionId;
+    const added: Upload[] = [];
+    try {
+      setBusy("Uploading…");
+      const send = async (fields: Record<string, string | Blob>) => {
+        const d = await sendForm<{ upload: Upload }>("/api/uploads", { sessionId: sid, ...fields });
+        added.push(d.upload);
+        setUploads((u) => [...u, d.upload]);
+      };
+      for (const p of photos) {
+        setBusy(`Shrinking and uploading ${p.name}…`);
+        const { file, colors } = await prepareImage(p, "image");
+        await send({ kind: "image", file, colors: JSON.stringify(colors) });
+      }
+      if (logo) {
+        const { file, colors } = await prepareImage(logo, "logo");
+        await send({ kind: "logo", file, colors: JSON.stringify(colors) });
+      }
+      if (pdf) await send({ kind: "pdf", file: pdf });
+      if (url.trim()) await send({ kind: "url", url: url.trim() });
+      if (pasted.trim()) await send({ kind: "pasted", text: pasted });
+      if (note.trim()) await send({ kind: "note", text: note });
+    } catch (e) {
+      setError(`${messageOf(e)}${added.length ? " The files uploaded before this one are kept." : ""}`);
+      setBusy(null);
+      return;
+    }
+    setBusy(null);
+    await readAndDraft(sid, [...uploads, ...added]);
+  }
+
+  async function readAndDraft(sid: string, list: Upload[]) {
+    const unread = list.filter((u) => reads[u.id]?.status !== "done");
+    await pool(unread, 3, (u) => readOne(sid, u));
+    // One more try for any read that failed (a slow page, a timeout), then draft from what was read.
+    let kit = await call<Kit>("/api/kit", { sessionId: sid }).catch(() => null);
+    if (!kit) return;
+    const retry = list.filter((u) => kit!.extraction.reads[u.id]?.status === "failed" && kit!.extraction.reads[u.id]!.attempts < LIMITS.extractAttempts);
+    if (retry.length) {
+      await pool(retry, 3, (u) => readOne(sid, u));
+      kit = await call<Kit>("/api/kit", { sessionId: sid }).catch(() => null);
+      if (!kit) return;
+    }
+    setReads(kit.extraction.reads);
+    if (!Object.values(kit.extraction.reads).some((r) => r.status === "done")) {
+      setError("None of the uploads could be read, so there's nothing to build from yet.");
+      return;
+    }
+    await draftAll(sid, kit.extraction.targets);
+  }
+
+  async function edit(chunk: string, item: number, value: string | null) {
+    if (!sessionId) return;
+    try {
+      const rec = await call<ChunkRecord>("/api/kit/edit", { sessionId, chunk, item, value });
+      setChunks((c) => ({ ...c, [chunk]: rec }));
+    } catch (e) {
+      setError(messageOf(e));
+    }
+  }
+
+  // ---------- view ----------
+
+  const started = uploads.length > 0;
+  const nothingChosen = !photos.length && !logo && !pdf && !url.trim() && !pasted.trim() && !note.trim();
+  const tooLong = charCount(note) > LIMITS.messageChars || charCount(pasted) > LIMITS.pastedChars;
+  const labelOf = useMemo(() => Object.fromEntries(uploads.map((u) => [u.id, u.label])), [uploads]);
+
+  return (
+    <>
+      {!sessionId && (
+        <div className="card">
+          <dl>
+            <dt>Live extraction</dt>
+            <dd>{STATE_TEXT[generation] ?? "Checking…"}</dd>
+          </dl>
+          {generation === "open" && (
+            <>
+              <p className="muted" style={{ marginTop: "1rem" }}>
+                A quick check that you&rsquo;re a person, then you can upload.
+              </p>
+              <Turnstile siteKey={siteKey} onToken={onToken} />
+              <button onClick={start} disabled={!token || !!busy}>
+                Start
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {sessionId && !started && (
+        <div className="card">
+          <h2 style={{ marginTop: 0 }}>Your materials</h2>
+          <p className="muted">Whatever you have. Messy is fine: that&rsquo;s the point.</p>
+
+          <label htmlFor="photos">Photos (up to {LIMITS.imageCount})</label>
+          <input id="photos" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={(e) => setPhotos([...(e.target.files ?? [])].slice(0, LIMITS.imageCount))} />
+          <p className="counter">Shrunk in your browser before upload. {photos.length > 0 && `${photos.length} chosen.`}</p>
+
+          <label htmlFor="logo">Logo</label>
+          <input id="logo" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setLogo(e.target.files?.[0] ?? null)} />
+
+          <label htmlFor="pdf">One PDF (up to {LIMITS.pdfPages} pages)</label>
+          <input id="pdf" type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] ?? null)} />
+
+          <label htmlFor="url">Website</label>
+          <input id="url" type="url" placeholder="https://" value={url} onChange={(e) => setUrl(e.target.value)} />
+          <p className="counter">We read the homepage and up to two more pages.</p>
+
+          <label htmlFor="pasted">Or paste text from your site</label>
+          <textarea id="pasted" value={pasted} onChange={(e) => setPasted(e.target.value)} placeholder="Your About page, a menu, a product description…" />
+          <p className="counter">
+            {charCount(pasted)} / {LIMITS.pastedChars}
+          </p>
+
+          <label htmlFor="note">Anything else?</label>
+          <textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="We're a family bakery, 30 years in Calumet." />
+          <p className="counter">
+            {charCount(note)} / {LIMITS.messageChars}
+          </p>
+
+          <button onClick={buildKit} disabled={nothingChosen || tooLong || !!busy}>
+            Build my kit
+          </button>
+        </div>
+      )}
+
+      {busy && <p className="muted">{busy}</p>}
+      {error && <p className="error">{error}</p>}
+
+      {started && (
+        <>
+          <h2>Read from your uploads</h2>
+          <div className="uploads">
+            {uploads.map((u) => (
+              <div className="upload-row" key={u.id}>
+                <div>
+                  <strong>{u.label}</strong> <span className="muted">· {KIND_NAME[u.kind]}</span>
+                  {u.colors && u.colors.length > 0 && (
+                    <div className="swatches" title="Colors sampled from the pixels">
+                      {u.colors.map((c) => (
+                        <span key={c.hex} className="swatch" style={{ background: c.hex }} title={`${c.hex} · ${Math.round(c.share * 100)}%`} />
+                      ))}
+                    </div>
+                  )}
+                  {evidence[u.id] && <p className="muted small">{evidence[u.id]!.summary}</p>}
+                  {failures[u.id] && <p className="error small">{failures[u.id]}</p>}
+                </div>
+                <span className={`status ${reads[u.id]?.status ?? "waiting"}`}>{statusText(reads[u.id])}</span>
+              </div>
+            ))}
+          </div>
+          <h2>Brand DNA</h2>
+          <p className="muted">Each item shows where it came from. Edit or delete anything that&rsquo;s wrong.</p>
+          {[...EXTRACT_CHUNKS, { id: "conflicts" as const, title: "Where your uploads disagree" }].map((c) => (
+            <ChunkCard
+              key={c.id}
+              title={c.title}
+              state={targets[c.id]}
+              record={chunks[c.id]}
+              failure={failures[c.id]}
+              onRetry={sessionId ? () => draftOne(sessionId, c.id) : undefined}
+              onEdit={(i, v) => edit(c.id, i, v)}
+            />
+          ))}
+          <p className="muted small">Uploads cited: {Object.values(labelOf).join(", ")}</p>
+        </>
+      )}
+    </>
+  );
+}
+
+function statusText(s?: CallState) {
+  if (!s) return "Waiting";
+  if (s.status === "running") return "Reading…";
+  if (s.status === "done") return "Read";
+  return s.attempts >= LIMITS.extractAttempts ? "Couldn't read" : "Failed";
+}
+
+function ChunkCard(props: {
+  title: string;
+  state?: CallState;
+  record?: ChunkRecord;
+  failure?: string;
+  onRetry?: () => void;
+  onEdit: (item: number, value: string | null) => void;
+}) {
+  const { title, state, record, failure, onRetry, onEdit } = props;
+  const canRetry = state?.status === "failed" && state.attempts < LIMITS.extractAttempts && onRetry;
+  return (
+    <section className={`card chunk ${record ? "landed" : ""}`}>
+      <header className="chunk-head">
+        <h3>{title}</h3>
+        {record && record.target !== "conflicts" && <span className={`confidence ${record.draft.confidence}`}>{record.draft.confidence}</span>}
+        {!record && <span className={`status ${state?.status ?? "waiting"}`}>{state?.status === "running" ? "Drafting…" : state?.status === "failed" ? "Failed" : "Waiting"}</span>}
+      </header>
+      {failure && <p className="error small">{failure}</p>}
+      {canRetry && <button onClick={onRetry}>Try again</button>}
+      {record?.target === "conflicts" &&
+        (record.conflicts.length ? (
+          <ul className="items">
+            {record.conflicts.map((c, i) => (
+              <li key={i}>
+                <strong>{c.about}</strong>
+                <ul>
+                  {c.sides.map((s, j) => (
+                    <li key={j}>
+                      {s.says} <SourceTag upload={s.source.upload} location={s.source.location} />
+                    </li>
+                  ))}
+                </ul>
+                <p className="muted small">{c.suggestion}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="muted">None found.</p>
+        ))}
+      {record && record.target !== "conflicts" && (
+        <>
+          <p className="muted small">{record.draft.summary}</p>
+          <ul className="items">
+            {record.draft.items.map((item, i) => (
+              <ItemRow key={`${i}-${item.label}-${item.value}`} item={item} onSave={(v) => onEdit(i, v)} onDelete={() => onEdit(i, null)} />
+            ))}
+          </ul>
+          {record.draft.missing.length > 0 && (
+            <p className="small">
+              <strong>Not in your uploads:</strong> {record.draft.missing.join("; ")}
+            </p>
+          )}
+          {record.warnings.map((w) => (
+            <p key={w} className="small muted">
+              ⚠ {w}
+            </p>
+          ))}
+        </>
+      )}
+    </section>
+  );
+}
+
+function ItemRow({ item, onSave, onDelete }: { item: Item; onSave: (v: string) => void; onDelete: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(item.value);
+  const hexes = item.value.match(HEX) ?? [];
+  return (
+    <li className="item">
+      <div className="item-label">
+        {item.label}
+        {item.confidence !== "high" && !item.edited && <span className={`confidence ${item.confidence}`}>{item.confidence}</span>}
+        {item.edited && <span className="confidence high">edited</span>}
+      </div>
+      {editing ? (
+        <>
+          <textarea value={draft} onChange={(e) => setDraft(e.target.value)} />
+          <p className="counter">
+            {charCount(draft)} / {LIMITS.messageChars}
+          </p>
+          <div className="row">
+            <button onClick={() => (onSave(draft), setEditing(false))} disabled={!draft.trim() || charCount(draft) > LIMITS.messageChars}>
+              Save
+            </button>
+            <button className="quiet" onClick={() => (setDraft(item.value), setEditing(false))}>
+              Cancel
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="item-value">
+          {hexes.map((h) => (
+            <span key={h} className="swatch" style={{ background: h }} />
+          ))}
+          {item.value}
+        </div>
+      )}
+      {item.why && <div className="small muted">Why: {item.why}</div>}
+      <div className="sources">
+        {item.edited ? <span className="source">you</span> : item.sources.map((s, j) => <SourceTag key={j} upload={s.upload} location={s.location} />)}
+      </div>
+      {!editing && (
+        <div className="row">
+          <button className="quiet" onClick={() => setEditing(true)}>
+            Edit
+          </button>
+          <button className="quiet" onClick={onDelete}>
+            Delete
+          </button>
+        </div>
+      )}
+    </li>
+  );
+}
+
+function SourceTag({ upload, location }: { upload: string; location: string }) {
+  return (
+    <span className="source" title={location}>
+      {upload} · {location}
+    </span>
+  );
+}

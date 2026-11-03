@@ -4,6 +4,10 @@ export const STEPS = {
   plan: { model: "claude-sonnet-5-5", max_tokens: 12000, effort: "high" },
   write: { model: "claude-sonnet-5-5", max_tokens: 12000, effort: "high" },
   critique: { model: "claude-haiku-5-5", max_tokens: 8000, effort: "medium" }, // upgrade if it misses issues
+  // Extraction (phase 4). Each call has to finish inside the deployed function's ~26 s Claude
+  // timeout, so reading runs at low effort and assembling drafts one chunk per call.
+  read: { model: "claude-sonnet-5-5", max_tokens: 6000, effort: "low" },
+  assemble: { model: "claude-sonnet-5-5", max_tokens: 6000, effort: "medium" },
 } as const;
 
 export type StepName = keyof typeof STEPS;

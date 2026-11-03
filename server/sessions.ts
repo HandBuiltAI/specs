@@ -21,7 +21,29 @@ export type PostRecord = {
   warnings: string[];
 };
 
-export type UploadRecord = { id: string; kind: "pdf" | "image" | "url"; bytes?: number; pages?: number; mediaType?: string; url?: string };
+export type UploadRecord = {
+  id: string;
+  kind: "pdf" | "image" | "logo" | "url" | "pasted" | "note";
+  /** Display name, also how extraction cites it: the cleaned file name, the site, or "note". */
+  label?: string;
+  bytes?: number;
+  pages?: number;
+  mediaType?: string;
+  url?: string;
+  chars?: number;
+  /** Main colors sampled from a photo or logo in the browser, largest share first. */
+  colors?: { hex: string; share: number }[];
+};
+
+export type CallState = { status: "running" | "done" | "failed"; attempts: number };
+
+/** Extraction progress. Results live under their own keys (see server/extract.ts). */
+export type ExtractionState = {
+  /** Set by the first assemble call: from then on the set of uploads is fixed. */
+  locked: boolean;
+  reads: Record<string, CallState>;
+  targets: Record<string, CallState>;
+};
 
 export type Session = {
   id: string;
@@ -32,6 +54,7 @@ export type Session = {
   regenerationsUsed: number;
   uploads: UploadRecord[];
   posts: Record<string, PostRecord>;
+  extraction?: ExtractionState;
 };
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;

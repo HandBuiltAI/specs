@@ -8,7 +8,18 @@ import { STEPS, PRICES, FALLBACK_MODELS, type StepName } from "./config.ts";
 
 export type Usage = { step: StepName; model: string; input: number; output: number; cacheRead: number; cacheWrite: number; usd: number };
 
-export type Image = { mediaType: "image/jpeg" | "image/png"; base64: string };
+export type Image = { mediaType: "image/jpeg" | "image/png" | "image/gif" | "image/webp"; base64: string };
+
+/**
+ * Extra inputs some steps need. `documents` are PDFs. `cachedText` goes before the user text
+ * with a cache breakpoint, so calls that share it (the assemble calls all read the same
+ * evidence) pay full price for it once. `fetchDomain` lets Claude fetch pages from that one
+ * site with the web fetch tool, a few pages at most.
+ */
+export type CallExtras = { documents?: { base64: string }[]; cachedText?: string; fetchDomain?: string };
+
+/** Web fetch limits: the homepage plus one or two pages, each cut to a few thousand tokens (spec, Decisions). */
+export const FETCH_LIMITS = { maxUses: 3, maxContentTokens: 6000 } as const;
 
 // For a model with no listed price, charge the dearest listed price so spend is never undercounted.
 const DEAREST = Object.values(PRICES).reduce((a, b) => (b.output > a.output ? b : a));
@@ -35,7 +46,7 @@ export function worstCaseUsd(step: StepName, inputTokens: number) {
 export class StepError extends Error {
   constructor(
     message: string,
-    readonly kind: "refusal" | "max_tokens" | "schema",
+    readonly kind: "refusal" | "max_tokens" | "schema" | "paused",
     readonly usage: Usage,
   ) {
     super(message);
@@ -44,15 +55,30 @@ export class StepError extends Error {
 
 export async function callStructured<S extends z.ZodType>(
   client: Anthropic,
-  opts: { step: StepName; system: string; user: string; images?: Image[]; schema: S },
+  opts: { step: StepName; system: string; user: string; images?: Image[]; schema: S } & CallExtras,
 ): Promise<{ data: z.infer<S>; usage: Usage }> {
   const cfg = STEPS[opts.step];
   const content: Anthropic.Beta.BetaContentBlockParam[] = [
+    ...(opts.documents ?? []).map(
+      (doc): Anthropic.Beta.BetaRequestDocumentBlock => ({ type: "document", source: { type: "base64", media_type: "application/pdf", data: doc.base64 } }),
+    ),
     ...(opts.images ?? []).map(
       (img): Anthropic.Beta.BetaImageBlockParam => ({ type: "image", source: { type: "base64", media_type: img.mediaType, data: img.base64 } }),
     ),
+    ...(opts.cachedText ? [{ type: "text" as const, text: opts.cachedText, cache_control: { type: "ephemeral" as const } }] : []),
     { type: "text", text: opts.user },
   ];
+  const tools: Anthropic.Beta.BetaToolUnion[] | undefined = opts.fetchDomain
+    ? [
+        {
+          type: "web_fetch_20260209",
+          name: "web_fetch",
+          allowed_domains: [opts.fetchDomain],
+          max_uses: FETCH_LIMITS.maxUses,
+          max_content_tokens: FETCH_LIMITS.maxContentTokens,
+        },
+      ]
+    : undefined;
   const useFallback = FALLBACK_MODELS.has(cfg.model);
 
   const response = await client.beta.messages.parse({
@@ -61,6 +87,7 @@ export async function callStructured<S extends z.ZodType>(
     output_config: { effort: cfg.effort, format: betaZodOutputFormat(opts.schema) },
     system: opts.system,
     messages: [{ role: "user", content }],
+    ...(tools ? { tools } : {}),
     ...(useFallback ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const } : {}),
   });
 
@@ -81,6 +108,9 @@ export async function callStructured<S extends z.ZodType>(
   }
   if (response.stop_reason === "max_tokens") {
     throw new StepError(`${opts.step}: hit max_tokens (${cfg.max_tokens}). Raise it in core/config.ts.`, "max_tokens", usage);
+  }
+  if (response.stop_reason === "pause_turn") {
+    throw new StepError(`${opts.step}: the web fetch didn't finish in one turn.`, "paused", usage);
   }
   if (!response.parsed_output) throw new StepError(`${opts.step}: response did not match the schema.`, "schema", usage);
 

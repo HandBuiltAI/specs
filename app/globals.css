@@ -30,3 +30,32 @@ dd { margin: 0; }
 ul.rationale { padding-left: 1.1rem; }
 ul.rationale li { margin-bottom: 0.5rem; }
 code { font-size: 0.9em; }
+
+/* Build a kit (phase 4): plain on purpose; the app's look comes with the component catalog in phase 5. */
+.small { font-size: 0.85rem; }
+.row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.row button { margin-top: 0.5rem; }
+button.quiet { background: transparent; color: var(--ink); border-color: var(--line); font-weight: 500; padding: 0.3rem 0.7rem; font-size: 0.85rem; }
+h3 { font-size: 1rem; margin: 0; }
+.uploads { display: grid; gap: 0.5rem; }
+.upload-row { display: flex; justify-content: space-between; gap: 1rem; border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1rem; background: #fff; }
+.upload-row p { margin: 0.35rem 0 0; }
+.status { font-size: 0.8rem; white-space: nowrap; color: var(--muted); }
+.status.running { color: var(--ink); }
+.status.done { color: #2f6b3a; }
+.status.failed { color: var(--error); }
+.swatches { display: flex; gap: 4px; margin-top: 0.4rem; }
+.swatch { display: inline-block; width: 1.1rem; height: 1.1rem; border-radius: 4px; border: 1px solid rgba(0, 0, 0, 0.15); vertical-align: -0.2rem; margin-right: 0.35rem; }
+.chunk { transition: border-color 0.4s; }
+.chunk.landed { border-color: #cfc9bd; }
+.chunk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.5rem; }
+.confidence { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 999px; padding: 0.05rem 0.5rem; margin-left: 0.5rem; background: #eef3ec; color: #2f6b3a; }
+.confidence.medium { background: #f6f0e1; color: #7a5a12; }
+.confidence.needs-review { background: #f8e9e6; color: var(--error); }
+ul.items { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.9rem; }
+.item { border-top: 1px solid var(--line); padding-top: 0.8rem; }
+.item-label { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+.item-value { margin: 0.15rem 0; }
+.sources { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+.source { font-size: 0.75rem; background: #f1efe9; border-radius: 4px; padding: 0.05rem 0.4rem; color: #4a4a4a; }
+@media (max-width: 480px) { .upload-row { flex-direction: column; } }

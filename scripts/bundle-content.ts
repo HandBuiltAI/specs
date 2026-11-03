@@ -14,6 +14,8 @@ const DEMO_BRANDS = ["half-acre-club"] as const;
 
 const read = (path: string) => readFileSync(path, "utf8");
 
+const PROMPT_NAMES = ["plan", "write", "critique", "read", "assemble"] as const;
+
 type BriefFile = { business_name: string; business_line: string; photos: { file: string; alt: string }[] };
 
 const brands = Object.fromEntries(
@@ -31,7 +33,7 @@ const brands = Object.fromEntries(
 );
 
 const content = {
-  prompts: { plan: read(join(PROMPTS_DIR, "plan.md")), write: read(join(PROMPTS_DIR, "write.md")), critique: read(join(PROMPTS_DIR, "critique.md")) },
+  prompts: Object.fromEntries(PROMPT_NAMES.map((name) => [name, read(join(PROMPTS_DIR, `${name}.md`))])),
   templatesManifest: read(join(TEMPLATES_DIR, "templates.json")),
   brands,
 };
@@ -47,7 +49,7 @@ export const DEMO_BRAND_IDS = ${JSON.stringify(DEMO_BRANDS)} as const;
 export type DemoBrandId = (typeof DEMO_BRAND_IDS)[number];
 
 export const CONTENT: {
-  prompts: { plan: string; write: string; critique: string };
+  prompts: Record<${PROMPT_NAMES.map((n) => JSON.stringify(n)).join(" | ")}, string>;
   templatesManifest: string;
   brands: Record<DemoBrandId, DemoBrand>;
 } = ${JSON.stringify(content)};
