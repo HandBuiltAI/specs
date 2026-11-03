@@ -55,6 +55,18 @@ You can do this before the guard code is merged. Until it is, the deployed site 
 2. Netlify shows a DNS record to add. Go to wherever `humanbuiltai.work`'s DNS is managed and add a **CNAME** record: name `specs`, value your `something.netlify.app` address.
 3. Netlify issues the HTTPS certificate on its own once the record is live, usually within the hour.
 
+## 5. Check the phase 3 gate (after the guard code is merged and deployed)
+
+The gate is that the deployed site refuses raw prompts, over-cap uploads, and paid calls once the daily cap is hit. A script checks all three. These steps run on your Mac, in the `specs` folder in Terminal.
+
+1. Run `npm run gate -- https://something.netlify.app` with your address. It sends requests that should all be refused, so it costs nothing. You should see a column of `PASS` lines. The tripwire lines are skipped while the cap hasn't been hit.
+2. To trip the cap for real, in Netlify set `DAILY_SPEND_CAP_USD` to `0.30` and redeploy (step 3.7).
+3. Open `https://something.netlify.app/live`, pass the bot check, start a session, and make posts until the page says the spending cap is reached. That's two or three posts, about 30 cents.
+4. Run `npm run gate -- https://something.netlify.app` again. Now the tripwire lines run too, and the last line should read **Phase 3 gate: all checks passed.**
+5. Set `DAILY_SPEND_CAP_USD` back to `1.50` and redeploy.
+
+To see the kill switch work, set `GENERATION_ENABLED` to `false`, redeploy, and reload `/live`: it says live generation is switched off.
+
 ## What to send back
 
 Once it's deployed, paste the `something.netlify.app` address into the project thread. Don't paste any keys.
