@@ -1,0 +1,84 @@
+/* Shared post styles. Templates use only --role-* colors and the type tokens,
+   so any brand's tokens.css (or neutral-tokens.css for the no-kit baseline) can drive them. */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #888; }
+.post {
+  position: relative;
+  width: 1080px;
+  overflow: hidden;
+  background: var(--role-background);
+  color: var(--role-text);
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
+  line-height: var(--leading-body, 1.35);
+  -webkit-font-smoothing: antialiased;
+}
+.post--1x1 { height: 1080px; }
+.post--4x5 { height: 1350px; }
+
+.headline {
+  font-family: var(--font-heading);
+  font-weight: var(--weight-heading);
+  color: var(--role-heading);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.subhead {
+  font-size: 38px;
+  line-height: 1.3;
+  color: var(--role-text);
+  text-wrap: pretty;
+  max-width: 26em;
+}
+.cta {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 34px;
+  color: var(--role-text);
+  border-bottom: 4px solid var(--role-text);
+  padding-bottom: 2px;
+}
+.photo {
+  display: block;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+/* Handwritten note: the post's one accent element. */
+.hand {
+  font-family: var(--font-hand);
+  font-weight: var(--weight-hand);
+  color: var(--role-accent);
+  font-size: max(var(--min-size-hand, 48px), 56px);
+  line-height: 1;
+  transform: rotate(var(--stamp-rotation));
+  white-space: nowrap;
+}
+/* A label on a photo: like masking tape on a tub. */
+.tape {
+  display: inline-block;
+  background: var(--role-label);
+  padding: 14px 26px 10px;
+  border-radius: 3px;
+  transform: rotate(var(--stamp-rotation));
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+}
+
+/* Stacked wordmark. Small; it signs the post. */
+.wordmark {
+  position: absolute;
+  right: var(--safe-margin);
+  bottom: var(--safe-margin);
+  font-family: var(--font-wordmark);
+  font-weight: var(--weight-wordmark);
+  letter-spacing: var(--tracking-wordmark, 0);
+  color: var(--role-wordmark);
+  text-transform: uppercase;
+  font-size: 34px;
+  line-height: 0.92;
+  text-align: right;
+  transform: rotate(var(--stamp-rotation));
+}
+.wordmark span { display: block; }

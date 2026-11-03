@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8">{{{head}}}
+<style>
+  .copy { position: absolute; left: var(--safe-margin); right: var(--safe-margin); top: 50%; transform: translateY(-50%); }
+  .copy .headline { font-size: 108px; margin-bottom: 36px; max-width: 900px; }
+  .copy .date { font-size: 104px; margin-bottom: 28px; display: inline-block; transform-origin: left center; }
+  .copy .details { font-size: 44px; font-weight: 700; margin-bottom: 30px; }
+  .copy .subhead { margin-bottom: 36px; }
+</style></head>
+<body><main class="post post--1x1">
+  <div class="copy">
+    <h1 class="headline">{{headline}}</h1>
+    <div class="date hand">{{date}}</div>
+    <p class="details">{{details}}</p>
+    {{#subhead}}<p class="subhead">{{subhead}}</p>{{/subhead}}
+    {{#cta}}<span class="cta">{{cta}}</span>{{/cta}}
+  </div>
+  <div class="wordmark">{{{wordmark}}}</div>
+</main></body></html>

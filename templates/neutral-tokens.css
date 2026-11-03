@@ -1,0 +1,23 @@
+/* Generic look for the no-kit baseline: what a tool with no brand kit falls back to.
+   Same variable names as a brand's tokens.css, so the same templates render with it. */
+:root {
+  --font-wordmark: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --weight-wordmark: 700;
+  --font-heading: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --weight-heading: 700;
+  --font-body: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --weight-body: 400;
+  --leading-body: 1.4;
+  --font-hand: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --weight-hand: 700;
+  --radius: 12px;
+  --stamp-rotation: 0deg;
+  --safe-margin: 72px;
+  --unit: 8px;
+  --role-background: #FFFFFF;
+  --role-text: #1F2937;
+  --role-heading: #111827;
+  --role-accent: #2563EB;
+  --role-wordmark: #111827;
+  --role-label: #FFFFFF;
+}

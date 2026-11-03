@@ -1,0 +1,18 @@
+<!doctype html>
+<html><head><meta charset="utf-8">{{{head}}}
+<style>
+  .photo-half { position: absolute; top: 0; left: 0; width: 540px; height: 1080px; }
+  .photo-half .photo { width: 100%; height: 100%; border-radius: 0; }
+  .copy { position: absolute; left: 600px; right: var(--safe-margin); top: 50%; transform: translateY(-50%); }
+  .copy .headline { font-size: 76px; margin-bottom: 32px; }
+  .copy .subhead { font-size: 36px; margin-bottom: 44px; }
+</style></head>
+<body><main class="post post--1x1">
+  <div class="photo-half"><img class="photo" src="{{{photo_src}}}" alt=""></div>
+  <div class="copy">
+    <h1 class="headline">{{headline}}</h1>
+    <p class="subhead">{{subhead}}</p>
+    {{#cta}}<span class="cta">{{cta}}</span>{{/cta}}
+  </div>
+  <div class="wordmark">{{{wordmark}}}</div>
+</main></body></html>

@@ -1,0 +1,92 @@
+{
+  "note": "Six shared post layouts. Slot limits are the physical ceiling for each layout; a brand's social-rules can be stricter. The caption slot is never drawn on the image.",
+  "templates": [
+    {
+      "id": "photo-led",
+      "name": "Photo-led",
+      "aspect": "4:5",
+      "photo": "required",
+      "best_for": ["announcement"],
+      "description": "Photo fills the top two thirds; headline and subhead sit on the background below it. Optional badge sits on a tape label over the photo's lower-left corner.",
+      "slots": {
+        "headline": { "max_chars": 40, "required": true },
+        "subhead": { "max_chars": 90, "required": true },
+        "badge": { "max_chars": 12, "required": false, "note": "The one accent element, handwritten. A date or box number." },
+        "caption": { "max_chars": 400, "required": true }
+      }
+    },
+    {
+      "id": "type-led",
+      "name": "Type-led",
+      "aspect": "1:1",
+      "photo": "none",
+      "best_for": ["tip"],
+      "description": "No photo. A large headline and one or two plain sentences; the instruction is the content. Optional handwritten note.",
+      "slots": {
+        "headline": { "max_chars": 40, "required": true },
+        "subhead": { "max_chars": 90, "required": true },
+        "badge": { "max_chars": 12, "required": false, "note": "Handwritten note, the one accent element." },
+        "caption": { "max_chars": 400, "required": true }
+      }
+    },
+    {
+      "id": "quote-card",
+      "name": "Quote card",
+      "aspect": "1:1",
+      "photo": "none",
+      "best_for": ["testimonial"],
+      "description": "A member's words, large, with attribution. No wordmark, so nothing competes with the quote.",
+      "slots": {
+        "quote": { "max_chars": 120, "required": true, "note": "Must be the exact words supplied in the brief." },
+        "attribution": { "max_chars": 40, "required": true },
+        "badge": { "max_chars": 12, "required": false, "note": "Optional handwritten note, the one accent element." },
+        "caption": { "max_chars": 400, "required": true }
+      }
+    },
+    {
+      "id": "split",
+      "name": "Split",
+      "aspect": "1:1",
+      "photo": "required",
+      "best_for": ["tip", "announcement"],
+      "description": "Photo on the left half, full height; headline, subhead and call to action on the right half.",
+      "slots": {
+        "headline": { "max_chars": 32, "required": true },
+        "subhead": { "max_chars": 90, "required": true },
+        "cta": { "max_chars": 24, "required": false },
+        "caption": { "max_chars": 400, "required": true }
+      }
+    },
+    {
+      "id": "offer-badge",
+      "name": "Offer badge",
+      "aspect": "4:5",
+      "photo": "required",
+      "best_for": ["promo"],
+      "description": "Photo on top with a stamp-style badge over its corner carrying the offer (a price or a box number); headline, subhead and call to action below.",
+      "slots": {
+        "headline": { "max_chars": 40, "required": true },
+        "subhead": { "max_chars": 90, "required": true },
+        "badge": { "max_chars": 12, "required": true, "note": "The stamp. The offer in a few characters, e.g. a price. The one accent element." },
+        "cta": { "max_chars": 24, "required": true },
+        "caption": { "max_chars": 400, "required": true }
+      }
+    },
+    {
+      "id": "event-card",
+      "name": "Event card",
+      "aspect": "1:1",
+      "photo": "none",
+      "best_for": ["event"],
+      "description": "Event name, a large handwritten date (the accent element), then time and place, so the when and where read at a glance.",
+      "slots": {
+        "headline": { "max_chars": 36, "required": true, "note": "The event name." },
+        "date": { "max_chars": 24, "required": true, "note": "Exactly as given in the brief." },
+        "details": { "max_chars": 60, "required": true, "note": "Time and place, exactly as given in the brief." },
+        "subhead": { "max_chars": 90, "required": false },
+        "cta": { "max_chars": 24, "required": false },
+        "caption": { "max_chars": 400, "required": true }
+      }
+    }
+  ]
+}

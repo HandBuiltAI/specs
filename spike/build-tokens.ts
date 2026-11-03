@@ -10,6 +10,7 @@ type VisualSystem = {
   type: Record<string, TypeRole>;
   shape: { radius_px: number; stamp_rotation_deg: number };
   spacing: { safe_margin_px_at_1080: number; unit_px: number };
+  roles?: Record<string, string>;
 };
 
 const brand = process.argv[2];
@@ -31,6 +32,12 @@ lines.push(`  --radius: ${vs.shape.radius_px}px;`);
 lines.push(`  --stamp-rotation: ${vs.shape.stamp_rotation_deg}deg;`);
 lines.push(`  --safe-margin: ${vs.spacing.safe_margin_px_at_1080}px;`);
 lines.push(`  --unit: ${vs.spacing.unit_px}px;`);
+// Color roles: the shared post templates use only these, never brand color names.
+for (const [role, colorKey] of Object.entries(vs.roles ?? {})) {
+  if (role === "note") continue;
+  if (!vs.color[colorKey]) throw new Error(`roles.${role} points to unknown color "${colorKey}"`);
+  lines.push(`  --role-${role}: var(--color-${colorKey});`);
+}
 
 const css = `/* Generated from visual-system.json by spike/build-tokens.ts. Do not edit by hand. */\n:root {\n${lines.join("\n")}\n}\n`;
 writeFileSync(join(kitDir, "tokens.css"), css);

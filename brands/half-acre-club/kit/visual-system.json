@@ -17,7 +17,7 @@
         "location": "page 2 (swatches, printer note, stamp sketch)"
       }
     ],
-    "version": 2,
+    "version": 3,
     "fictional": true,
     "summary": "A seed packet that's spent a week on the kitchen counter: warm cream paper, soil-brown text, faded green ink for the stamp and headings, and tomato red only where something needs noticing. Fonts (Rubik, Atkinson Hyperlegible, Caveat) approved by Scott 2026-11-03."
   },
@@ -83,6 +83,15 @@
         "reason": "Cream text on a green fill turns the stamp into a button. Keep green as ink, not a fill."
       }
     ]
+  },
+  "roles": {
+    "note": "Maps the shared post templates' color roles to this brand's colors. Templates only ever use roles, so the same layout works for every brand.",
+    "background": "cream",
+    "text": "soil",
+    "heading": "pea",
+    "accent": "tomato",
+    "wordmark": "pea",
+    "label": "cream"
   },
   "material_notes": [
     "Kraft cardboard brings its own color. Don't recolor it to match the palette.",

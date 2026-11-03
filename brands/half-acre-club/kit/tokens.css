@@ -21,4 +21,10 @@
   --stamp-rotation: -2deg;
   --safe-margin: 72px;
   --unit: 8px;
+  --role-background: var(--color-cream);
+  --role-text: var(--color-soil);
+  --role-heading: var(--color-pea);
+  --role-accent: var(--color-tomato);
+  --role-wordmark: var(--color-pea);
+  --role-label: var(--color-cream);
 }

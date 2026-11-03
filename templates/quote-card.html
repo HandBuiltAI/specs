@@ -1,0 +1,14 @@
+<!doctype html>
+<html><head><meta charset="utf-8">{{{head}}}
+<style>
+  .mark { position: absolute; left: calc(var(--safe-margin) - 8px); top: 120px; font-family: var(--font-heading); font-weight: var(--weight-heading); color: var(--role-heading); font-size: 260px; line-height: 1; }
+  .quote { position: absolute; left: var(--safe-margin); right: var(--safe-margin); top: 50%; transform: translateY(-50%); font-family: var(--font-heading); font-weight: 500; font-size: 76px; line-height: 1.12; color: var(--role-text); text-wrap: balance; letter-spacing: -0.01em; }
+  .attribution { position: absolute; left: var(--safe-margin); bottom: calc(var(--safe-margin) + 12px); font-size: 36px; font-weight: 700; }
+  .note { position: absolute; right: var(--safe-margin); bottom: var(--safe-margin); }
+</style></head>
+<body><main class="post post--1x1">
+  <div class="mark" aria-hidden="true">&ldquo;</div>
+  <blockquote class="quote">{{quote}}</blockquote>
+  <p class="attribution">{{attribution}}</p>
+  {{#badge}}<div class="note hand">{{badge}}</div>{{/badge}}
+</main></body></html>
