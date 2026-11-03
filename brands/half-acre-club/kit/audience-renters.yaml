@@ -1,0 +1,44 @@
+chunk_id: audience-renters
+domain: audience
+depends_on: [positioning-core]
+token_count: 320
+confidence: high
+sources:
+  - upload: founder-interview
+    location: Specs thread, 2026-11-03 (Scott confirmed the audience)
+version: 1
+fictional: true
+summary: >-
+  The core segment: renters in their 20s and 30s in small city apartments
+  who want to grow something but assume they can't.
+---
+segment: Renters in small city apartments
+age: 20s and 30s
+situation:
+  - One or two windows that get decent light; no yard, little or no balcony
+  - A lease that rules out drilling, mounting, or anything permanent
+  - Has bought a plant before and watched it die, usually basil or a succulent
+
+wants:
+  - To grow something they can actually eat or show someone
+  - A small, finished win, not a hobby that needs research
+  - Something that looks good on the sill and in a photo to a friend
+
+barriers:
+  - belief: '"I''m not a plant person."'
+    answer: Projects are sized so the first one works. Never argue the belief; let a ten-day result disprove it.
+  - belief: '"I don''t have the space."'
+    answer: Every project fits one windowsill. Show the sill, not a garden.
+  - belief: '"My landlord won''t let me."'
+    answer: Nothing drills, mounts or stains. Say so plainly when it's relevant.
+  - belief: '"I''ll mess it up."'
+    answer: Plain steps, no jargon, a specific feel to aim for ("a wrung-out sponge").
+
+what_wins_them:
+  - A real photo of something growing in a space like theirs
+  - A specific number (ten days, one windowsill, five steps)
+  - Calm confidence, not hype
+
+where_they_see_us: Instagram feed and stories, usually on their phone, often in the kitchen
+
+words_they_use: [windowsill, sill, apartment, landlord, lease, kitchen, "killed a plant"]

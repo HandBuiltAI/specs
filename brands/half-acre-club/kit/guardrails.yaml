@@ -1,0 +1,46 @@
+chunk_id: guardrails
+domain: guardrails
+depends_on: [positioning-core, voice-core, art-direction]
+token_count: 390
+confidence: high
+sources:
+  - upload: founder-interview
+    location: Specs thread, 2026-11-03
+  - upload: CLAUDE.md
+    location: Rules (never invent facts)
+version: 1
+fictional: true
+summary: >-
+  Hard limits for Half Acre Club posts: no invented facts or testimonials, no
+  health or product claims, nothing a renter can't do, no yards, no guilt.
+---
+never_say:
+  - rule: Facts not in positioning-core or the brief
+    examples: [discounts, sale end dates, shipping dates, member counts, awards, press, partner brands, new cities]
+    why: The brand is fictional but consistent; an invented fact breaks the kit and the demo's point.
+  - rule: A testimonial quote or member name the brief didn't supply
+    why: A made-up quote is a fake review, even for a fictional brand.
+  - rule: Health, nutrition, or medical claims
+    examples: ['"packed with vitamins"', '"boosts immunity"', '"superfood"']
+    why: Unverifiable, and not what the brand sells.
+  - rule: Product claims like organic, non-GMO, heirloom, or "guaranteed to grow"
+    why: None are established facts, and nothing living is guaranteed.
+  - rule: Advice that could cost a deposit or break a lease
+    examples: [drilling, wall mounts, ceiling hooks, using a fire escape as a garden]
+    why: Renter-proof is a promise. Fire escapes are exits and often off-limits in a lease.
+  - rule: Guilt or mockery about dead plants
+    why: The audience already feels it. A dead plant is a normal first try.
+  - rule: Telling people to eat anything other than the box's own project
+    why: Food safety. The card covers what's edible; posts shouldn't go further.
+
+never_show:
+  - A yard, raised bed, greenhouse, or large balcony garden
+  - Styled, perfect harvests on marble or in restaurant plating
+  - Gardening gloves and trowels used for a windowsill project
+  - Pesticide or chemical fertilizer containers
+  - Competitor boxes or logos
+  - More than one tomato-red element in a single post
+
+when_unsure: >-
+  Leave it out and say so in the rationale. A post missing a detail is
+  fixable; a post with an invented one is wrong.

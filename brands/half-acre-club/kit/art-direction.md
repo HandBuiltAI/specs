@@ -2,7 +2,7 @@
 chunk_id: art-direction
 domain: visual
 depends_on: [positioning-core, visual-system]
-token_count: 630
+token_count: 670
 confidence: high
 sources:
   - upload: founder-interview
