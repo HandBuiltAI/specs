@@ -12,6 +12,7 @@ export interface KV {
   /** Writes only if the key is unchanged since `ifMatch`, or absent when `ifNew`. Returns whether it wrote. */
   put(key: string, value: unknown, cond: { ifMatch: string } | { ifNew: true }): Promise<boolean>;
   putBytes(key: string, bytes: ArrayBuffer, metadata: Record<string, string | number>): Promise<void>;
+  getBytes(key: string): Promise<ArrayBuffer | null>;
 }
 
 const STORE_NAME = "specs";
@@ -68,16 +69,21 @@ function blobsKV(): KV {
     async putBytes(key, bytes, metadata) {
       await store.set(key, bytes, { metadata });
     },
+    async getBytes(key) {
+      return store.get(key, { type: "arrayBuffer" });
+    },
   };
   return {
     get: (key) => inTime(kv.get(key)),
     put: (key, value, cond) => inTime(kv.put(key, value, cond)),
     putBytes: (key, bytes, metadata) => inTime(kv.putBytes(key, bytes, metadata)),
+    getBytes: (key) => inTime(kv.getBytes(key)),
   };
 }
 
 export function memoryKV(): KV {
   const data = new Map<string, { json: string; etag: string }>();
+  const files = new Map<string, ArrayBuffer>();
   let n = 0;
   return {
     async get<T>(key: string) {
@@ -92,6 +98,10 @@ export function memoryKV(): KV {
     },
     async putBytes(key, bytes, metadata) {
       data.set(key, { json: JSON.stringify({ bytes: bytes.byteLength, metadata }), etag: `"${++n}"` });
+      files.set(key, bytes.slice(0));
+    },
+    async getBytes(key) {
+      return files.get(key) ?? null;
     },
   };
 }

@@ -4,7 +4,7 @@
 import "server-only";
 import { basename } from "node:path";
 import { CONTENT, type DemoBrandId } from "./generated/content.ts";
-import { fillPrompt } from "../core/prompts.ts";
+import { fillPrompt, asData } from "../core/prompts.ts";
 import { selectChunks, formatChunks, approxTokens } from "../core/kit.ts";
 import { findTemplate, parseTemplates, type TemplateSpec } from "../core/templates.ts";
 import type { Image } from "../core/claude.ts";
@@ -16,17 +16,7 @@ export type Brief = { goal: string; details: string };
 const templates = parseTemplates(CONTENT.templatesManifest);
 const templatesForPrompt = JSON.stringify(templates, null, 2);
 
-/**
- * Free text as data: drops control characters and swaps angle brackets for look-alikes, so a
- * visitor can't close the prompt's <brief> tag or open a tag of their own.
- */
-export function asData(text: string): string {
-  return text
-    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "")
-    .replace(/</g, "‹")
-    .replace(/>/g, "›")
-    .trim();
-}
+export { asData };
 
 function common(brand: DemoBrandId, intent: PostIntent, brief: Brief) {
   const b = CONTENT.brands[brand];

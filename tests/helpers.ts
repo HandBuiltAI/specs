@@ -6,6 +6,7 @@ import type { Deps } from "../server/handlers.ts";
 import type { CallStep } from "../server/claude.ts";
 import type { Plan, Written } from "../core/schemas.ts";
 import type { Usage } from "../core/claude.ts";
+import type { ChunkDraft, Conflicts, Evidence } from "../core/extract.ts";
 
 export const ENV = {
   ANTHROPIC_API_KEY: "test-key-not-real",
@@ -27,16 +28,55 @@ export const WRITTEN: Written = {
   rationale: [{ decision: "headline", choice: "Pea shoots. Ten days.", reason: "Matches the voice anchor.", cites: ["voice-core"] }],
 };
 
-export type Sent = { step: string; system: string; user: string };
+export type Sent = { step: string; system: string; user: string; cachedText?: string; fetchDomain?: string; images?: number; documents?: number };
+
+export const EVIDENCE: Evidence = {
+  summary: "Working notes from the packing table.",
+  facts: [
+    { topic: "offer", statement: "First box is pea shoots.", quote: "Box 01 / pea shoots", location: "page 1" },
+    { topic: "visual", statement: "Packet cream swatch.", quote: "packet cream #F2E8D5", location: "page 2" },
+  ],
+  lines: [{ line: "One small thing to grow.", location: "page 1" }],
+};
+
+export const DRAFT: ChunkDraft = {
+  summary: "Cream paper, brown text.",
+  confidence: "high",
+  items: [
+    { label: "color: background", value: "#F2E8D5 packet cream", why: "Cream for paper.", sources: [{ upload: "rough-notes.pdf", location: "page 2" }], confidence: "high" },
+    { label: "color: accent", value: "#123456 invented blue", why: null, sources: [{ upload: "rough-notes.pdf", location: "page 2" }], confidence: "high" },
+    { label: "promise", value: "Something", why: null, sources: [{ upload: "brochure.pdf", location: "p1" }], confidence: "medium" },
+  ],
+  missing: ["heading font"],
+};
+
+export const CONFLICTS: Conflicts = {
+  conflicts: [
+    {
+      about: "Box number for pea shoots",
+      sides: [
+        { says: "BOX No. 014", source: { upload: "photo-01.jpg", location: "card" } },
+        { says: "Box 01", source: { upload: "rough-notes.pdf", location: "page 1" } },
+      ],
+      suggestion: "Trust the notes.",
+    },
+  ],
+};
 
 export function makeDeps(opts: { env?: Record<string, string | undefined>; usd?: number; turnstileOk?: boolean; fail?: (step: string) => Error | null } = {}) {
   const sent: Sent[] = [];
   const callStep: CallStep = async (o) => {
-    sent.push({ step: o.step, system: o.system, user: o.user });
+    sent.push({ step: o.step, system: o.system, user: o.user, cachedText: o.cachedText, fetchDomain: o.fetchDomain, images: o.images?.length, documents: o.documents?.length });
     const err = opts.fail?.(o.step);
     if (err) throw err;
     const usage: Usage = { step: o.step, model: "claude-sonnet-5-5", input: 1000, output: 500, cacheRead: 0, cacheWrite: 0, usd: opts.usd ?? 0.05 };
-    return { data: (o.step === "plan" ? PLAN : WRITTEN) as never, usage };
+    const data =
+      o.step === "plan" ? PLAN
+      : o.step === "write" ? WRITTEN
+      : o.step === "read" ? EVIDENCE
+      : o.user.includes("Target: conflicts") ? CONFLICTS
+      : DRAFT;
+    return { data: data as never, usage };
   };
   const deps: Deps = {
     kv: memoryKV(),

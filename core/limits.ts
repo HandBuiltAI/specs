@@ -16,6 +16,16 @@ export const LIMITS = {
   imageBytes: 5 * 1024 * 1024,
   urlCount: 1,
   urlChars: 2048,
+  logoCount: 1,
+  /** The note field on the upload screen ("we're a family bakery, 30 years in Calumet"). */
+  noteCount: 1,
+  /** The paste box, the fallback when a website can't be fetched. Not in the spec's table; about 2,000 tokens. */
+  pastedCount: 1,
+  pastedChars: 8000,
+  /** Colors sampled per photo in the browser. */
+  colorsPerImage: 8,
+  /** Tries per extraction call (one upload read, or one chunk drafted). A failed try that cost money counts. */
+  extractAttempts: 2,
 
   postsPerSession: 4,
   regenerationsPerSession: 1,

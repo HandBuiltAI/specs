@@ -4,11 +4,11 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import type { z } from "zod";
-import { callStructured, type Image, type Usage } from "../core/claude.ts";
+import { callStructured, type CallExtras, type Image, type Usage } from "../core/claude.ts";
 import type { StepName } from "../core/config.ts";
 import { Refusal } from "./http.ts";
 
-export type CallStep = <S extends z.ZodType>(opts: { step: StepName; system: string; user: string; images?: Image[]; schema: S }) => Promise<{ data: z.infer<S>; usage: Usage }>;
+export type CallStep = <S extends z.ZodType>(opts: { step: StepName; system: string; user: string; images?: Image[]; schema: S } & CallExtras) => Promise<{ data: z.infer<S>; usage: Usage }>;
 
 let client: Anthropic | undefined;
 
