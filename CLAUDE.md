@@ -6,7 +6,7 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 ## Current phase
 
-**Phase 3: scaffold with guardrails.** Phases 1 and 2 passed on Nov 3, 2026 (run 2: four of five posts client-ready, the kit won five of five).
+**Phase 3: scaffold with guardrails. Gate passed on the deployed site on Nov 3, 2026; phase 4 (extraction and DNA reveal) is next.** Phases 1 and 2 passed on Nov 3, 2026 (run 2: four of five posts client-ready, the kit won five of five).
 
 Build the Next.js (App Router) app on Netlify, the server code that owns every prompt, and every guard in the spec's guard table. No product screens yet: a plain test page is enough to exercise the endpoints. Do not add CopilotKit, extraction or the DNA reveal until the phase 3 gate passes.
 
