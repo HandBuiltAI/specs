@@ -2,14 +2,16 @@
 chunk_id: art-direction
 domain: visual
 depends_on: [positioning-core, visual-system]
-token_count: 670
+token_count: 710
 confidence: high
 sources:
   - upload: founder-interview
     location: Specs thread, 2026-11-03 (photography, the three starting shots)
   - upload: photo-01-box-opened.jpg, photo-02-day-six-sill.jpg, photo-03-first-cut.jpg
     location: generated reference set, split from pea-shoots-triptych.png
-version: 1
+  - upload: rough-notes.pdf
+    location: page 2, "pics to pull from the phone" and "photo note from the second pass"
+version: 2
 summary: >-
   Phone photos at texting height, window or kitchen light, real mess left in.
   The test shot is day six on the sill: you can tell what's growing, how little
@@ -25,7 +27,8 @@ summary: >-
 Shoot at the height and distance you'd naturally hold your phone to text someone a plant update. That's the reason the photos feel like a member's, not a studio's: the reader should think "I could take that."
 
 - **Light:** window light or whatever the kitchen has. A yellow overhead bulb is fine.
-- **Keep the mess that happened:** a leaning pot, grain in the shadows, a thumb holding a seed packet flat.
+- **Keep the mess that happened:** a leaning pot, leaning stems, dirt on the counter, the patch where nothing came up, a thumb holding a seed packet flat.
+- **Soft is fine if it reads:** a soft frame works as long as you can still tell what is growing.
 - **Don't add mess that didn't:** no grain filter, no fake film border, no vignette. Mess should come from what's in the frame, not an effect on top.
 - **Vary the set:** in any group of three, aim for one soft shot, one crooked crop, and one fairly sharp one. That reads as one camera roll; the same effect on every image reads as a preset.
 - **Leave packaging color alone.** Kraft cardboard and the slightly darker stamp on the box stay as shot. The palette is the intended ink, not a grade to apply.

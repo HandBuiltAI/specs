@@ -1,14 +1,18 @@
 chunk_id: terminology
 domain: voice
 depends_on: [voice-core, positioning-core]
-token_count: 370
+token_count: 500
 confidence: high
 sources:
   - upload: founder-interview
     location: Specs thread, 2026-11-03 (voice line, box contents)
   - upload: photo-01-box-opened.jpg
     location: project card wording
-version: 1
+  - upload: rough-notes.pdf
+    location: page 1, margin note on the insert
+  - upload: about-us.md
+    location: What comes in the box
+version: 2
 fictional: true
 summary: >-
   Words Half Acre Club uses (members, the box, project card, sill, first cut)
@@ -21,13 +25,17 @@ use:
     instead_of: [subscriber, customer]
     why: People join a club; they subscribe to a service.
   - term: the box
-    note: The monthly delivery. Boxes are numbered ("Box No. 014") on the card.
+    note: The monthly delivery. Boxes are numbered ("Box 01") on the card.
   - term: project / project card
     why: Each box is one project. "Kit" is fine in passing; "project" is the habit.
   - term: windowsill / the sill
     why: The one growing space every member has.
-  - term: soil puck
-    note: The compressed soil disc in the box.
+  - term: growing mix
+    note: What the box sends when a project needs it. "Soil puck" is fine for the pea shoots box's compressed disc.
+  - term: the card
+    note: The printed card that lives next to the tub. "Project card" is fine too.
+  - term: takeout tub
+    why: The container most members already have. Say "save a tub", not "buy a planter".
   - term: sprout
     instead_of: [germinate]
     why: Plain word; jargon is what made gardening feel off-limits.
@@ -38,8 +46,10 @@ use:
     why: Name the actual plant; it's more concrete and less trendy.
 
 avoid:
-  - term: [plant parent, plant mom, plant dad]
-    why: Category cliché, and it makes the reader the product.
+  - term: [plant parent, plant mom, plant dad, plant babies]
+    why: Category cliché, and it makes the reader the product. The insert notes cut "plant babies" by name.
+  - term: [foolproof, can't fail, guaranteed]
+    why: Batches do stall. Promising otherwise sets up the guilt the brand avoids. Cut by name in the insert notes.
   - term: [journey, grow with us, growth mindset]
     why: Abstract. The brand talks in days and windowsills.
   - term: [green thumb, black thumb]

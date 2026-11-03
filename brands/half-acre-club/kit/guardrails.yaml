@@ -1,14 +1,16 @@
 chunk_id: guardrails
 domain: guardrails
 depends_on: [positioning-core, voice-core, art-direction]
-token_count: 390
+token_count: 450
 confidence: high
 sources:
   - upload: founder-interview
     location: Specs thread, 2026-11-03
   - upload: CLAUDE.md
     location: Rules (never invent facts)
-version: 1
+  - upload: rough-notes.pdf
+    location: page 1, margin note on the insert
+version: 2
 fictional: true
 summary: >-
   Hard limits for Half Acre Club posts: no invented facts or testimonials, no
@@ -23,13 +25,17 @@ never_say:
   - rule: Health, nutrition, or medical claims
     examples: ['"packed with vitamins"', '"boosts immunity"', '"superfood"']
     why: Unverifiable, and not what the brand sells.
-  - rule: Product claims like organic, non-GMO, heirloom, or "guaranteed to grow"
+  - rule: Product claims like organic, non-GMO, heirloom, foolproof, or "guaranteed to grow"
     why: None are established facts, and nothing living is guaranteed.
+  - rule: Implying a long history (years in business, hundreds of boxes)
+    why: Pea shoots is Box 01. The club is new.
   - rule: Advice that could cost a deposit or break a lease
     examples: [drilling, wall mounts, ceiling hooks, using a fire escape as a garden]
     why: Renter-proof is a promise. Fire escapes are exits and often off-limits in a lease.
-  - rule: Guilt or mockery about dead plants
-    why: The audience already feels it. A dead plant is a normal first try.
+  - rule: Guilt or mockery about dead plants or stalled batches
+    why: >-
+      The audience already feels it. When a post covers a stall, give one thing
+      to check first, then make starting over normal ("write a new date on the tape").
   - rule: Telling people to eat anything other than the box's own project
     why: Food safety. The card covers what's edible; posts shouldn't go further.
 

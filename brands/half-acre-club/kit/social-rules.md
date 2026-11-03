@@ -38,7 +38,7 @@ summary: >-
 
 ## CTA style
 
-Plain verbs that describe the next physical step: "Get Box 014", "Join the club", "Start on the sill". Never "Shop now!", "Don't miss out", or urgency the facts don't support. "Link in bio" goes in the caption, not on the image.
+Plain verbs that describe the next physical step: "Get Box 01", "Join the club", "Start on the sill". Never "Shop now!", "Don't miss out", or urgency the facts don't support. "Link in bio" goes in the caption, not on the image.
 
 ## Hashtags
 

@@ -2,12 +2,12 @@
 chunk_id: readme
 domain: routing
 depends_on: []
-token_count: 450
+token_count: 630
 confidence: high
 sources:
   - upload: docs/spec.md
     location: Brand kit format
-version: 1
+version: 2
 fictional: true
 summary: >-
   Routing file for the Half Acre Club kit: what the brand is in one line, what
@@ -45,4 +45,13 @@ Half Acre Club is a monthly growing kit for renters: one small project per box, 
 
 ## Sources
 
-Most chunks come from an interview with Scott (2026-11-03) and the reference photos in `../uploads/`. The deliberately messy uploads (rough PDF, wordy About text) are still to come.
+`../uploads/` holds what a real owner would hand over: `about-us.md` (wordy About page), `rough-notes.pdf` (packing-table working notes), and phone-style photos. The rest came from an interview with Scott on 2026-11-03.
+
+## Known conflicts
+
+Left in on purpose, because a real upload folder disagrees with itself and the intake step should catch it.
+
+| Conflict | Sources | Resolved as |
+| --- | --- | --- |
+| Pea shoots box number | `photo-01-box-opened.jpg` card reads "BOX No. 014"; `rough-notes.pdf` says "Box 01" and `about-us.md` says "Our first box is pea shoots" | Box 01. Two written sources beat one label in a photo. Don't use photo 01 where the box number is legible next to copy that says Box 01. |
+| What's in the box | `rough-notes.pdf` and `about-us.md` say containers come from home; photo 01 shows a soil puck in the box | Both true: the pea shoots box sends a compressed soil puck as its growing mix. |

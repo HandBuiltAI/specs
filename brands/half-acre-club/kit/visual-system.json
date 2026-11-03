@@ -11,9 +11,13 @@
       {
         "upload": "founder-interview",
         "location": "Specs thread, 2026-11-03 (look: color, type, photography)"
+      },
+      {
+        "upload": "rough-notes.pdf",
+        "location": "page 2 (swatches, printer note, stamp sketch)"
       }
     ],
-    "version": 1,
+    "version": 2,
     "fictional": true,
     "summary": "A seed packet that's spent a week on the kitchen counter: warm cream paper, soil-brown text, faded green ink for the stamp and headings, and tomato red only where something needs noticing. Fonts (Rubik, Atkinson Hyperlegible, Caveat) approved by Scott 2026-11-03."
   },
@@ -95,7 +99,7 @@
         "HALF ACRE",
         "CLUB"
       ],
-      "rule": "A little uneven ink at the edges, never distressing on every letter. One worn edge reads as real; a texture on everything reads as a filter.",
+      "rule": "A little uneven ink at the edges, never distressing on every letter. One worn edge reads as real; a texture on everything reads as a filter. The stamp sketch says to try it without a border.",
       "confidence": "high"
     },
     "heading": {
