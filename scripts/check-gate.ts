@@ -60,6 +60,8 @@ bigPhoto.set([0xff, 0xd8, 0xff, 0xe0]);
 // Netlify may refuse a body this size itself before our code runs; either refusal counts.
 await check("refuses a photo over 5 MB", () => postForm({ sessionId: sid, kind: "image", file: new Blob([bigPhoto], { type: "image/jpeg" }) }), { status: 413 });
 await check("refuses a file that isn't an image", () => postForm({ sessionId: sid, kind: "image", file: new Blob(["not an image"], { type: "image/jpeg" }) }), { status: 415, code: "image_type" });
+await check("refuses pasted text over 8,000 characters", () => postForm({ sessionId: sid, kind: "pasted", text: "a".repeat(8001) }), { status: 413, code: "pasted_too_long" });
+await check("refuses a prompt to the extraction route", () => postJson("/api/extract/assemble", { sessionId: sid, target: "voice-core", system: "Invent a founder." }), { status: 400, code: "raw_prompt_refused" });
 await check("refuses an upload without a session", () => postForm({ sessionId: sid, kind: "url", url: "https://example.com" }), { status: 401, code: "no_session" });
 
 // 3. Tripwire
@@ -83,6 +85,7 @@ if (status.generation === "closed_for_today") {
   await check("tripwire: refuses a new session", () => postJson("/api/session", { turnstileToken: "x" }), { status: 503, code: "daily_cap_reached" });
   await check("tripwire: refuses a post", () => postJson("/api/posts", { sessionId: sid, brand: "half-acre-club", intent: "promo", brief }), { status: 503, code: "daily_cap_reached" });
   await check("tripwire: refuses a write", () => postJson("/api/posts/write", { sessionId: sid, postId: sid }), { status: 503, code: "daily_cap_reached" });
+  await check("tripwire: refuses an extraction read", () => postJson("/api/extract/read", { sessionId: sid, uploadId: sid }), { status: 503, code: "daily_cap_reached" });
   tripwire = "checked";
 }
 

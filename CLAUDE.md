@@ -6,11 +6,11 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 ## Current phase
 
-**Phase 3: scaffold with guardrails. Gate passed on the deployed site on Nov 3, 2026; phase 4 (extraction and DNA reveal) is next.** Phases 1 and 2 passed on Nov 3, 2026 (run 2: four of five posts client-ready, the kit won five of five).
+**Phase 4: extraction and the Brand DNA reveal (in progress).** Phases 1–3 passed on Nov 3, 2026 (phase 3 on the deployed site).
 
-Build the Next.js (App Router) app on Netlify, the server code that owns every prompt, and every guard in the spec's guard table. No product screens yet: a plain test page is enough to exercise the endpoints. Do not add CopilotKit, extraction or the DNA reveal until the phase 3 gate passes.
+Uploads become kit chunks with sources, shown on screen as they're drafted (`/build`). Extraction is two steps that each fit the deployed function's ~26 s Claude timeout: `read` (one call per upload → evidence notes) and `assemble` (one call per chunk, plus a conflict check, from the cached evidence). The browser shrinks photos and samples their colors before upload. Do not add CopilotKit or the A2UI intake until the phase 4 gate passes. The reveal stays plain: the app's look arrives with the component catalog in phase 5.
 
-- Phase 3 gate: the deployed endpoint refuses raw prompts, over-cap uploads, and calls after the daily tripwire.
+- Phase 4 gate: extraction from Half Acre Club's messy uploads gets close to the hand-built kit. Check with `npm run spike -- spike/extract.ts half-acre-club` (checklist in `brands/half-acre-club/extraction-check.yaml`, side-by-side page in `output/extract-<run-id>/`), then try `/build` on the deployed site.
 - Reuse `prompts/`, `templates/` and `brands/` as they are. Shared logic lives in `core/` (no file access), used by both `spike/` and `server/`.
 - Account steps (Claude Console workspace and key, Turnstile, Netlify, environment variables) are Scott's; the click-by-click guide is `docs/setup-netlify.md`.
 
@@ -23,7 +23,7 @@ docs/journal.md            build journal: decisions, dead ends, before/after
 brands/<brand>/uploads/    deliberately messy inputs (rough PDF, phone photos, wordy About text)
 brands/<brand>/kit/        hand-built brand kit chunks + _retrieval-rules.yaml
 templates/                 six HTML/CSS post layouts with named slots
-prompts/                   plan.md, write.md, critique.md
+prompts/                   plan.md, write.md, critique.md, read.md and assemble.md (extraction)
 core/                      pure shared code: model config, kit chunk selection, prompt filling, schemas
 spike/                     TypeScript scripts for the pipeline (phase 2)
 app/                       Next.js App Router pages and API routes
@@ -65,7 +65,7 @@ Rules inside chunks state the reason, not just the rule. Prefer concrete example
 5. **Baseline**: run the same brief with no kit for the with/without comparison
 6. **Review page**: write `output/<run-id>/index.html` showing with-kit and no-kit posts side by side, rationale under each
 
-Models: Sonnet 5.5 for plan and write; Haiku 5.5 for critique (upgrade if it misses issues). Keep the model per step in one config file (`core/config.ts`), shared by the spike and the app.
+Models: Sonnet 5.5 for extraction (read, assemble), plan and write; Haiku 5.5 for critique (upgrade if it misses issues). Keep the model per step in one config file (`core/config.ts`), shared by the spike and the app.
 
 ## Rules
 

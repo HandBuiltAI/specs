@@ -1,0 +1,108 @@
+# Phase 4 gate checklist for Half Acre Club: what extraction from the messy uploads should find,
+# and what it must not invent. Each check passes when the named chunks (rendered as text) match
+# every `find` pattern (use | inside one for alternatives) and no `never` pattern. Patterns are case-insensitive regular expressions.
+# Only facts the uploads actually contain are listed: the price, founder and city came from an
+# interview with Scott, so the kit has them and extraction must not.
+brand: half-acre-club
+
+# Uploads the gate feeds in, and how each is read. The triptych is the original of the three
+# photos, so it's left out.
+uploads:
+  - file: uploads/rough-notes.pdf
+    kind: pdf
+  - file: uploads/about-us.md
+    kind: pasted
+  - file: uploads/photo-01-box-opened.jpg
+    kind: photo
+  - file: uploads/photo-02-day-six-sill.jpg
+    kind: photo
+  - file: uploads/photo-03-first-cut.jpg
+    kind: photo
+
+checks:
+  # What it is
+  - id: monthly-one-project
+    what: A monthly box with one edible project at a time
+    chunks: [positioning-core, brand-about]
+    find: ["one (edible |small )?(thing|project)"]
+  - id: first-box-pea-shoots
+    what: The first box is pea shoots (Box 01)
+    chunks: [positioning-core, brand-about]
+    find: ["pea shoots"]
+  - id: containers-from-home
+    what: Containers come from home (a takeout tub), not the box
+    chunks: [positioning-core, brand-about]
+    find: ["takeout tub|tub from home|from home"]
+  - id: upfront-room-light
+    what: Says up front how much room and light a project takes
+    chunks: [positioning-core, brand-about, audience]
+    find: ["(up ?front|before they order)", "room and light|light and room"]
+  - id: name-meaning
+    what: Why it's called Half Acre (it sounded enormous next to a strip of windowsill)
+    chunks: [brand-about, positioning-core]
+    find: ["enormous"]
+  # Audience
+  - id: audience-small-space
+    what: Audience has very little room (one window, little counter space, may move often)
+    chunks: [audience]
+    find: ["window", "counter|room|space"]
+  # Voice and words
+  - id: line-turn-the-tub
+    what: Keeps the sourced line "If the shoots start leaning, turn the tub."
+    chunks: [voice-core, voice-examples]
+    find: ["turn the tub"]
+  - id: line-one-small-thing
+    what: Keeps the lid line "One small thing to grow."
+    chunks: [voice-examples, voice-core, positioning-core]
+    find: ["one small thing to grow"]
+  - id: avoid-plant-babies
+    what: Avoids "plant babies"
+    chunks: [terminology, guardrails]
+    find: ["plant bab"]
+  - id: avoid-foolproof
+    what: Avoids "foolproof"
+    chunks: [terminology, guardrails]
+    find: ["foolproof"]
+  - id: one-thing-to-check
+    what: When seeds stall, give one thing to check first
+    chunks: [voice-core, guardrails, social-rules, brand-about, voice-examples]
+    find: ["one thing to check"]
+  # Look
+  - id: color-cream
+    what: Packet cream #F2E8D5 for paper / background
+    chunks: [visual-system]
+    find: ["#f2e8d5"]
+  - id: color-brown
+    what: Soil brown #322B23 for instructions / text
+    chunks: [visual-system]
+    find: ["#322b23"]
+  - id: color-green
+    what: Pea green #687853 for the stamp
+    chunks: [visual-system]
+    find: ["#687853"]
+  - id: color-red
+    what: Tomato red #BD4937 for small marks only
+    chunks: [visual-system]
+    find: ["#bd4937"]
+  - id: stamp-wordmark
+    what: Stamp-style HALF ACRE / CLUB wordmark
+    chunks: [visual-system]
+    find: ["stamp"]
+  - id: photo-real-kitchen
+    what: Photos keep the real kitchen light, leaning stems and dirt on the counter
+    chunks: [art-direction]
+    find: ["kitchen light|actual kitchen|real kitchen", "dirt|leaning"]
+  # The deliberate conflict
+  - id: conflict-box-number
+    what: Catches the photo's "BOX No. 014" against "Box 01" in the notes
+    chunks: [conflicts]
+    find: ["014"]
+  # Things the uploads don't say, so extraction must not invent them
+  - id: no-price
+    what: No invented price
+    chunks: [positioning-core, brand-about, social-rules]
+    never: ["\\$\\s?\\d"]
+  - id: no-founder-or-city
+    what: No invented founder name or city
+    chunks: [positioning-core, brand-about]
+    never: ["dana", "reyes", "philadelphia"]
