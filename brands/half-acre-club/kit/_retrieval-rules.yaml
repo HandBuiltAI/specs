@@ -21,6 +21,8 @@ profiles:
         when: The copy names the product, the members, or a growing step.
       - chunk: positioning-core
         when: The copy states a fact that needs checking against the facts list.
+      - chunk: voice-examples
+        when: The copy gives an instruction or tip; the examples show which how-to wording the brand already uses.
     budget: 2000
   intake_gaps:
     always: [readme]

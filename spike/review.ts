@@ -93,6 +93,7 @@ export function writeReviewPage(runDir: string): string {
             <label><input type="radio" name="pick:${esc(b.id)}" value="kit" data-k="pick:${esc(b.id)}"> <span class="pick-a">With kit</span></label>
             <label><input type="radio" name="pick:${esc(b.id)}" value="nokit" data-k="pick:${esc(b.id)}"> <span class="pick-b">No kit</span></label>
           </span>
+          <input class="note-in" type="text" placeholder="What felt off? (optional)" data-k="note:${esc(b.id)}">
         </div>
       </section>`;
     })
@@ -136,6 +137,8 @@ export function writeReviewPage(runDir: string): string {
   .warn { color: var(--note); font-size: 13px; } .err { color: var(--bad); }
   .score { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
   .score label { cursor: pointer; }
+  .note-in { width: 100%; font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+  #scores { display: block; width: 100%; min-width: 280px; margin-top: 8px; font: 12px/1.4 ui-monospace, monospace; }
   body.blind .label-detail, body.blind .col h3.label { display: none; }
   body.blind .score .label { display: none; }
 </style></head>
@@ -149,7 +152,8 @@ export function writeReviewPage(runDir: string): string {
     <div class="tally">
       <div>Show a client: <b id="t-client">0</b> of ${run.briefs.length}</div>
       <div>Kit picked as better: <b id="t-pick">0</b> of <span id="t-picked">0</span> picked</div>
-      <div style="margin-top:8px"><button id="blind">Blind mode</button></div>
+      <div style="margin-top:8px"><button id="blind">Blind mode</button> <button id="copy">Copy my scores</button></div>
+      <textarea id="scores" readonly rows="7" hidden></textarea>
     </div>
   </div>
   ${rows}
@@ -162,8 +166,10 @@ export function writeReviewPage(runDir: string): string {
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
   document.querySelectorAll("input[data-k]").forEach((el) => {
     const k = el.dataset.k;
-    if (el.type === "checkbox") el.checked = !!state[k]; else el.checked = state[k] === el.value;
-    el.addEventListener("change", () => { state[k] = el.type === "checkbox" ? el.checked : el.value; save(); tally(); });
+    if (el.type === "checkbox") el.checked = !!state[k];
+    else if (el.type === "radio") el.checked = state[k] === el.value;
+    else el.value = state[k] || "";
+    el.addEventListener(el.type === "text" ? "input" : "change", () => { state[k] = el.type === "checkbox" ? el.checked : el.value; save(); tally(); });
   });
   function tally() {
     const v = Object.entries(state);
@@ -173,6 +179,22 @@ export function writeReviewPage(runDir: string): string {
     document.getElementById("t-pick").textContent = picks.filter(([, x]) => x === "kit").length;
   }
   tally();
+  // One block of text to paste back into the project thread.
+  document.getElementById("copy").addEventListener("click", async () => {
+    const lines = ["Scores for run ${esc(run.runId)}"];
+    document.querySelectorAll(".brief").forEach((b) => {
+      const id = b.dataset.brief;
+      const client = state["client:" + id] ? "yes" : "no";
+      const pick = state["pick:" + id] === "kit" ? "with kit" : state["pick:" + id] === "nokit" ? "no kit" : "not picked";
+      const note = state["note:" + id] ? " | " + state["note:" + id] : "";
+      lines.push(id + ": show a client " + client + ", better: " + pick + note);
+    });
+    const text = lines.join("\\n");
+    const box = document.getElementById("scores");
+    box.value = text; box.hidden = false; box.select();
+    try { await navigator.clipboard.writeText(text); document.getElementById("copy").textContent = "Copied"; }
+    catch { document.getElementById("copy").textContent = "Select and copy below"; }
+  });
   // Blind mode hides labels and reasoning and shuffles left and right, for a fair pick by someone else.
   document.getElementById("blind").addEventListener("click", () => {
     const on = document.body.classList.toggle("blind");

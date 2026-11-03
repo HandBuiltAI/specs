@@ -127,6 +127,8 @@ async function makePost(brief: Brief, variant: "kit" | "nokit", renderer: Render
     const stem = `${brief.id}--${variant}${maxDrafts > 1 ? `--draft${n}` : ""}`;
     const htmlFile = join(postsDir, `${stem}.html`);
     const pngFile = join(postsDir, `${stem}.png`);
+    // A quote card draws its own quotation mark, so strip quotes the model wrapped around the words.
+    if (written.data.slots.quote) written.data.slots.quote = written.data.slots.quote.trim().replace(/^["“”]+|["“”]+$/g, "");
     // Drop any slot the chosen template doesn't have, so it can't render or skew the checks.
     for (const [k, v] of Object.entries(written.data.slots)) {
       if (v && k !== "caption" && !(k in template.slots)) {
