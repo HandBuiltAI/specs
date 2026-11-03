@@ -11,6 +11,7 @@
   "scripts": {
     "typecheck": "tsc",
     "spike": "tsx --env-file=.env",
+    "tokens": "tsx spike/build-tokens.ts",
     "postinstall": "playwright install chromium"
   },
   "dependencies": {

@@ -1,0 +1,24 @@
+/* Generated from visual-system.json by spike/build-tokens.ts. Do not edit by hand. */
+:root {
+  --color-cream: #F2E8D5; /* Seed-packet cream */
+  --color-soil: #322B23; /* Potting-soil brown */
+  --color-pea: #687853; /* Faded pea green */
+  --color-tomato: #BD4937; /* Tomato red */
+  --font-wordmark: "Rubik", system-ui, sans-serif;
+  --weight-wordmark: 800;
+  --tracking-wordmark: -0.02em;
+  --font-heading: "Rubik", system-ui, sans-serif;
+  --weight-heading: 700;
+  --min-size-heading: 56px;
+  --font-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --weight-body: 400;
+  --leading-body: 1.35;
+  --min-size-body: 32px;
+  --font-hand: "Caveat", system-ui, sans-serif;
+  --weight-hand: 600;
+  --min-size-hand: 48px;
+  --radius: 6px;
+  --stamp-rotation: -2deg;
+  --safe-margin: 72px;
+  --unit: 8px;
+}
