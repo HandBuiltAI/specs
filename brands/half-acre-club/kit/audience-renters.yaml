@@ -1,12 +1,16 @@
 chunk_id: audience-renters
 domain: audience
 depends_on: [positioning-core]
-token_count: 320
+token_count: 380
 confidence: high
 sources:
   - upload: founder-interview
     location: Specs thread, 2026-11-03 (Scott confirmed the audience)
-version: 1
+  - upload: rough-notes.pdf
+    location: page 1, "who we keep picturing"
+  - upload: about-us.md
+    location: paragraph 3
+version: 2
 fictional: true
 summary: >-
   The core segment: renters in their 20s and 30s in small city apartments
@@ -15,7 +19,9 @@ summary: >-
 segment: Renters in small city apartments
 age: 20s and 30s
 situation:
-  - One or two windows that get decent light; no yard, little or no balcony
+  - One decent window (a sunny sill over the sink, maybe a back step with afternoon light); no yard
+  - Very little counter space, and a takeout tub they've been meaning to reuse
+  - Moves often; won't buy a planter they'll have to move
   - A lease that rules out drilling, mounting, or anything permanent
   - Has bought a plant before and watched it die, usually basil or a succulent
 
@@ -37,6 +43,7 @@ barriers:
 what_wins_them:
   - A real photo of something growing in a space like theirs
   - A specific number (ten days, one windowsill, five steps)
+  - Being told how much room and light a project needs before they order
   - Calm confidence, not hype
 
 where_they_see_us: Instagram feed and stories, usually on their phone, often in the kitchen

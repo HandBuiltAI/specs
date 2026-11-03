@@ -2,29 +2,42 @@
 chunk_id: voice-examples
 domain: voice
 depends_on: [voice-core, terminology]
-token_count: 500
+token_count: 630
 confidence: medium
 sources:
   - upload: founder-interview
     location: Specs thread, 2026-11-03 (reference line picked from three options)
-version: 1
+  - upload: rough-notes.pdf
+    location: page 1, "copy that sounds like us" and "possible line for the lid"
+  - upload: about-us.md
+    location: whole page
+version: 2
 fictional: true
 summary: >-
-  Approved sample lines for each post intent, plus do / don't pairs. Only the
-  reference line came from Scott; the rest were drafted to match it.
+  Lines from the brand's own materials, sample lines per post intent, and
+  do / don't pairs. Sourced lines are marked; the intent samples were drafted
+  to match them.
 ---
 
 # Voice examples
 
 > Fictional brand made for the Specs demo. Square brackets mark details that must come from the brief, never be invented.
 
-**Reference line (approved by Scott):** "Pea shoots. Ten days. One windowsill. You've got this."
+## Lines from the brand's own materials
+
+| Line | Source | Good for |
+| --- | --- | --- |
+| Pea shoots. Ten days. One windowsill. You've got this. | Scott, reference line | Announcement, promo |
+| One small thing to grow. | rough-notes, lid line | Promo headline, tagline |
+| Give it your brightest window. If the shoots start leaning, turn the tub. | rough-notes | Tip |
+| If you end up starting over, write a new date on the tape. | about-us | Tip, reassurance |
+| Something to look in on while the coffee brews. | about-us | Caption close |
 
 ## Sample lines by post intent
 
 | Intent | Headline | Supporting line |
 | --- | --- | --- |
-| Announcement | Box No. 014: pea shoots. | Ten days from soil puck to first cut. Ships the first week of the month. |
+| Announcement | Box 01: pea shoots. | Ten days from soil to first cut. Ships the first week of the month. |
 | Promo | One windowsill. One project a month. | $24, everything in the box, cancel anytime. |
 | Tip | Wet like a wrung-out sponge. | Not dripping, not dry. Press the soil; if water pools, wait a day. |
 | Event | [Event name], [date]. | Bring a jar. Leave with something growing. |
