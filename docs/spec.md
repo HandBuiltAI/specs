@@ -33,7 +33,7 @@ The MVP has five screens, and a visitor can reach finished posts in under five m
 2. **Upload.** Logo, website URL, up to one 10-page PDF and five photos. A short note field covers anything else ("we're a family bakery, 30 years in Calumet").
 3. **Brand DNA reveal.** The kit assembles on screen as extraction streams: colors pulled from photos, fonts identified, voice traits and positioning lines appearing, each tagged with the upload it came from. The user can edit or delete any item.
 4. **Fill the gaps.** A generative conversation where the agent renders A2UI components to resolve what is missing or conflicting: two candidate palettes, an unclear audience, an ambiguous tone. The user can also type freely. The step ends when the kit passes a completeness check.
-5. **Make posts.** Choose a post intent (promo, announcement, event, testimonial, tip), fill a short brief the agent renders for that intent, and get up to four posts. Each post has the "why this works" overlay, a with-kit / without-kit toggle, and PNG download. The brand kit export lives here too.
+5. **Make posts.** Choose a post intent (promo, announcement, event, testimonial, tip), fill a short brief the agent renders for that intent, and get up to four posts. Each post has the "why this works" overlay, a with-kit / without-kit toggle, and PNG download. The brand kit export lives here too. A "Change the look" control lets the user swap the font pairing (from a curated set of free fonts, via `FontPairCard`) or replace the logo at any point; posts re-render from the updated tokens without new API calls or rewritten copy, and the change is written back to `visual-system`.
 
 ## Brand kit format
 
@@ -118,7 +118,7 @@ Posts are rendered from HTML/CSS templates filled by Claude, not generated as im
 5. **Critique.** A second call reviews each post against `voice-core`, `art-direction` and `guardrails`, and returns pass or a specific revision. One revision round at most.
 6. **Render.** The browser fills the HTML template with brand tokens and exports PNG with html-to-image. The rationale becomes the "why this works" overlay.
 
-**Templates:** start with six layouts (photo-led, type-led, quote card, split, offer badge, event card), each with named slots and character limits.
+**Templates:** start with six layouts (photo-led, type-led, quote card, split, offer badge, event card), each with named slots and character limits. Templates use only color and type roles, never brand values, so one set serves every brand. The logo renders in a logo slot that takes an uploaded SVG or PNG, falling back to a text wordmark set in the brand's wordmark font when no logo is uploaded.
 
 **Model choices**
 
