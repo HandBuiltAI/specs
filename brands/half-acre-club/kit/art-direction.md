@@ -7,6 +7,8 @@ confidence: high
 sources:
   - upload: founder-interview
     location: Specs thread, 2026-11-03 (photography, the three starting shots)
+  - upload: photo-01-box-opened.jpg, photo-02-day-six-sill.jpg, photo-03-first-cut.jpg
+    location: generated reference set, split from pea-shoots-triptych.png
 version: 1
 summary: >-
   Phone photos at texting height, window or kitchen light, real mess left in.
@@ -41,6 +43,8 @@ Any handwriting (a date, a circled step) is the post's one red element. See `vis
 | 1 | **The box just opened** | From above at a slight angle. The flap cuts into the frame; the instruction card is half tucked under a soil puck. |
 | 2 | **Day six on the sill** | Pea shoots in a reused takeout tub, leaning toward the glass. A handwritten date on masking tape is visible. |
 | 3 | **The first cut** | One hand with kitchen scissors, a small handful of shoots on a plate, the overhead light turning the counter a little yellow. |
+
+Reference photos for all three are in `uploads/` (`photo-01-box-opened.jpg`, `photo-02-day-six-sill.jpg`, `photo-03-first-cut.jpg`).
 
 **Shot 2 is the test of the direction.** You should be able to tell what's growing, how little room it takes, and what it looks like before there's anything worth putting on a plate. If a new photo can't pass that kind of read for its own moment, it's the wrong photo.
 

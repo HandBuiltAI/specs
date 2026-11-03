@@ -7,7 +7,7 @@ confidence: high
 sources:
   - upload: founder-interview
     location: Specs thread, 2026-11-03 (business, audience)
-version: 1
+version: 2
 summary: >-
   Half Acre Club is a fictional monthly growing kit for renters and first-time
   gardeners. Each box is one small, finishable project, so a person with a
@@ -44,7 +44,7 @@ Renters in their 20s and 30s living in small city apartments. No yard, no balcon
 | --- | --- |
 | Price | $24 a month, cancel anytime |
 | Ships | Contiguous US, first week of each month |
-| Founded | 2023, Philadelphia, by Dana Reyes, a former apartment-dweller with a very crowded windowsill |
+| Founded | Early 2025, Philadelphia, by Dana Reyes, a former apartment-dweller with a very crowded windowsill |
 | Name | "Half acre" is the joke: every member's whole garden is far smaller than that |
 
 Posts may use only these facts. Do not add discounts, shipping dates, awards, partner names, or member counts that are not listed here.
