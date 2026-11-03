@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "chunk_id": "visual-system",
+    "domain": "visual",
+    "depends_on": [
+      "positioning-core"
+    ],
+    "token_count": 820,
+    "confidence": "high",
+    "sources": [
+      {
+        "upload": "founder-interview",
+        "location": "Specs thread, 2026-11-03 (look: color, type, photography)"
+      }
+    ],
+    "version": 1,
+    "fictional": true,
+    "summary": "A seed packet that's spent a week on the kitchen counter: warm cream paper, soil-brown text, faded green ink for the stamp and headings, and tomato red only where something needs noticing. Fonts (Rubik, Atkinson Hyperlegible, Caveat) approved by Scott 2026-11-03."
+  },
+  "concept": "A seed packet that's spent a week on the kitchen counter. Warm paper, faded green ink, and a little red where you need to notice something.",
+  "color": {
+    "cream": {
+      "hex": "#F2E8D5",
+      "name": "Seed-packet cream",
+      "role": "Main background for posts, labels, inserts and the site.",
+      "rule": "Cream does most of the work. Aim for cream on roughly two thirds of every post, because the brand reads as paper first."
+    },
+    "soil": {
+      "hex": "#322B23",
+      "name": "Potting-soil brown",
+      "role": "Body copy, planting instructions, small type.",
+      "rule": "All body copy and instructions are soil brown. It is the only palette color that passes small-text contrast on cream (11.5:1)."
+    },
+    "pea": {
+      "hex": "#687853",
+      "name": "Faded pea green",
+      "role": "The stamp, larger headings, simple plant drawings.",
+      "rule": "Headings, the stamp and drawings only, at 56px or larger on a 1080px canvas (3.9:1 on cream passes for large text, not body). It's faded ink, so never pair it with a brighter green."
+    },
+    "tomato": {
+      "hex": "#BD4937",
+      "name": "Tomato red",
+      "role": "A box number, a sow-by date, a handwritten circle around one instruction.",
+      "rule": "One red thing per post. Red means 'look here', and two of them cancel each other out. Large type (48px or more) or marks only (4.1:1 on cream)."
+    }
+  },
+  "pairings": {
+    "allowed": [
+      [
+        "soil",
+        "cream"
+      ],
+      [
+        "pea",
+        "cream"
+      ],
+      [
+        "tomato",
+        "cream"
+      ],
+      [
+        "cream",
+        "soil"
+      ]
+    ],
+    "avoid": [
+      {
+        "pair": [
+          "pea",
+          "tomato"
+        ],
+        "reason": "Green next to red reads as Christmas, not garden."
+      },
+      {
+        "pair": [
+          "cream",
+          "pea"
+        ],
+        "reason": "Cream text on a green fill turns the stamp into a button. Keep green as ink, not a fill."
+      }
+    ]
+  },
+  "material_notes": [
+    "Kraft cardboard brings its own color. Don't recolor it to match the palette.",
+    "The green stamp prints a little darker on the box than on the insert. Keep that difference in photos; the hex above is the intended ink, not a correction to apply to photos."
+  ],
+  "type": {
+    "wordmark": {
+      "description": "Chunky, closely spaced letters with slightly softened corners, like a rubber stamp used a few dozen times. Stacked HALF ACRE / CLUB so it fits a small seed envelope.",
+      "stand_in_font": "Rubik",
+      "weight": 800,
+      "letter_spacing": "-0.02em",
+      "case": "upper",
+      "lockup": [
+        "HALF ACRE",
+        "CLUB"
+      ],
+      "rule": "A little uneven ink at the edges, never distressing on every letter. One worn edge reads as real; a texture on everything reads as a filter.",
+      "confidence": "high"
+    },
+    "heading": {
+      "stand_in_font": "Rubik",
+      "weight": 700,
+      "color": "pea",
+      "min_px_at_1080": 56,
+      "confidence": "high"
+    },
+    "body": {
+      "description": "A plain sans serif with open shapes for everything people need to read.",
+      "stand_in_font": "Atkinson Hyperlegible",
+      "weight": 400,
+      "color": "soil",
+      "min_px_at_1080": 32,
+      "line_height": 1.35,
+      "rule": "Instructions are the one place legibility beats charm. They should read like someone wrote them standing at the counter: 'Add water until the soil feels like a wrung-out sponge.'",
+      "confidence": "high"
+    },
+    "hand": {
+      "description": "Handwriting for a date label or a correction on an early proof.",
+      "stand_in_font": "Caveat",
+      "weight": 600,
+      "color": "tomato",
+      "rule": "At most one handwritten element per post, a few words long. Occasional handwriting feels like somebody picked up a pen; constant handwriting feels like a font.",
+      "confidence": "high",
+      "min_px_at_1080": 48
+    }
+  },
+  "shape": {
+    "radius_px": 6,
+    "stamp_rotation_deg": -2,
+    "rule": "Slightly soft corners, slightly off-square stamps. Nothing perfectly round, nothing perfectly straight."
+  },
+  "spacing": {
+    "safe_margin_px_at_1080": 72,
+    "unit_px": 8
+  }
+}
