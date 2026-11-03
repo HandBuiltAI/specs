@@ -13,6 +13,7 @@
     "spike": "tsx --env-file=.env",
     "tokens": "tsx spike/build-tokens.ts",
     "samples": "tsx spike/render-samples.ts",
+    "review": "tsx spike/review.ts",
     "postinstall": "playwright install chromium"
   },
   "dependencies": {
