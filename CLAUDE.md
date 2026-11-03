@@ -6,11 +6,11 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 ## Current phase
 
-**Phase 4: extraction and the Brand DNA reveal (in progress).** Phases 1–3 passed on Nov 3, 2026 (phase 3 on the deployed site).
+**Phase 4: extraction and the Brand DNA reveal. Gate passed on Nov 3, 2026 (checklist 20 of 20, no timeouts on the deployed `/build`); phase 5 (A2UI intake) is next.** Phases 1–3 passed on Nov 3, 2026.
 
-Uploads become kit chunks with sources, shown on screen as they're drafted (`/build`). Extraction is two steps that each fit the deployed function's ~26 s Claude timeout: `read` (one call per upload → evidence notes) and `assemble` (one call per chunk, plus a conflict check, from the cached evidence). The browser shrinks photos and samples their colors before upload. Do not add CopilotKit or the A2UI intake until the phase 4 gate passes. The reveal stays plain: the app's look arrives with the component catalog in phase 5.
+Uploads become kit chunks with sources, shown on screen as they're drafted (`/build`). Extraction is two steps that each fit the deployed function's ~26 s Claude timeout: `read` (one call per upload → evidence notes) and `assemble` (one call per chunk, plus a conflict check, from the cached evidence). The browser shrinks photos and samples their colors before upload. The reveal is plain on purpose: the app's look arrives with the component catalog in phase 5, so decide it with Scott before building the catalog.
 
-- Phase 4 gate: extraction from Half Acre Club's messy uploads gets close to the hand-built kit. Check with `npm run spike -- spike/extract.ts half-acre-club` (checklist in `brands/half-acre-club/extraction-check.yaml`, side-by-side page in `output/extract-<run-id>/`), then try `/build` on the deployed site.
+- Phase 4 gate check: `npm run spike -- spike/extract.ts half-acre-club` (checklist in `brands/half-acre-club/extraction-check.yaml`, side-by-side page in `output/extract-<run-id>/`).
 - Reuse `prompts/`, `templates/` and `brands/` as they are. Shared logic lives in `core/` (no file access), used by both `spike/` and `server/`.
 - Account steps (Claude Console workspace and key, Turnstile, Netlify, environment variables) are Scott's; the click-by-click guide is `docs/setup-netlify.md`.
 
