@@ -3,6 +3,7 @@
 // blob's ETag so two requests can't both take the last slot.
 import "server-only";
 import { getStore } from "@netlify/blobs";
+import { Refusal } from "./http.ts";
 
 export type Versioned<T> = { value: T; etag: string };
 
@@ -15,10 +16,46 @@ export interface KV {
 
 const STORE_NAME = "specs";
 
+// Next.js wraps the global fetch to add its own caching. Blobs requests go through the
+// original fetch instead, each attempt capped at a few seconds, and any failure is logged
+// with its status (never the token) so it shows up in Netlify's function logs.
+const ATTEMPT_MS = 4000;
+function blobsFetch(): typeof fetch {
+  const base = ((globalThis.fetch as typeof fetch & { _nextOriginalFetch?: typeof fetch })._nextOriginalFetch ?? globalThis.fetch).bind(globalThis);
+  return async (input, init) => {
+    const where = (() => {
+      try {
+        const u = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
+        return `${init?.method ?? "GET"} ${u.host}`;
+      } catch {
+        return "request";
+      }
+    })();
+    try {
+      const res = await base(input, { ...init, signal: AbortSignal.timeout(ATTEMPT_MS) });
+      if (!res.ok && res.status !== 404 && res.status !== 412) console.error(`Blobs ${where} answered ${res.status}`);
+      return res;
+    } catch (err) {
+      console.error(`Blobs ${where} failed: ${err instanceof Error ? `${err.name}: ${err.message}` : String(err)}`);
+      throw err;
+    }
+  };
+}
+
+/** Fails a whole storage operation (including the Blobs client's own retries) well inside Netlify's time limit. */
+const OP_MS = 12_000;
+function inTime<T>(op: Promise<T>): Promise<T> {
+  let timer: ReturnType<typeof setTimeout>;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Refusal(503, "storage_unavailable", "Storage isn't answering right now. Try again in a minute.")), OP_MS);
+  });
+  return Promise.race([op, timeout]).finally(() => clearTimeout(timer));
+}
+
 function blobsKV(): KV {
   // Strong consistency: a counter read just after a write must see it.
-  const store = getStore({ name: STORE_NAME, consistency: "strong" });
-  return {
+  const store = getStore({ name: STORE_NAME, consistency: "strong", fetch: blobsFetch() });
+  const kv: KV = {
     async get<T>(key: string) {
       const entry = await store.getWithMetadata(key, { type: "json" });
       if (entry === null) return null;
@@ -31,6 +68,11 @@ function blobsKV(): KV {
     async putBytes(key, bytes, metadata) {
       await store.set(key, bytes, { metadata });
     },
+  };
+  return {
+    get: (key) => inTime(kv.get(key)),
+    put: (key, value, cond) => inTime(kv.put(key, value, cond)),
+    putBytes: (key, bytes, metadata) => inTime(kv.putBytes(key, bytes, metadata)),
   };
 }
 

@@ -28,7 +28,14 @@ declare global {
 
 async function call<T>(path: string, body: unknown): Promise<T> {
   const res = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
-  const data = await res.json();
+  const text = await res.text();
+  let data: { error?: { message?: string; code?: string } } & Record<string, unknown>;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    // Netlify's own error pages are HTML, e.g. a 504 when a function runs out of time.
+    throw Object.assign(new Error(`The server didn't answer properly (HTTP ${res.status}).`), { code: `http_${res.status}` });
+  }
   if (!res.ok) throw Object.assign(new Error(data.error?.message ?? `HTTP ${res.status}`), { code: data.error?.code });
   return data as T;
 }
@@ -38,6 +45,7 @@ const STATE_TEXT: Record<string, string> = {
   off: "Switched off (kill switch)",
   closed_for_today: "Closed for today (spending cap reached)",
   not_configured: "Not set up yet (missing environment variables)",
+  unreachable: "Couldn't check: the server didn't answer",
 };
 
 export default function LiveTest({ siteKey }: { siteKey: string }) {
@@ -54,7 +62,10 @@ export default function LiveTest({ siteKey }: { siteKey: string }) {
   const widget = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("/api/status").then((r) => r.json()).then((d) => setGeneration(d.generation)).catch(() => setGeneration("unreachable"));
+    fetch("/api/status")
+      .then((r) => r.json())
+      .then((d) => setGeneration(d.generation ?? "unreachable"))
+      .catch(() => setGeneration("unreachable"));
   }, []);
 
   useEffect(() => {

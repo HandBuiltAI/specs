@@ -15,7 +15,8 @@ let client: Anthropic | undefined;
 export const liveCallStep: CallStep = (opts) => {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
   if (!apiKey) throw new Refusal(503, "not_configured", "Live generation isn't set up on this server yet.");
-  // Netlify ends a function at 60 seconds; give up on Claude before that so the spend is settled.
-  client ??= new Anthropic({ apiKey, timeout: 50_000, maxRetries: 0 });
+  // The deployed function is cut off at about 30 seconds (seen in Netlify's logs, Nov 3), so
+  // give up on Claude a few seconds before that and settle the spend cleanly.
+  client ??= new Anthropic({ apiKey, timeout: 26_000, maxRetries: 0 });
   return callStructured(client, opts);
 };
