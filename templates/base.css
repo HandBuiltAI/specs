@@ -19,6 +19,7 @@ html, body { background: #888; }
 .headline {
   font-family: var(--font-heading);
   font-weight: var(--weight-heading);
+  font-variation-settings: var(--variation-heading, normal);
   color: var(--role-heading);
   line-height: 1.02;
   letter-spacing: -0.015em;
@@ -74,11 +75,18 @@ html, body { background: #888; }
   font-family: var(--font-wordmark);
   font-weight: var(--weight-wordmark);
   letter-spacing: var(--tracking-wordmark, 0);
+  font-variation-settings: var(--variation-wordmark, normal);
   color: var(--role-wordmark);
-  text-transform: uppercase;
-  font-size: 34px;
+  font-size: 38px;
   line-height: 0.92;
   text-align: right;
   transform: rotate(var(--stamp-rotation));
 }
 .wordmark span { display: block; }
+.wordmark span:first-child { font-style: var(--wordmark-line1-style, normal); }
+.wordmark span + span {
+  letter-spacing: var(--wordmark-line2-tracking, inherit);
+  margin-right: calc(-1 * var(--wordmark-line2-tracking, 0em));
+  font-size: calc(1em * var(--wordmark-line2-scale, 1));
+  margin-top: 4px;
+}

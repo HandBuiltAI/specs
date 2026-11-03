@@ -1,6 +1,6 @@
 /* Local copies of the brand stand-in fonts, so renders don't depend on a network font service.
    All three are SIL Open Font License 1.1; see the OFL-*.txt files beside them. */
-@font-face { font-family: "Rubik"; src: url("rubik-variable.ttf") format("truetype"); font-weight: 300 900; }
 @font-face { font-family: "Caveat"; src: url("caveat-variable.ttf") format("truetype"); font-weight: 400 700; }
 @font-face { font-family: "Atkinson Hyperlegible"; src: url("atkinson-hyperlegible-regular.ttf") format("truetype"); font-weight: 400; }
 @font-face { font-family: "Atkinson Hyperlegible"; src: url("atkinson-hyperlegible-bold.ttf") format("truetype"); font-weight: 700; }
+@font-face { font-family: "Fraunces"; src: url("fraunces-variable.ttf") format("truetype"); font-weight: 100 900; }

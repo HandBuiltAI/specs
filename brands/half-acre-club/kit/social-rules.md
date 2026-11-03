@@ -46,7 +46,7 @@ Zero to three, at the end of the caption, specific to the project (`#peashoots`,
 
 ## Logo on posts
 
-The stacked HALF ACRE / CLUB wordmark, small, in a corner, in pea green on cream. It signs the post; the photo or headline carries it. Leave it off quote cards where the wordmark would compete with the quote.
+The stacked wordmark ("Half Acre" in italic over a small, spaced CLUB), small, in a corner, in pea green on cream. It signs the post; the photo or headline carries it. Leave it off quote cards where the wordmark would compete with the quote.
 
 ## Template by intent
 

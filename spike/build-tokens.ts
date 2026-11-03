@@ -4,7 +4,15 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 type Color = { hex: string; name: string };
-type TypeRole = { stand_in_font: string; weight: number; letter_spacing?: string; line_height?: number; min_px_at_1080?: number };
+type TypeRole = {
+  stand_in_font: string;
+  weight: number;
+  letter_spacing?: string;
+  line_height?: number;
+  min_px_at_1080?: number;
+  variation?: string;
+  lockup_style?: { line1_style?: string; line2_tracking?: string; line2_scale?: number };
+};
 type VisualSystem = {
   color: Record<string, Color>;
   type: Record<string, TypeRole>;
@@ -27,6 +35,11 @@ for (const [role, t] of Object.entries(vs.type)) {
   if (t.letter_spacing) lines.push(`  --tracking-${role}: ${t.letter_spacing};`);
   if (t.line_height) lines.push(`  --leading-${role}: ${t.line_height};`);
   if (t.min_px_at_1080) lines.push(`  --min-size-${role}: ${t.min_px_at_1080}px;`);
+  if (t.variation) lines.push(`  --variation-${role}: ${t.variation};`);
+  const ls = t.lockup_style;
+  if (ls?.line1_style) lines.push(`  --${role}-line1-style: ${ls.line1_style};`);
+  if (ls?.line2_tracking) lines.push(`  --${role}-line2-tracking: ${ls.line2_tracking};`);
+  if (ls?.line2_scale) lines.push(`  --${role}-line2-scale: ${ls.line2_scale};`);
 }
 lines.push(`  --radius: ${vs.shape.radius_px}px;`);
 lines.push(`  --stamp-rotation: ${vs.shape.stamp_rotation_deg}deg;`);

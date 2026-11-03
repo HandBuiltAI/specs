@@ -17,9 +17,9 @@
         "location": "page 2 (swatches, printer note, stamp sketch)"
       }
     ],
-    "version": 3,
+    "version": 4,
     "fictional": true,
-    "summary": "A seed packet that's spent a week on the kitchen counter: warm cream paper, soil-brown text, faded green ink for the stamp and headings, and tomato red only where something needs noticing. Fonts (Rubik, Atkinson Hyperlegible, Caveat) approved by Scott 2026-11-03."
+    "summary": "A seed packet that's spent a week on the kitchen counter: warm cream paper, soil-brown text, faded green ink for the stamp and headings, and tomato red only where something needs noticing. Fonts: Fraunces (wordmark, headings), Atkinson Hyperlegible (body), Caveat (handwriting); Scott picked the Fraunces direction 2026-11-03."
   },
   "concept": "A seed packet that's spent a week on the kitchen counter. Warm paper, faded green ink, and a little red where you need to notice something.",
   "color": {
@@ -99,24 +99,32 @@
   ],
   "type": {
     "wordmark": {
-      "description": "Chunky, closely spaced letters with slightly softened corners, like a rubber stamp used a few dozen times. Stacked HALF ACRE / CLUB so it fits a small seed envelope.",
-      "stand_in_font": "Rubik",
-      "weight": 800,
-      "letter_spacing": "-0.02em",
-      "case": "upper",
+      "description": "A soft, slightly wonky serif, like the name printed on a seed packet: 'Half Acre' in italic over a small, widely spaced CLUB.",
+      "stand_in_font": "Fraunces",
+      "weight": 900,
+      "letter_spacing": "-0.01em",
+      "case": "as written",
       "lockup": [
-        "HALF ACRE",
+        "Half Acre",
         "CLUB"
       ],
-      "rule": "A little uneven ink at the edges, never distressing on every letter. One worn edge reads as real; a texture on everything reads as a filter. The stamp sketch says to try it without a border.",
-      "confidence": "high"
+      "rule": "Set in Fraunces with the soft and wonky axes on, so it feels printed rather than typeset. The small spaced CLUB keeps it a lockup, not just a name. No border.",
+      "confidence": "high",
+      "variation": "\"SOFT\" 100, \"WONK\" 1, \"opsz\" 48",
+      "lockup_style": {
+        "line1_style": "italic",
+        "line2_tracking": "0.32em",
+        "line2_scale": 0.65
+      }
     },
     "heading": {
-      "stand_in_font": "Rubik",
+      "stand_in_font": "Fraunces",
       "weight": 700,
       "color": "pea",
       "min_px_at_1080": 56,
-      "confidence": "high"
+      "confidence": "high",
+      "variation": "\"SOFT\" 100, \"WONK\" 1, \"opsz\" 96",
+      "description": "Fraunces with the soft and wonky axes on: a seed-packet serif with some warmth in the curves."
     },
     "body": {
       "description": "A plain sans serif with open shapes for everything people need to read.",
