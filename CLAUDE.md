@@ -6,12 +6,13 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 ## Current phase
 
-**Phase 1–2: demo brand and quality spike. No app yet.**
+**Phase 3: scaffold with guardrails.** Phases 1 and 2 passed on Nov 3, 2026 (run 2: four of five posts client-ready, the kit won five of five).
 
-The goal is to prove post quality with plain scripts before any UI exists. Do not scaffold Next.js, CopilotKit, or Netlify until the phase 2 gate passes.
+Build the Next.js (App Router) app on Netlify, the server code that owns every prompt, and every guard in the spec's guard table. No product screens yet: a plain test page is enough to exercise the endpoints. Do not add CopilotKit, extraction or the DNA reveal until the phase 3 gate passes.
 
-- Phase 1 gate: demo brand one has a complete hand-built kit that reads as true to the brand.
-- Phase 2 gate: four of five generated posts are ones a designer would show a client, and with-kit posts clearly beat the no-kit baseline.
+- Phase 3 gate: the deployed endpoint refuses raw prompts, over-cap uploads, and calls after the daily tripwire.
+- Reuse `prompts/`, `templates/` and `brands/` as they are. Shared logic lives in `core/` (no file access), used by both `spike/` and `server/`.
+- Account steps (Claude Console workspace and key, Turnstile, Netlify, environment variables) are Scott's; the click-by-click guide is `docs/setup-netlify.md`.
 
 ## Repo structure
 
@@ -23,7 +24,12 @@ brands/<brand>/uploads/    deliberately messy inputs (rough PDF, phone photos, w
 brands/<brand>/kit/        hand-built brand kit chunks + _retrieval-rules.yaml
 templates/                 six HTML/CSS post layouts with named slots
 prompts/                   plan.md, write.md, critique.md
-spike/                     TypeScript scripts for the pipeline
+core/                      pure shared code: model config, kit chunk selection, prompt filling, schemas
+spike/                     TypeScript scripts for the pipeline (phase 2)
+app/                       Next.js App Router pages and API routes
+server/                    server-only code: guards, Claude client, session and spend storage
+server/generated/          prompts, templates and demo kits bundled for the server (npm run content; not committed)
+scripts/                   build helpers and the deployed gate check
 output/<run-id>/           generated posts, PNGs, and a review index.html per run
 ```
 
@@ -59,12 +65,12 @@ Rules inside chunks state the reason, not just the rule. Prefer concrete example
 5. **Baseline**: run the same brief with no kit for the with/without comparison
 6. **Review page**: write `output/<run-id>/index.html` showing with-kit and no-kit posts side by side, rationale under each
 
-Models: Sonnet 5.5 for plan and write; Haiku 5.5 for critique (upgrade if it misses issues). Keep the model per step in one config file.
+Models: Sonnet 5.5 for plan and write; Haiku 5.5 for critique (upgrade if it misses issues). Keep the model per step in one config file (`core/config.ts`), shared by the spike and the app.
 
 ## Rules
 
 - TypeScript throughout. Node scripts for the spike.
-- The API key is read only from `.env` (`ANTHROPIC_API_KEY`). Never hard-code it, log it, or commit it. `.env` stays in `.gitignore`.
+- The API key is read only from `.env` locally (`ANTHROPIC_API_KEY`) and from Netlify environment variables in production. Never hard-code it, log it, commit it, or let it reach the browser: only `server/` code (which imports `server-only`) creates the Claude client.
 - Prompts live in `prompts/` as Markdown files, never inline in code.
 - Set `max_tokens` on every API call.
 - Post copy and layout must come from the kit and brief. Never invent facts about a brand (prices, dates, awards, locations).
