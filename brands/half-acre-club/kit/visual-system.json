@@ -15,7 +15,7 @@
     ],
     "version": 1,
     "fictional": true,
-    "summary": "A seed packet that's spent a week on the kitchen counter: warm cream paper, soil-brown text, faded green ink for the stamp and headings, and tomato red only where something needs noticing. Font picks are stand-ins and need review."
+    "summary": "A seed packet that's spent a week on the kitchen counter: warm cream paper, soil-brown text, faded green ink for the stamp and headings, and tomato red only where something needs noticing. Fonts (Rubik, Atkinson Hyperlegible, Caveat) approved by Scott 2026-11-03."
   },
   "concept": "A seed packet that's spent a week on the kitchen counter. Warm paper, faded green ink, and a little red where you need to notice something.",
   "color": {
@@ -96,14 +96,14 @@
         "CLUB"
       ],
       "rule": "A little uneven ink at the edges, never distressing on every letter. One worn edge reads as real; a texture on everything reads as a filter.",
-      "confidence": "needs-review"
+      "confidence": "high"
     },
     "heading": {
       "stand_in_font": "Rubik",
       "weight": 700,
       "color": "pea",
       "min_px_at_1080": 56,
-      "confidence": "needs-review"
+      "confidence": "high"
     },
     "body": {
       "description": "A plain sans serif with open shapes for everything people need to read.",
@@ -113,7 +113,7 @@
       "min_px_at_1080": 32,
       "line_height": 1.35,
       "rule": "Instructions are the one place legibility beats charm. They should read like someone wrote them standing at the counter: 'Add water until the soil feels like a wrung-out sponge.'",
-      "confidence": "needs-review"
+      "confidence": "high"
     },
     "hand": {
       "description": "Handwriting for a date label or a correction on an early proof.",
@@ -121,7 +121,7 @@
       "weight": 600,
       "color": "tomato",
       "rule": "At most one handwritten element per post, a few words long. Occasional handwriting feels like somebody picked up a pen; constant handwriting feels like a font.",
-      "confidence": "needs-review",
+      "confidence": "high",
       "min_px_at_1080": 48
     }
   },
