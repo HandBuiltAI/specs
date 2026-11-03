@@ -63,7 +63,21 @@ await check("refuses a file that isn't an image", () => postForm({ sessionId: si
 await check("refuses an upload without a session", () => postForm({ sessionId: sid, kind: "url", url: "https://example.com" }), { status: 401, code: "no_session" });
 
 // 3. Tripwire
-const status = (await (await fetch(base + "/api/status")).json()) as { generation: string };
+// The status check reads storage, so it also shows whether the site can reach Netlify Blobs.
+const status = await (async (): Promise<{ generation: string }> => {
+  try {
+    const res = await fetch(base + "/api/status");
+    const text = await res.text();
+    try {
+      return JSON.parse(text) as { generation: string };
+    } catch {
+      return { generation: `unknown: /api/status answered HTTP ${res.status} with a page, not data` };
+    }
+  } catch (err) {
+    return { generation: `unknown: ${(err as Error).message}` };
+  }
+})();
+results.push({ name: "status check answers with data", ok: !status.generation.startsWith("unknown"), detail: status.generation });
 let tripwire = "skipped";
 if (status.generation === "closed_for_today") {
   await check("tripwire: refuses a new session", () => postJson("/api/session", { turnstileToken: "x" }), { status: 503, code: "daily_cap_reached" });
