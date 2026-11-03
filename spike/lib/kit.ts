@@ -61,11 +61,24 @@ export function selectChunks(brand: string, task: "post_generate" | "post_critiq
     if (!c) throw new Error(`Profile ${task} names chunk "${id}" but ${brand} has no such chunk`);
     picked.push(c);
   }
-  return { chunks: picked, budget: profile.budget, tokens: picked.reduce((n, c) => n + approxTokens(c.text), 0) };
+  return { chunks: picked, budget: profile.budget, tokens: picked.reduce((n, c) => n + approxTokens(chunkForModel(c)), 0) };
+}
+
+// Bookkeeping fields the models don't need; dropping them keeps each call inside its budget.
+const BOOKKEEPING = /^(token_count|sources|version|depends_on|domain|chunk_id):.*(\n[ \t]+.*)*\n?/gm;
+
+/** A chunk as the model sees it: its rules and summary, without source and version bookkeeping. */
+export function chunkForModel(c: Chunk): string {
+  if (c.file.endsWith(".json")) {
+    const data = JSON.parse(c.text) as { meta?: Record<string, unknown> };
+    if (data.meta) data.meta = { summary: data.meta.summary, confidence: data.meta.confidence };
+    return JSON.stringify(data, null, 1);
+  }
+  return c.text.replace(BOOKKEEPING, "").trim();
 }
 
 export function formatChunks(chunks: Chunk[]): string {
-  return chunks.map((c) => `<chunk id="${c.id}" file="${c.file}">\n${c.text.trim()}\n</chunk>`).join("\n\n");
+  return chunks.map((c) => `<chunk id="${c.id}" file="${c.file}">\n${chunkForModel(c)}\n</chunk>`).join("\n\n");
 }
 
 export function wordmarkLines(brand: string): string[] {
