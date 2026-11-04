@@ -6,9 +6,13 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 ## Current phase
 
-**Phase 4: extraction and the Brand DNA reveal. Gate passed on Nov 3, 2026 (checklist 20 of 20, no timeouts on the deployed `/build`); phase 5 (A2UI intake) is next.** Phases 1–3 passed on Nov 3, 2026.
+**Phase 5: A2UI intake (in progress, started Nov 4, 2026).** Phases 1–4 passed on Nov 3, 2026.
 
-Uploads become kit chunks with sources, shown on screen as they're drafted (`/build`). Extraction is two steps that each fit the deployed function's ~26 s Claude timeout: `read` (one call per upload → evidence notes) and `assemble` (one call per chunk, plus a conflict check, from the cached evidence). The browser shrinks photos and samples their colors before upload. The reveal is plain on purpose: the app's look arrives with the component catalog in phase 5, so decide it with Scott before building the catalog.
+The app's look is agreed with Scott ("Quiet room. Loud brand."): gray canvas, white cards, Geist and Geist Mono, no color of its own except one signal red meaning "needs your call"; light and dark, following the system, with a switch in the top bar. Tokens are in `app/globals.css`, component styles in `app/ui/catalog.css`. The ten catalog components live in `app/ui/catalog/` (plain React); their props and answers are zod schemas in `core/catalog.ts`, and `app/ui/render.tsx` renders one validated component call. `/catalog` shows them all. Next: the intake agent conversation that chooses components from the kit's gaps.
+
+Phase 4 (for reference):
+
+Uploads become kit chunks with sources, shown on screen as they're drafted (`/build`). Extraction is two steps that each fit the deployed function's ~26 s Claude timeout: `read` (one call per upload → evidence notes) and `assemble` (one call per chunk, plus a conflict check, from the cached evidence). The browser shrinks photos and samples their colors before upload.
 
 - Phase 4 gate check: `npm run spike -- spike/extract.ts half-acre-club` (checklist in `brands/half-acre-club/extraction-check.yaml`, side-by-side page in `output/extract-<run-id>/`).
 - Reuse `prompts/`, `templates/` and `brands/` as they are. Shared logic lives in `core/` (no file access), used by both `spike/` and `server/`.
