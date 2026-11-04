@@ -6,7 +6,7 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 ## Current phase
 
-**Phase 5: A2UI intake (in progress, started Nov 4, 2026).** Phases 1–4 passed on Nov 3, 2026.
+**Phase 5: A2UI intake (gate passed Nov 4, 2026).** Phases 1–4 passed on Nov 3, 2026. Next is phase 6; read `docs/spec.md` first.
 
 The app's look is agreed with Scott ("Quiet room. Loud brand."): gray canvas, white cards, Geist and Geist Mono, no color of its own except one signal red meaning "needs your call"; light and dark, following the system, with a switch in the top bar. Tokens are in `app/globals.css`, component styles in `app/ui/catalog.css`. The ten catalog components live in `app/ui/catalog/` (plain React); their props and answers are zod schemas in `core/catalog.ts`, and `app/ui/render.tsx` renders one validated component call. `/catalog` shows them all.
 
