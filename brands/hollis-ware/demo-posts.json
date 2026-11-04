@@ -1,0 +1,787 @@
+{
+  "brand": "hollis-ware",
+  "sourceRun": "2026-11-04T18-51-06",
+  "packedAt": "2026-11-04T19:17:36.553Z",
+  "costUsd": 0.66,
+  "posts": [
+    {
+      "briefId": "announce-batch-07",
+      "intent": "announcement",
+      "goal": "Announce that Batch 07 goes online this Sunday.",
+      "details": "Sunday, 9am Eastern, online. Forty pieces. No restocks.",
+      "kit": {
+        "template": "photo-led",
+        "photo": "uploads/photo-01-plates-by-window.jpg",
+        "slots": {
+          "headline": "Batch 07. Forty pieces.",
+          "subhead": "Oat speckle stoneware. Online, 9am Eastern. No restocks.",
+          "cta": null,
+          "badge": "This Sunday",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Batch 07 is forty pieces in oat speckle: 14 cups, 16 plates and 10 bowls. Stoneware, dishwasher safe, made by June at the north window. Online Sunday, 9am Eastern, link in bio. No restocks."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "photo-led (4:5)",
+            "reason": "The kit names photo-led as the first choice for announcements (\"Show the batch\"), and nothing in the brief argues against it. The 4:5 height gives the empty space the brand wants.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-01-plates-by-window.jpg",
+            "reason": "The announcement is about a whole batch of forty pieces, and the plates and cups by the window show that range in honest north light with plenty of empty wall. The kit calls this the test shot of the direction. Photo 3 is a close second, but it shows one cup with a $38 price and a 12/40 number. That would pull the post toward a single piece and repeat the headline's batch number. Photo 2 is about process, not the release.",
+            "cites": [
+              "art-direction",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "Batch 07. Forty pieces.",
+            "reason": "It leads with the batch number and the count, as the tag does. It is 4 words and 23 characters, inside the kit's 5-word, 32-character limit, and it adapts the kit's announcement sample line.",
+            "cites": [
+              "voice-core",
+              "voice-examples",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Oat speckle stoneware. Online, 9am Eastern. No restocks.",
+            "reason": "It names the material and glaze, then gives the release time and the no-restocks fact. The day is left to the badge so no fact is repeated. It is 56 characters, under the 80 limit, and has no urgency words.",
+            "cites": [
+              "voice-core",
+              "voice-examples",
+              "social-rules",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "This Sunday",
+            "reason": "The badge carries the single most important small fact, when it goes online. It is 11 characters, within the template's 12. It is the post's one clay element, in sentence case.",
+            "cites": [
+              "social-rules",
+              "visual-system",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "cta",
+            "choice": "Left empty (null)",
+            "reason": "The template has no CTA slot. The release time is already in the subhead and badge, and the caption carries the link in bio.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Batch 07 breakdown (14 cups, 16 plates, 10 bowls), use detail, release fact with link in bio, then no restocks",
+            "reason": "The image leaves out the piece counts and the dishwasher-safe fact. The caption follows the pattern of batch, one material or use detail, then the release fact. It is four sentences and under 350 characters, with no hashtags, exclamation marks or urgency.",
+            "cites": [
+              "voice-examples",
+              "positioning-core",
+              "social-rules",
+              "terminology"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the brief and kit: the batch, count, material, release time and no-restocks line all come from the brief or positioning facts, the voice matches the reference line, and the render is clean with legible type and one accent element. Two small notes only."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "photo-led",
+        "photo": "uploads/photo-01-plates-by-window.jpg",
+        "slots": {
+          "headline": "Batch 07 goes online Sunday",
+          "subhead": "Forty pieces, 9am Eastern. Once they're gone, they're gone. No restocks.",
+          "cta": null,
+          "badge": "Sun, 9am ET",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Batch 07 goes online this Sunday at 9am Eastern. There are forty pieces in this batch, and there won't be a restock, so if something catches your eye, that's your window. Link in bio for the shop."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "photo-led",
+            "reason": "This is an announcement, and photo-led is listed as best for announcements. Its handwritten badge slot suits the Sunday date, and the 4:5 format gives the product room. Split also fits announcements but has no badge, and the date is the key fact here.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-01-plates-by-window.jpg",
+            "reason": "It shows the actual tableware, plates and cups in the speckled glaze, so people see what is arriving. Photo 3 is a close second, but its tag reads $38 and 12/40. The client supplied no price, and a piece number would confuse an announcement about forty pieces going on sale. Photo 2 shows process, not the product being announced.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "Batch 07 goes online Sunday",
+            "reason": "Leads with the news and the day, as the angle asks. At 27 characters it fits the 40-character limit and leaves the time and scarcity for the other slots.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Forty pieces, 9am Eastern. Once they're gone, they're gone. No restocks.",
+            "reason": "Adds the concrete details: the count, the time, and the scarcity. It stays within 90 characters (about 72). It does not repeat the day from the headline. 'Once they're gone, they're gone' is a plain rewording of 'no restocks' and adds no new fact.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "Sun, 9am ET",
+            "reason": "The badge is meant for a date, and for an announcement the key small fact is when to show up. It is 11 characters, under the 12 limit. It does partly echo the headline and subhead, but as a handwritten label on the photo it works as a quick reminder of the time.",
+            "cites": []
+          },
+          {
+            "decision": "slots left null",
+            "choice": "cta, quote, attribution, date, details set to null",
+            "reason": "The photo-led template has only headline, subhead, badge and caption slots, so every other slot stays empty.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Restates the day, time, count and no-restock rule, then says 'Link in bio for the shop.'",
+            "reason": "The caption sits under the image, so it is where the next step goes. It uses only the brief's facts and adds no invented details, hashtags or claims. No brand kit was available, so the tone is plain and direct, which suits a one-person studio.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "promo-everyday-cup",
+      "intent": "promo",
+      "goal": "Get people to look at the Batch 07 cups as an everyday cup.",
+      "details": "Nothing beyond the standard facts. No discount.",
+      "kit": {
+        "template": "split",
+        "photo": "uploads/photo-03-batch-tag.jpg",
+        "slots": {
+          "headline": "Fill it every morning.",
+          "subhead": "Stoneware, oat speckle glaze. Dishwasher safe. $38.",
+          "cta": "Online Sunday, 9am",
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Batch 07 has 14 cups in oat speckle stoneware, each tagged by hand. A cup you're afraid to wash is a cup you don't use, so these go in the dishwasher and the microwave. Online Sunday, 9am Eastern, link in bio. No restocks."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "split",
+            "reason": "The kit names Split as the first choice for promo: photo and facts side by side, with no badge shouting. The brief gives no reason to override it. There is no discount, so the offer-badge template would put a stamp on a price that isn't an offer.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-03-batch-tag.jpg",
+            "reason": "The brief is about the Batch 07 cup, and this is the only photo with a single cup as the subject. Its tag reads 'Batch 07 · 12/40 · $38', which matches the kit's batch and cup price. It is unstyled, on linen in north light, and shows the tag as the proof of handmade. Photo 01 is mostly plates, and photo 02 is the making rather than a cup in use. Crop the left-half frame to keep both the cup and the tag.",
+            "cites": [
+              "art-direction",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "accent and layout details",
+            "choice": "One small clay element, either a hairline rule or the price label, set beside the type and not on the photo. Charcoal type on paper, charcoal wordmark small in the bottom corner, no emoji, no exclamation marks.",
+            "reason": "The kit allows exactly one small clay element per post, with type on paper and never on the photo. The tag in the photo already carries the price, so the post does not need a badge to repeat it.",
+            "cites": [
+              "visual-system",
+              "art-direction",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "Fill it every morning.",
+            "reason": "It frames the cup as daily use rather than display, which is the brief's goal. It is a short declarative with a full stop, 22 characters and 4 words, inside the 5-word and 32-character kit limit. It avoids the one-of-a-kind and urgency wording.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Stoneware, oat speckle glaze. Dishwasher safe. $38.",
+            "reason": "It names the material, glaze and use, and gives the price from the kit as the one concrete detail. The split template has no badge, so the price sits here. It is 51 characters, under the 80-character kit limit. The headline carries the use idea and the subhead carries the facts, so the two don't repeat each other.",
+            "cites": [
+              "positioning-core",
+              "voice-examples",
+              "social-rules",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "cta",
+            "choice": "Online Sunday, 9am",
+            "reason": "The kit says to state the time, not use a shop-now line. It is 3 words and has no urgency. The template makes the CTA optional, but it gives the reader the next step.",
+            "cites": [
+              "social-rules",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Batch 07 cups, the studio's wash-it line, release time, link in bio and no restocks.",
+            "reason": "It follows the caption pattern: the batch, one use detail, then the release fact. It uses the studio's own line about washing the cup. It states only the supplied facts: 14 cups, oat speckle, dishwasher and microwave safe, Sunday 9am Eastern. It stays under 350 characters with no exclamation marks and no hashtag block.",
+            "cites": [
+              "voice-examples",
+              "positioning-core",
+              "social-rules",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "omitted slots",
+            "choice": "Left badge, quote, attribution, date and details null.",
+            "reason": "The split template only has headline, subhead, CTA and caption. I did not add any discount or other detail because the brief supplies none.",
+            "cites": [
+              "guardrails"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post stays within the kit's facts (14 cups, oat speckle stoneware, dishwasher and microwave safe, $38, Sunday 9am Eastern, no restocks), uses no banned words or exclamation marks, and follows the split template and 1:1 canvas. The one weakness is the photo's price tag, which is cropped mid-text at the panel edge."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "offer-badge",
+        "photo": "uploads/photo-03-batch-tag.jpg",
+        "slots": {
+          "headline": "The cup you'll reach for every morning",
+          "subhead": "Stoneware cups, handmade in Portland, Maine, and meant for every day.",
+          "cta": "Shop the cups",
+          "badge": "Batch 07",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Batch 07 cups are made to be used, not saved for later. Handmade stoneware, shaped by one person in a Portland, Maine studio, for coffee, tea, or whatever you pour first thing. Link in bio to see the cups.\n\n#hollisware #handmadeceramics #stonewarecups #portlandmaine"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "offer-badge",
+            "reason": "The intent is promo and offer-badge is the template built for promos. There is no discount, so the stamp carries the batch number, which the template allows ('a price or a box number'). Batch 07 is the real hook of a numbered-batch studio.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-03-batch-tag.jpg",
+            "reason": "It is the only photo that isolates a single cup and shows 'Batch 07' on the tag, so it shows exactly what the brief is about. Photo 1 puts the plates in front and the cups in the background with no batch identity. Photo 2 shows making, not an everyday cup. Caveat: the tag also reads '12/40' and '$38', and neither figure is in the brief. The copy should not repeat or build on them, and the client should confirm both before posting.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "The cup you'll reach for every morning",
+            "reason": "The angle is the cup in daily use. This line carries that reason to care without a discount or any claim I can't back up. It is 38 characters, inside the 40 limit.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Stoneware cups, handmade in Portland, Maine, and meant for every day.",
+            "reason": "Adds the concrete facts I have (material, handmade, place) and says the cups are for everyday use. It doesn't repeat the batch name from the badge.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "Batch 07",
+            "reason": "No price was supplied and nothing is discounted, so I can't put an offer in the stamp. The batch number is the most important small fact and is what the business sells by.",
+            "cites": []
+          },
+          {
+            "decision": "cta",
+            "choice": "Shop the cups",
+            "reason": "A short, plain next step that fits the 24-character limit and points to where the cups are sold. It doesn't repeat the badge.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Short, plain caption with a link-in-bio line and four hashtags",
+            "reason": "The caption carries the 'made to be used' pitch and the one-person studio detail that the image slots leave out. It adds no prices, dates or claims beyond the brief, and the tone matches the plain, handmade product.",
+            "cites": []
+          },
+          {
+            "decision": "unused slots",
+            "choice": "Left quote, attribution, date and details null",
+            "reason": "The offer-badge template doesn't have these slots, so they stay empty.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "tip-cool-first",
+      "intent": "tip",
+      "goal": "Teach the one thing stoneware doesn't like.",
+      "details": "Don't move a piece straight from the fridge to a hot oven; big temperature jumps can crack stoneware. Let it come to room temperature first.",
+      "kit": {
+        "template": "type-led",
+        "photo": null,
+        "slots": {
+          "headline": "Let it warm up first.",
+          "subhead": "Fridge to hot oven can crack stoneware. Let it reach room temperature.",
+          "cta": null,
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Stoneware minds one thing: a big jump in temperature. Fridge straight to a hot oven can crack a piece, so let it come to room temperature first. Dishwasher safe, and made for daily use. #stoneware"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "type-led (1:1)",
+            "reason": "The kit names type-led as the first choice for tips: one care instruction set large in serif. The brief gives no concrete reason to depart, since it is a single instruction and the instruction is the content.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Type-led takes no photo. None of the three photos shows the fridge-to-oven risk anyway. Photo 03's tag shows batch and price, which would add an unrelated offer message to a care tip. The kit also wants type on paper, not on images.",
+            "cites": [
+              "social-rules",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "Let it warm up first.",
+            "reason": "A short, calm declarative that gives the instruction itself. It is five words and 21 characters, inside the kit's 5-word limit, with no exclamation mark and no talk of fragility. This was kept from the earlier draft because the critique didn't flag it.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Fridge to hot oven can crack stoneware. Let it reach room temperature.",
+            "reason": "It adds the concrete detail the headline leaves out: which temperature jump to avoid and what to do instead. It uses only facts from the brief and stays within 80 characters. Kept unchanged.",
+            "cites": [
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "Left empty",
+            "reason": "The kit allows only one small label per post, for a batch number or a price. The brief has neither, and anything else would repeat the subhead.",
+            "cites": [
+              "visual-system",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Removed the 'hot coffee' line. The caption now says 'Dishwasher safe, and made for daily use.' and keeps the #stoneware hashtag.",
+            "reason": "This fixes the critique. Hot coffee is a heat-safety claim the kit doesn't support, and it sat oddly beside a post about temperature limits. Dishwasher safe and daily use are both stated in the kit. The caption is three sentences and under 350 characters, with one hashtag.",
+            "cites": [
+              "voice-examples",
+              "terminology",
+              "social-rules"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The type-led tip post teaches the brief's one instruction in calm, exact copy with no invented facts, and the render is clean: legible serif headline, no overlap or cut-off, no accent element, and the caption's only hashtag is the permitted #stoneware. Every automated check passes."
+        },
+        "drafts": 2
+      },
+      "nokit": {
+        "template": "type-led",
+        "photo": null,
+        "slots": {
+          "headline": "Fridge to hot oven? Never.",
+          "subhead": "Big temperature jumps can crack stoneware. Let it come to room temperature first.",
+          "cta": null,
+          "badge": "Be patient.",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "The one thing stoneware doesn't like is a sudden change in temperature. If a piece has been in the fridge, set it on the counter and let it come to room temperature before it goes into a hot oven. A little patience keeps your tableware in one piece.\n\n#stoneware #ceramics #handmadetableware #portlandmaine"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "type-led",
+            "reason": "The brief is a tip with one instruction, and type-led is the template built for that: the instruction is the content. A photo would add nothing the words don't already say. Split also suits tips, but only with a photo that earns its half of the frame.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "No photo shows the fridge-to-oven situation. The trimming shot shows unfired clay, which would confuse a care tip about finished stoneware. The tagged mug carries a price and batch number that would pull attention from the tip and could read as a sales post. The plates-by-window shot is pleasant but only decorative here.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "\"Fridge to hot oven? Never.\"",
+            "reason": "States the single rule up front in a short, memorable line, which suits a type-led tip where the instruction is the content. It is well under the 40-character limit.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Reason plus fix in one sentence pair: big temperature jumps can crack stoneware, so let it come to room temperature first.",
+            "reason": "The headline gives the rule, so the subhead adds the why and the how, using only the facts in the brief. It is 80 characters, within the 90 limit.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "\"Be patient.\" as the handwritten note",
+            "reason": "The optional note gives the tip a friendly, human accent and a next step without repeating the headline or subhead. It fits the 12-character limit.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Restates the tip in a warm tone and adds a short hashtag set. No link in bio.",
+            "reason": "The caption can carry a little more context than the image. I added no times, temperatures or other facts beyond the brief. There is no offer or product to link to, so I left out a link in bio.",
+            "cites": []
+          },
+          {
+            "decision": "unused slots",
+            "choice": "Left cta, quote, attribution, date and details null",
+            "reason": "The type-led template has no such slots, and a tip needs no call to action on the image.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "event-open-studio",
+      "intent": "event",
+      "goal": "Invite people to December's open studio.",
+      "details": "Event name: Open studio. Date: Saturday, Dec 6. Time: 10am to 2pm, at the studio in Portland. June will be trimming Batch 08 cups.",
+      "kit": {
+        "template": "event-card",
+        "photo": null,
+        "slots": {
+          "headline": "Open studio.",
+          "subhead": "June will be trimming Batch 08 cups.",
+          "cta": "Come and watch",
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": "Saturday, Dec 6",
+          "details": "10am to 2pm, at the studio in Portland",
+          "caption": "Open studio is Saturday, Dec 6, 10am to 2pm, at the studio in Portland. June will be trimming Batch 08 cups at the wheel. Come and see how a cup gets its shape."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "event-card",
+            "reason": "The kit names the event card as the first choice for events so the date and hours read at a glance. Nothing in the brief gives a reason to depart from it. The template also carries a date and time/place in its own slots.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The event card takes no photo. Photo 03 would also contradict the brief: its tag reads Batch 07 and $38, while the brief is about Batch 08 and gives no price. Photo 02 shows trimming and would suit a caption or story, but it would force a photo-led or split layout, and the kit's first choice for events is the event card.",
+            "cites": [
+              "social-rules",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "Open studio.",
+            "reason": "The event name from the brief, set as a short declarative with a full stop. It matches the event sample line and stays well inside the 5-word, 32-character limit.",
+            "cites": [
+              "voice-examples",
+              "social-rules",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "date and details",
+            "choice": "Date: \"Saturday, Dec 6\". Details: \"10am to 2pm, at the studio in Portland\".",
+            "reason": "The template asks for the brief's wording exactly, so I kept it unchanged. The date reads at a glance and the time and place sit together. No hours or address were invented.",
+            "cites": [
+              "social-rules",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "June will be trimming Batch 08 cups.",
+            "reason": "One concrete reason to come, taken straight from the brief. It shows the process instead of calling the work handmade. It is 36 characters, under the kit's 80.",
+            "cites": [
+              "voice-core",
+              "voice-examples",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "call to action",
+            "choice": "Come and watch",
+            "reason": "A plain next step in three words with no urgency and no exclamation mark. It avoids \"Shop now\" style language. It doesn't repeat the date or place, which are already on the card, and it doesn't claim anything about registration or walk-ins.",
+            "cites": [
+              "social-rules",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Three sentences restating the date, time and place, then the trimming, then a quiet invitation.",
+            "reason": "The caption carries the full practical detail in a calm, tag-like voice. It stays under 350 characters and has no hashtags, emoji or urgency. I left out \"link in bio\" and the coffee line because the brief gives no link and doesn't mention coffee.",
+            "cites": [
+              "social-rules",
+              "voice-examples",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "unused slots",
+            "choice": "Badge, quote and attribution left null.",
+            "reason": "The event card doesn't have these slots. The date is already the card's one accent element, so a badge would only repeat it.",
+            "cites": [
+              "social-rules",
+              "visual-system"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the brief and the kit: the date, time, place and Batch 08 detail all match the brief, the open studio schedule matches the kit, and the copy is calm and free of banned words. The render is clean with no cut-off or overlapping text, and the terracotta date is the only clay-colored element."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "event-card",
+        "photo": null,
+        "slots": {
+          "headline": "Open studio",
+          "subhead": "June will be trimming Batch 08 cups. Come watch the work happen.",
+          "cta": "Come by and say hello",
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": "Saturday, Dec 6",
+          "details": "10am to 2pm, at the studio in Portland",
+          "caption": "December's open studio is Saturday, Dec 6, 10am to 2pm, at the studio in Portland. June will be trimming Batch 08 cups, so you can watch the work happen in person. Come by and say hello. #HollisWare #PortlandMaine #Ceramics #Stoneware"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "event-card",
+            "reason": "The intent is an event invitation, and event-card is the template made for it. It puts the date, time and place up front, which is what someone deciding whether to come needs. The brief gives no concrete reason to choose another template.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Event-card takes no photo. The trimming photo (photo-02) shows the activity but would need a photo-led or split layout that is meant for announcements, not events. The batch-tag photo (photo-03) shows Batch 07 and a $38 price. Neither fact fits a Batch 08 event, and the price is not in the brief. The plates photo (photo-01) is a generic product shot that adds nothing to the invitation.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "Open studio",
+            "reason": "The brief gives the event name, and the template note says the headline is the event name. It is short and plain, so the date below carries the emphasis.",
+            "cites": []
+          },
+          {
+            "decision": "date and details",
+            "choice": "Date: 'Saturday, Dec 6'. Details: '10am to 2pm, at the studio in Portland'.",
+            "reason": "The template requires these exactly as given in the brief, so the when and where read at a glance. Both are well inside their character limits.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "June will be trimming Batch 08 cups. Come watch the work happen.",
+            "reason": "This is the one concrete reason to come, taken from the brief and following the art director's angle. It adds a detail without repeating the date or time.",
+            "cites": []
+          },
+          {
+            "decision": "call to action",
+            "choice": "Come by and say hello",
+            "reason": "It gives a friendly next step and fits the 24-character limit. It avoids inventing facts like RSVPs, admission or refreshments that the brief doesn't mention.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Restates the date, time and place in full, repeats the Batch 08 detail, and adds a few hashtags.",
+            "reason": "The caption sits outside the image, so it can carry the full logistics in a sentence. I left out 'link in bio' because the brief gives no link or sign-up to point to. Unused slots (badge, quote, attribution) are null because the event-card template doesn't have them.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "testimonial-ines",
+      "intent": "testimonial",
+      "goal": "Share a customer's words about using a cup every day.",
+      "details": "Customer quote (use exactly): \"I bought it for the shelf. It hasn't been on the shelf since.\" Customer: Ines, Batch 05 cup. Fictional, written for the demo.",
+      "kit": {
+        "template": "quote-card",
+        "photo": null,
+        "slots": {
+          "headline": null,
+          "subhead": null,
+          "cta": null,
+          "badge": null,
+          "quote": "I bought it for the shelf. It hasn't been on the shelf since.",
+          "attribution": "Ines, Batch 05 cup",
+          "date": null,
+          "details": null,
+          "caption": "Ines bought a Batch 05 cup for the shelf. It has been in use since. A cup you're afraid to wash is a cup you don't use. Stoneware, dishwasher safe, made for breakfast."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "quote-card (1:1)",
+            "reason": "The kit names the quote card as the first choice for testimonials, and the brief gives no reason to depart from it. The template also leaves off the wordmark so nothing competes with the customer's words, which matches the kit's rule to leave the logo off quote cards.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The quote card takes no photo. Photo 03 would also contradict the brief: its tag reads Batch 07 · 12/40 · $38, while Ines's cup is from Batch 05, so it would show the wrong batch and price. Photos 01 and 02 show no Batch 05 piece and would only crowd the quote.",
+            "cites": [
+              "art-direction",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "quote",
+            "choice": "Ines's words exactly as supplied, with no edits or added punctuation",
+            "reason": "The brief says to use the quote exactly. At 61 characters it fits the 120-character limit, and its two short declaratives match the brand's rhythm.",
+            "cites": [
+              "voice-core",
+              "voice-examples",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "attribution",
+            "choice": "Ines, Batch 05 cup",
+            "reason": "It gives the first name and the piece, as the testimonial pattern asks, and nothing else. It is 18 characters, well inside the 40 limit, and uses the tag-style batch number format.",
+            "cites": [
+              "voice-examples",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "Left empty",
+            "reason": "The only fact that fits is the batch number, which the attribution already carries. The Batch 05 price isn't in the kit or the brief, so I didn't invent one. Leaving the badge empty also keeps the card to the quote and the space around it, with no clay element competing.",
+            "cites": [
+              "social-rules",
+              "guardrails",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "headline, subhead, CTA, date, details",
+            "choice": "Null",
+            "reason": "The quote-card template has none of these slots, so only quote, attribution, badge and caption are filled. A CTA and release time would also add urgency or facts the brief doesn't give.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Four short sentences. They restate the story plainly, add the website line about washing a cup, and close with the material and dishwasher use. It is under 350 characters, with no hashtag and no emoji.",
+            "reason": "The caption carries the use detail the card leaves out, following the pattern of piece, one use detail, close. Dishwasher safe is a stated care fact. Nothing else is claimed: no urgency, no restock hints, no batch availability.",
+            "cites": [
+              "voice-examples",
+              "voice-core",
+              "social-rules",
+              "guardrails",
+              "terminology"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post uses the client's quote and attribution exactly, and the caption draws only on kit lines and the dishwasher-safe fact. The render is clean, with legible type, no cut-off text and no clay-colored accent."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "quote-card",
+        "photo": null,
+        "slots": {
+          "headline": null,
+          "subhead": null,
+          "cta": null,
+          "badge": "every day",
+          "quote": "I bought it for the shelf. It hasn't been on the shelf since.",
+          "attribution": "Ines, Batch 05 cup",
+          "date": null,
+          "details": null,
+          "caption": "Ines bought a Batch 05 cup to sit on the shelf. Now it's in her hands every day.\n\nThat's what we make stoneware for: mugs that get used, washed, and used again. Made in numbered batches at our one-person studio in Portland, Maine.\n\n#HollisWare #PortlandMaine #Stoneware #CeramicsStudio #EverydayCup"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "quote-card",
+            "reason": "The post's job is a testimonial, and the quote card is the template built for it. It gives the customer's words the whole canvas with no wordmark competing. The brief offers no concrete reason to pick another template.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The quote card takes no photo. The available photos also don't fit: the batch-tag photo shows Batch 07 at $38, which would contradict Ines's Batch 05 cup. The plates photo shows a stack of plates, not her cup. The trimming photo is about making, not daily use.",
+            "cites": []
+          },
+          {
+            "decision": "quote",
+            "choice": "Ines's words, verbatim, with no outer quotation marks added",
+            "reason": "The brief says to use the quote exactly. It's 61 characters, well under the 120 limit, and it tells the whole story in two short sentences.",
+            "cites": []
+          },
+          {
+            "decision": "attribution",
+            "choice": "Ines, Batch 05 cup",
+            "reason": "It uses only the name and product from the brief, and the batch number ties the quote to the studio's numbered-batch system. It is 18 characters, under the 40 limit.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "every day",
+            "reason": "The badge is the one handwritten accent and carries the post's goal, daily use. It adds something the attribution doesn't, and at 9 characters it fits the 12 limit.",
+            "cites": []
+          },
+          {
+            "decision": "unused slots",
+            "choice": "headline, subhead, cta, date and details are null",
+            "reason": "The quote-card template doesn't have these slots, and an extra headline would compete with the quote.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "A short line restating the shelf-to-daily-use idea, a line on what the studio makes, and a few hashtags",
+            "reason": "The caption carries the context the image leaves out, using only facts from the business description: one-person studio, Portland, Maine, numbered batches. I left out a link in bio because the brief gives no shop link or offer, and no prices or dates were invented. It is well under 400 characters.",
+            "cites": []
+          }
+        ]
+      }
+    }
+  ]
+}
