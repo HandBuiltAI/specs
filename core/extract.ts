@@ -66,6 +66,12 @@ export const EXTRACT_CHUNKS = [
     labels: "photo_rule, strongest_photo, avoid",
   },
   {
+    id: "layout-system",
+    title: "Layout",
+    job: "How this brand lays out a page, so a designer (or the compose step) can make posts that look like this brand and not a template: the layout idea in one line, margins and grid, type scale and case, the two to four graphic devices it uses (tape, stamps, frames, rules, hand notes, stickers) and how photos and type meet, plus what it never does. Read it off the uploads that have a layout (flyers, menus, signs, packaging, labels, the website, the logo). Where they show none, propose devices that grow out of what the uploads show, cite the upload that suggests each one, and mark those medium.",
+    labels: "idea, margins, type_scale, device: <name>, photo_and_type, never",
+  },
+  {
     id: "social-rules",
     title: "Social",
     job: "How posts work for this brand: what to lead with, CTA style, hashtags and emoji, caption length, logo use on posts. Only what the uploads support; list the rest under missing.",
