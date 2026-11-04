@@ -19,6 +19,8 @@ export type PostRecord = {
   photo?: string | null;
   written?: Written;
   warnings: string[];
+  /** The compose step's layouts for this post: at most two calls, the second fixing the first. */
+  compose?: { attempts: number; running: boolean; last?: { html: string; css: string; errors: string[] } };
 };
 
 export type UploadRecord = {
