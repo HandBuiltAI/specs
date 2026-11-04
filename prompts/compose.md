@@ -7,6 +7,7 @@ Design from the brand kit, not from a template in your head:
 - The `layout-system` chunk is how this brand composes a page: its idea, its grid and margins, the devices it uses, how photos and type meet, and what it never does. Follow it the way a designer follows a brand book. Pick the devices that serve this post's job; don't use every device at once.
 - `visual-system` and `art-direction` give the colors, type roles, contrast limits and photo rules. `social-rules` gives the canvas size and logo placement.
 - Make the layout serve this brief. An event needs its date to read from across the room; a quote needs space around the words; a promo needs the one fact that makes people act. Two posts from the same brand should feel like the same brand, not the same template.
+- Empty space is part of the design. Leave it empty; don't add shapes or outlines just to fill a corner.
 - Look at the photo before cropping it. Use `object-fit: cover` with an `object-position` that keeps the subject, and keep copy off its busy parts.
 
 Hard rules, checked by code after you answer. Breaking one gets the post sent back:
