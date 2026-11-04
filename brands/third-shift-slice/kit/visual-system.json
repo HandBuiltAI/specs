@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "chunk_id": "visual-system",
+    "domain": "visual",
+    "depends_on": ["positioning-core"],
+    "token_count": 780,
+    "confidence": "high",
+    "sources": [
+      { "upload": "photo-01-window-at-night.jpg", "location": "black wall, pink neon sign, yellow painted lettering, paper price board" },
+      { "upload": "photo-03-till-3am-sign.jpg", "location": "black marker on white paper, pink underline" },
+      { "upload": "notes-from-tavo.md", "location": "\"black wall, pink neon, yellow paint, paper signs taped up\"" },
+      { "upload": "founder-interview", "location": "Specs thread, 2026-11-04 (fonts: Anton, Archivo, Permanent Marker)" }
+    ],
+    "version": 1,
+    "fictional": true,
+    "summary": "A hand-painted sign under a pink neon tube at 2am: near-black wall, sign-paint yellow headings, paper-white text, and neon pink for the one thing that has to glow. Fonts: Anton (wordmark, headings), Archivo (body), Permanent Marker (taped-up signs)."
+  },
+  "concept": "A hand-painted sign under a pink neon tube at 2am. Black wall, yellow paint, paper signs taped up, one pink glow.",
+  "color": {
+    "night": {
+      "hex": "#111111",
+      "name": "Wall black",
+      "role": "Main background for posts, like the painted wall around the window.",
+      "rule": "Posts are dark first, because the window is only ever seen at night. Night covers most of every post."
+    },
+    "paper": {
+      "hex": "#F4F1EA",
+      "name": "Sign paper",
+      "role": "Body copy on night, and the background of taped-up signs and labels.",
+      "rule": "All small text is paper on night (16.7:1). On a paper label, text is night."
+    },
+    "paint": {
+      "hex": "#F5C518",
+      "name": "Sign-paint yellow",
+      "role": "Headlines, the way the wall lettering is painted.",
+      "rule": "Headlines and big numbers only. 11.6:1 on night, so it can go fairly small, but keep it for the loudest line so it stays loud."
+    },
+    "neon": {
+      "hex": "#FF2E88",
+      "name": "Neon pink",
+      "role": "The wordmark, a price stamp, one underline.",
+      "rule": "One pink thing per post, like the one neon sign. 5.4:1 on night passes for text 32px and up; on paper it's 3.1:1, so large marker lettering (56px+) or a line only."
+    }
+  },
+  "pairings": {
+    "allowed": [["paper", "night"], ["paint", "night"], ["neon", "night"], ["night", "paper"], ["night", "paint"]],
+    "avoid": [
+      { "pair": ["neon", "paint"], "reason": "Pink on yellow vibrates and fails contrast. Keep them on separate elements against night." },
+      { "pair": ["paper", "paint"], "reason": "White on yellow disappears (1.4:1)." }
+    ]
+  },
+  "roles": {
+    "note": "Maps the shared post templates' color roles to this brand's colors. Templates only ever use roles, so the same layout works for every brand.",
+    "background": "night",
+    "text": "paper",
+    "heading": "paint",
+    "accent": "neon",
+    "wordmark": "neon",
+    "label": "paper"
+  },
+  "material_notes": [
+    "The neon reads hotter and blurrier in photos than the hex. Leave the glow as shot; the hex is for type and marks.",
+    "The fluorescent light inside the window is green-white. Don't warm it up in photos; it's what 2am looks like."
+  ],
+  "type": {
+    "wordmark": {
+      "description": "Tall condensed capitals, like the banner over the window, in neon pink.",
+      "stand_in_font": "Anton",
+      "weight": 400,
+      "letter_spacing": "0.01em",
+      "case": "upper",
+      "lockup": ["THIRD SHIFT", "SLICE"],
+      "rule": "Two lines, all caps. The smaller SLICE line is spaced out so it reads like the neon tube underneath the banner.",
+      "confidence": "high",
+      "lockup_style": { "line2_tracking": "0.28em", "line2_scale": 0.72 }
+    },
+    "heading": {
+      "stand_in_font": "Anton",
+      "weight": 400,
+      "color": "paint",
+      "min_px_at_1080": 64,
+      "letter_spacing": "0.005em",
+      "description": "Condensed poster capitals, like the painted wall line. Write headlines in capitals; the font has no lowercase personality worth using.",
+      "confidence": "high"
+    },
+    "body": {
+      "description": "A sturdy grotesk for prices, hours and anything that has to be read on a phone in a parking lot.",
+      "stand_in_font": "Archivo",
+      "weight": 500,
+      "color": "paper",
+      "min_px_at_1080": 32,
+      "line_height": 1.3,
+      "rule": "Short lines, big enough to read at arm's length after a twelve-hour shift.",
+      "confidence": "high"
+    },
+    "hand": {
+      "description": "Marker lettering, like a sign taped inside the window.",
+      "stand_in_font": "Permanent Marker",
+      "weight": 400,
+      "color": "neon",
+      "rule": "At most one marker element per post, a few words long: a price, an hour, a 'tonight only'.",
+      "confidence": "high",
+      "min_px_at_1080": 56
+    }
+  },
+  "shape": {
+    "radius_px": 2,
+    "stamp_rotation_deg": -3,
+    "rule": "Hard corners and crooked tape. Signs go up fast; nothing is centered with a ruler."
+  },
+  "spacing": {
+    "safe_margin_px_at_1080": 64,
+    "unit_px": 8
+  }
+}

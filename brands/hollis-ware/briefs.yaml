@@ -1,0 +1,55 @@
+# Test briefs for the quality spike and the demo posts: one per post intent.
+# The kit run and the no-kit baseline both get the business line, the photo list and the brief.
+# Only the kit run gets the brand kit.
+# Fictional: every fact below is invented for the Specs demo.
+brand: hollis-ware
+business_name: Hollis Ware
+business_line: A one-person ceramics studio in Portland, Maine, selling stoneware tableware in numbered batches.
+
+photos:
+  - file: uploads/photo-01-plates-by-window.jpg
+    alt: >-
+      A stack of four speckled oat-glazed stoneware plates and two cups on a
+      linen cloth beside a tall north-facing window, plain off-white wall,
+      soft even daylight.
+  - file: uploads/photo-02-trimming-a-cup.jpg
+    alt: >-
+      Close crop of clay-dusted hands trimming the foot of an upside-down
+      unfired cup on a potter's wheel, curls of clay shavings around it, a worn
+      apron behind.
+  - file: uploads/photo-03-batch-tag.jpg
+    alt: >-
+      One speckled stoneware cup on linen with a kraft paper tag tied to the
+      handle, handwritten: "Batch 07 · 12/40 · $38".
+
+briefs:
+  - id: announce-batch-07
+    intent: announcement
+    goal: Announce that Batch 07 goes online this Sunday.
+    details: Sunday, 9am Eastern, online. Forty pieces. No restocks.
+
+  - id: promo-everyday-cup
+    intent: promo
+    goal: Get people to look at the Batch 07 cups as an everyday cup.
+    details: Nothing beyond the standard facts. No discount.
+
+  - id: tip-cool-first
+    intent: tip
+    goal: Teach the one thing stoneware doesn't like.
+    details: >-
+      Don't move a piece straight from the fridge to a hot oven; big temperature
+      jumps can crack stoneware. Let it come to room temperature first.
+
+  - id: event-open-studio
+    intent: event
+    goal: Invite people to December's open studio.
+    details: >-
+      Event name: Open studio. Date: Saturday, Dec 6. Time: 10am to 2pm, at the
+      studio in Portland. June will be trimming Batch 08 cups.
+
+  - id: testimonial-ines
+    intent: testimonial
+    goal: Share a customer's words about using a cup every day.
+    details: >-
+      Customer quote (use exactly): "I bought it for the shelf. It hasn't been on the shelf since."
+      Customer: Ines, Batch 05 cup. Fictional, written for the demo.

@@ -1,0 +1,33 @@
+# Which chunks load for each job. Budgets are approximate token caps.
+kit: hollis-ware
+version: 1
+profiles:
+  post_generate:
+    always: [voice-core, visual-system, art-direction, social-rules, terminology]
+    if_relevant:
+      - chunk: positioning-core
+        when: The post states a fact (batch, count, price, release, open studio). Usually promo and announcement.
+      - chunk: voice-examples
+        when: Always useful for headlines; drop first if over budget.
+      - chunk: audience-everyday-cooks
+        when: The brief is about winning new customers (promo, announcement).
+      - chunk: guardrails
+        when: Promo, testimonial, tip, or any post that makes a claim.
+    budget: 3000
+  post_critique:
+    always: [voice-core, art-direction, guardrails, social-rules]
+    if_relevant:
+      - chunk: terminology
+        when: The copy names the batch, the pieces, or the studio.
+      - chunk: positioning-core
+        when: The copy states a fact that needs checking against the facts list.
+      - chunk: voice-examples
+        when: The copy gives an instruction or tip.
+    budget: 2000
+  intake_gaps:
+    always: [readme]
+    summaries_only: true
+    if_relevant:
+      - chunk: any
+        when: confidence is needs-review
+    budget: 1500

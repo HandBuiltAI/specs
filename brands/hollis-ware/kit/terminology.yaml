@@ -1,0 +1,48 @@
+chunk_id: terminology
+domain: voice
+depends_on: [voice-core, positioning-core]
+token_count: 400
+confidence: high
+sources:
+  - upload: notes-batch-07.md
+    location: '"plain", "one of a kind", tag case'
+  - upload: website-about.md
+    location: batches, tags, open studio
+version: 1
+fictional: true
+summary: >-
+  Words Hollis Ware uses (batch, piece, the tag, stoneware, open studio) and
+  words it avoids (artisan, one of a kind, collection, drop, hurry).
+---
+use:
+  - term: Hollis Ware
+    note: Full name on first mention; "the studio" after.
+  - term: batch
+    instead_of: [collection, drop, line, release]
+    why: It's how the work is made: fired together, sold together.
+    note: Numbered with two digits, "Batch 07".
+  - term: piece
+    instead_of: [product, item, SKU]
+    why: Each one is counted and tagged.
+  - term: the tag
+    note: The handwritten tag on each piece. Write its format exactly, "Batch 07 · 12/40".
+  - term: stoneware
+    why: The material, named plainly.
+  - term: cup
+    note: The studio says "cup". "Mug" is fine in a caption if it reads better.
+  - term: open studio
+    note: First Saturday of each month, 10 to 2.
+  - term: no restocks
+    why: The release fact, said plainly instead of urgency.
+
+avoid:
+  - term: [artisan, artisanal, handcrafted with love, soul, soulful]
+    why: Everything here is handmade; saying so is filler. June cut these by name.
+  - term: [one of a kind, unique]
+    why: A batch of forty isn't one of a kind. "One of forty" is the true, better line.
+  - term: [collection, drop, curated, exclusive, elevated]
+    why: Fashion and marketing words; a batch is a batch.
+  - term: [hurry, selling fast, don't miss out, limited time, last chance]
+    why: Manufactured urgency. Give the release time and stop.
+  - term: [delicate, fragile, treasure, heirloom]
+    why: The pieces are for daily use and the dishwasher.

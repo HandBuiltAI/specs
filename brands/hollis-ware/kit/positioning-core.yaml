@@ -1,0 +1,62 @@
+chunk_id: positioning-core
+domain: positioning
+depends_on: []
+token_count: 560
+confidence: high
+sources:
+  - upload: founder-interview
+    location: Specs thread, 2026-11-04 (Scott approved the draft brand)
+  - upload: website-about.md
+    location: whole page
+  - upload: notes-batch-07.md
+    location: batch size, prices, release
+  - upload: photo-03-batch-tag.jpg
+    location: tag reading "Batch 07 · 12/40 · $38"
+version: 1
+fictional: true
+summary: >-
+  Hollis Ware is a fictional one-person ceramics studio in Portland, Maine,
+  selling stoneware tableware in numbered batches of forty that are released
+  once a season and never remade.
+---
+what_it_is: >-
+  A one-room ceramics studio making stoneware tableware: cups, plates and
+  serving bowls. Work is made in numbered batches, fired together, released
+  together online about once a season, and never restocked.
+why_batches: >-
+  The clay and the kiln make every batch a little different, so the studio
+  leans into it: each batch is its own thing, and each piece carries a tag
+  with its number in the batch.
+
+who_its_for: >-
+  People who cook at home and want a few plain, well-made pieces they'll use
+  every day, and who care more about how a cup feels in the hand than about
+  a matching set. Detail in audience-everyday-cooks.
+
+promise: Made slowly, sold once, used every day.
+promise_reason: >-
+  The pieces are meant to be used and eventually replaced from a later batch
+  that looks a little different. Dishwasher safe is part of the promise.
+
+differentiators:
+  - name: Numbered batches
+    detail: Forty pieces, numbered on a handwritten tag (12/40). When a batch is gone, it's gone.
+  - name: One maker
+    detail: June Hollis makes everything, at one wheel, by one north-facing window.
+  - name: For use, not display
+    detail: Food safe, dishwasher and microwave safe. A cup you're afraid to wash is a cup you don't use.
+  - name: Plain about it
+    detail: Number, material, price. No talk of soul or love.
+
+facts:
+  note: >-
+    All fictional. Posts may use only these facts plus what a brief supplies.
+    No stockists, no awards, no press, no other cities.
+  where: A one-room studio in Portland, Maine
+  maker: June Hollis
+  material: Stoneware, fired to cone 6, food-safe glazes; dishwasher and microwave safe
+  current_batch: Batch 07, 40 pieces (14 cups, 16 plates, 10 bowls), oat speckle glaze
+  release: Online, Sunday 9am Eastern, about once a season. No restocks.
+  prices: Cup $38, plate $54, serving bowl $140
+  open_studio: First Saturday of each month, 10am to 2pm
+  tags: Each piece has a handwritten tag with its batch and number, e.g. "Batch 07 · 12/40"

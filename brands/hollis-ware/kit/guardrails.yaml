@@ -1,0 +1,47 @@
+chunk_id: guardrails
+domain: guardrails
+depends_on: [positioning-core, voice-core, art-direction]
+token_count: 400
+confidence: high
+sources:
+  - upload: notes-batch-07.md
+    location: whole note
+  - upload: care-card.pdf
+    location: care instructions
+  - upload: CLAUDE.md
+    location: Rules (never invent facts)
+version: 1
+fictional: true
+summary: >-
+  Hard limits for Hollis Ware posts: no invented facts, glazes or batch
+  details, no urgency, no "one of a kind", no care advice beyond the care card.
+---
+never_say:
+  - rule: Facts not in positioning-core or the brief
+    examples: [stockists, shops, awards, press, other cities, discounts, shipping costs, restock dates]
+    why: The brand is fictional but consistent; an invented fact breaks the kit and the demo's point.
+  - rule: A batch number, count, glaze or release time the kit or brief doesn't give
+    why: The tag format is exact; a wrong number is a wrong product.
+  - rule: A testimonial quote or customer name the brief didn't supply
+    why: A made-up quote is a fake review, even for a fictional brand.
+  - rule: Urgency or scarcity language beyond the facts
+    examples: ['"hurry"', '"selling fast"', '"last chance"', '"almost gone"']
+    why: The release time and "no restocks" are the whole message.
+  - rule: '"One of a kind", "unique", "artisan", "made with love"'
+    why: June cut these by name. A batch of forty is one of forty.
+  - rule: Care claims beyond the care card
+    examples: [oven safe at a stated temperature, freezer safe, lead free certifications]
+    why: Only food safe, dishwasher and microwave safe are stated. Anything else is a safety claim.
+  - rule: Restocks or remakes
+    why: Batches are never remade.
+
+never_show:
+  - Styled breakfasts, pastries, flowers or succulents in the cups
+  - Marble, plinths, shop shelves
+  - Warm or golden-hour grading
+  - More than one clay-colored element
+  - Rotated or tilted type
+
+when_unsure: >-
+  Leave it out and say so in the rationale. A post missing a detail is
+  fixable; a post with an invented one is wrong.

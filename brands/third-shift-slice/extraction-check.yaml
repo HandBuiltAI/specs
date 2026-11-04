@@ -1,0 +1,97 @@
+# Extraction checklist for Third Shift Slice: what extraction from the messy uploads should
+# find, and what it must not invent. Each check passes when the named chunks (rendered as text)
+# match every `find` pattern (use | inside one for alternatives) and no `never` pattern.
+# Patterns are case-insensitive regular expressions.
+brand: third-shift-slice
+
+uploads:
+  - file: uploads/old-flyer.pdf
+    kind: pdf
+  - file: uploads/notes-from-tavo.md
+    kind: pasted
+  - file: uploads/photo-01-window-at-night.jpg
+    kind: photo
+  - file: uploads/photo-02-cheese-pull.jpg
+    kind: photo
+  - file: uploads/photo-03-till-3am-sign.jpg
+    kind: photo
+
+checks:
+  # What it is
+  - id: walk-up-window
+    what: A walk-up pizza window, no tables or delivery
+    chunks: [positioning-core, brand-about]
+    find: ["window", "walk.?up|no tables|no delivery"]
+  - id: hours-till-3
+    what: Open till 3am, Wednesday to Sunday
+    chunks: [positioning-core, brand-about]
+    find: ["3 ?am|till 3", "wed"]
+  - id: menu-prices
+    what: Cheese $4, pepperoni $5, slice of the night $6
+    chunks: [positioning-core, brand-about]
+    find: ["\\$4", "\\$5", "\\$6"]
+  - id: owner-line-cook
+    what: Owner Tavo Ruiz, a former line cook
+    chunks: [positioning-core, brand-about]
+    find: ["tavo", "line cook"]
+  - id: columbus
+    what: Columbus, Ohio
+    chunks: [positioning-core, brand-about]
+    find: ["columbus"]
+  # Audience
+  - id: audience-shift-workers
+    what: Nurses, bartenders and line cooks getting off late
+    chunks: [audience]
+    find: ["nurse", "bartender|line cook"]
+  # Voice and words
+  - id: line-wall
+    what: Keeps the wall line "Hot slice. 2:47am. Window's open."
+    chunks: [voice-core, voice-examples]
+    find: ["2:47"]
+  - id: avoid-drunk-food
+    what: Avoids drinking jokes and "drunk food"
+    chunks: [terminology, guardrails, voice-core]
+    find: ["drunk"]
+  - id: avoid-artisan
+    what: Avoids "artisan" / "gourmet"
+    chunks: [terminology, guardrails, voice-core]
+    find: ["artisan|gourmet"]
+  - id: avoid-best-in-columbus
+    what: No "best in Columbus" ranking
+    chunks: [terminology, guardrails, voice-core]
+    find: ["best"]
+  # Look
+  - id: color-neon
+    what: Neon pink for the sign
+    chunks: [visual-system]
+    find: ["pink|neon"]
+  - id: color-paint
+    what: Yellow sign paint
+    chunks: [visual-system]
+    find: ["yellow"]
+  - id: photo-night
+    what: Photos at night under the real light
+    chunks: [art-direction]
+    find: ["night", "neon|fluorescent"]
+  # The deliberate conflicts
+  - id: conflict-hours
+    what: Catches the flyer's 2am / Thurs-Sat against the signs' 3am / Wed-Sun
+    chunks: [conflicts]
+    find: ["2 ?am|thurs"]
+  - id: conflict-pepperoni
+    what: Catches the flyer's $4.50 pepperoni against $5
+    chunks: [conflicts]
+    find: ["4\\.50"]
+  - id: conflict-cash-only
+    what: Catches the flyer's cash only against cash + card
+    chunks: [conflicts]
+    find: ["cash only"]
+  # Things the uploads don't say, so extraction must not invent them
+  - id: no-address
+    what: No invented street address
+    chunks: [positioning-core, brand-about]
+    never: ["\\d+ \\w+ (st|street|ave|avenue|rd|road|blvd)\\b"]
+  - id: no-delivery
+    what: Doesn't claim delivery or online ordering
+    chunks: [positioning-core, brand-about, social-rules]
+    never: ["we deliver|order online|doordash|uber ?eats"]
