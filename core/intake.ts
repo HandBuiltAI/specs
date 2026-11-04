@@ -37,6 +37,8 @@ export const REQUIRED: Record<ExtractChunkId, { slot: string; topic: string; mat
     { slot: "type: heading", topic: "the heading font", match: ["type: heading", "fonts"] },
     { slot: "type: body", topic: "the body font", match: ["type: body", "fonts"] },
   ],
+  // Layout is partly a design call, so it's never a required gap; the compose step falls back to the template without it.
+  "layout-system": [],
   "art-direction": [{ slot: "photo_rule", topic: "how photos should look", match: ["photo_rule", "strongest_photo", "hero_photos"] }],
   "social-rules": [{ slot: "post_rule", topic: "how posts work", match: ["post_rule", "cta_style", "caption_length"] }],
   guardrails: [{ slot: "never", topic: "what never to say or show", match: ["never_say", "never_claim", "never_show"] }],

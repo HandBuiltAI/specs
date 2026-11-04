@@ -9,6 +9,7 @@ What to note:
 - **Voice:** how the writing sounds, with the exact words that show it. Copy any line written in the brand's own voice into `lines`, unchanged.
 - **Words:** names the brand uses for its own things, and any words it says to avoid, with the reason if one is given.
 - **Visual:** colors (with hex values only if the upload writes them out), type styles, logo or wordmark shapes, materials.
+- **Layout:** for anything with a layout (a flyer, menu, sign, label, package, web page), how it's arranged: where the type sits, how big and in what case, margins and empty space, alignment, and graphic devices like tape, stamps, frames, rules, stickers or handwriting.
 - **Photos:** subject, light, framing, mood, and any readable text in the picture, transcribed exactly (labels, cards, packaging). Text in a photo is a fact to record, even if it looks like it might be wrong.
 - **Social and guardrails:** anything about how posts should work, or what never to say or show.
 
