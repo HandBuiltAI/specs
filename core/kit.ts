@@ -88,3 +88,13 @@ export function wordmarkLines(files: KitFiles, fallback: string): string[] {
   const vs = JSON.parse(raw) as { type: { wordmark?: { lockup?: string[] } } };
   return vs.type.wordmark?.lockup ?? [fallback];
 }
+
+// Reads a kit's tokens.css into a flat map of custom properties, with var() references resolved,
+// so a page can show a brand's own colors and fonts outside a rendered post.
+export function tokenValues(css: string): Record<string, string> {
+  const raw: Record<string, string> = {};
+  for (const [, name, value] of css.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) if (name && value) raw[name] = value.trim();
+  const resolve = (v: string, depth = 0): string =>
+    depth > 5 ? v : v.replace(/var\((--[\w-]+)\)/g, (_, name: string) => (raw[name] ? resolve(raw[name], depth + 1) : ""));
+  return Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, resolve(v)]));
+}
