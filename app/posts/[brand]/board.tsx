@@ -2,30 +2,14 @@
 
 // The Make posts board for a demo brand: each precomputed post with its overlay and toggle,
 // and the brand kit export.
-import { useState } from "react";
 import type { PropsOf } from "../../../core/catalog.ts";
 import { PostPreview } from "../../ui/catalog/PostPreview.tsx";
-import { downloadKitZip } from "../../lib/kit-zip.ts";
+import { KitDownload } from "../../ui/KitDownload.tsx";
 
 export type BoardPost = { id: string; intent: string; goal: string; critique: string | null; preview: PropsOf<"PostPreview"> };
 
 export default function PostsBoard(props: { brand: string; businessName: string; kit: Record<string, string>; posts: BoardPost[]; costUsd: number | null }) {
   const { brand, businessName, kit, posts, costUsd } = props;
-  const [zipping, setZipping] = useState(false);
-  const [zipError, setZipError] = useState(false);
-
-  async function exportKit() {
-    setZipping(true);
-    setZipError(false);
-    try {
-      await downloadKitZip(brand, businessName, kit);
-    } catch {
-      setZipError(true);
-    } finally {
-      setZipping(false);
-    }
-  }
-
   return (
     <>
       <section className="card posts-kit">
@@ -35,16 +19,8 @@ export default function PostsBoard(props: { brand: string; businessName: string;
             {Object.keys(kit).length} files: voice, audience, visual system, art direction, rules and guardrails. Drop the
             folder into any AI tool, or hand it to a freelancer.
           </p>
-          {zipError && (
-            <p className="c-error" role="alert">
-              <b aria-hidden="true">!</b>
-              <span>The zip didn&rsquo;t build. Try again.</span>
-            </p>
-          )}
         </div>
-        <button type="button" className="c-btn" onClick={exportKit} disabled={zipping}>
-          {zipping ? "Zipping…" : "Download kit (.zip)"}
-        </button>
+        <KitDownload slug={brand} name={businessName} files={kit} />
       </section>
 
       {posts.length === 0 ? (

@@ -1,0 +1,780 @@
+{
+  "brand": "third-shift-slice",
+  "sourceRun": "2026-11-04T18-46-40",
+  "packedAt": "2026-11-04T18:52:35.747Z",
+  "costUsd": 0.68,
+  "posts": [
+    {
+      "briefId": "announce-slice-of-the-night",
+      "intent": "announcement",
+      "goal": "Announce Friday's slice of the night.",
+      "details": "Hot honey and soppressata. $6. Friday only, till it runs out.",
+      "kit": {
+        "template": "photo-led",
+        "photo": "uploads/photo-01-window-at-night.jpg",
+        "slots": {
+          "headline": "FRIDAY: HOT HONEY SOPPRESSATA",
+          "subhead": "Till it's gone. Window's open 9pm to 3am.",
+          "cta": null,
+          "badge": "$6",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Friday's slice of the night at Third Shift Slice: hot honey and soppressata. $6, Friday only, till it runs out. Cheese $4 and pepperoni $5 stay on the board. WINDOW'S OPEN TILL 3. #columbuspizza"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "photo-led (4:5)",
+            "reason": "The kit names photo-led as the first choice for announcements, to show tonight's slice or the window. The brief gives no concrete reason to switch to split, so I'm following the kit.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-01-window-at-night.jpg",
+            "reason": "No photo shows hot honey and soppressata. The cheese pull would present a plain cheese slice as Friday's special, which contradicts the brief. The window shot shows the open window, a person in scrubs, and the board with 'slice of the night $6', which matches the brief and makes no claim about the flavor. It's also the kit's test shot, and it's the wide shot in the set.",
+            "cites": [
+              "art-direction",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "FRIDAY: HOT HONEY SOPPRESSATA",
+            "reason": "Puts the news (the day and the flavor) up front in capitals. It is 29 characters and 4 words, inside the kit's 36-character, 6-word limit, and plain with no hype words.",
+            "cites": [
+              "social-rules",
+              "voice-core",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "$6",
+            "reason": "The price is the single most important small fact, and the kit says prices go out loud. It is the post's one marker accent. The kit's 10-character badge limit is stricter than the template's 12.",
+            "cites": [
+              "social-rules",
+              "voice-core",
+              "positioning-core",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Till it's gone. Window's open 9pm to 3am.",
+            "reason": "Adds the scarcity and the exact hours without repeating Friday or the price, which the headline and badge already carry. It uses the exact time instead of 'open late'. It is 41 characters, under the 80 limit.",
+            "cites": [
+              "voice-core",
+              "voice-examples",
+              "terminology",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "call to action",
+            "choice": "Left null",
+            "reason": "The template has no CTA slot. The hours in the subhead and the caption's 'WINDOW'S OPEN TILL 3' do that job, and there is no 'order now' or 'link in bio' because the window is walk-up only.",
+            "cites": [
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Four short sentences with the full brand name on first mention, the slice details, the standing menu prices, a shouted hours sign-off and one hashtag.",
+            "reason": "It follows the caption pattern of leading with the slice, giving one plain detail and signing off with the hours. It is under 300 characters, uses no emoji or ranking words, and uses only supplied facts (cheese $4, pepperoni $5).",
+            "cites": [
+              "voice-examples",
+              "social-rules",
+              "terminology",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "flavor and facts",
+            "choice": "Used hot honey and soppressata, $6 and 'Friday only, till it runs out' exactly as the brief supplied them.",
+            "reason": "The kit says not to name a flavor unless the brief does, and this brief does. The plan's headline wording was tightened to fit the limits and the brand's capitals style.",
+            "cites": [
+              "positioning-core"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the brief and kit: the hot honey soppressata, $6, Friday-only details and the 9pm to 3am hours all come from the brief or kit, and the voice is short and loud with no banned terms. Only minor notes remain: the cropped sign at the bottom of the photo and a loose 'till 3' in the caption."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "photo-led",
+        "photo": "uploads/photo-01-window-at-night.jpg",
+        "slots": {
+          "headline": null,
+          "subhead": null,
+          "cta": null,
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": ""
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "photo-led",
+            "reason": "This is an announcement, and photo-led is built for that. A single-night special needs a headline and subhead that read fast, plus a handwritten badge for 'Fri only'. Split would also work, but the 4:5 photo-led format gives the headline more room.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-01-window-at-night.jpg",
+            "reason": "It is the only photo that shows the 'slice of the night $6' board, which matches the brief's price and shows the real window customers will walk up to. The cheese-pull photo shows a plain cheese slice, which would contradict a hot honey and soppressata special. The 'open till 3am' sign is about hours, not the special.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "promo-open-till-3",
+      "intent": "promo",
+      "goal": "Tell people getting off a late shift that the window's open till 3am.",
+      "details": "Nothing beyond the standard menu and hours. No discount.",
+      "kit": {
+        "template": "offer-badge",
+        "photo": "uploads/photo-01-window-at-night.jpg",
+        "slots": {
+          "headline": "OFF AT 2:30? OPEN TILL 3AM.",
+          "subhead": "Pepperoni $5. Slice of the night $6. Wednesday to Sunday.",
+          "cta": "Walk up.",
+          "badge": "$4 CHEESE",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Third Shift Slice is the window for anyone off the floor at 2:30. Open Wednesday to Sunday, 9pm to 3am. Cheese $4, pepperoni $5, slice of the night $6, cash or card. WINDOW'S OPEN TILL 3AM. #nightshift"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "offer-badge (4:5)",
+            "reason": "The kit names the offer badge as the first choice for promo, and the brief gives no reason to depart from it. There is no discount, so the stamp carries the hours rather than a deal, which is the other thing the kit allows on a badge.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-01-window-at-night.jpg",
+            "reason": "It is the kit's test shot: the window is visibly open at night, the price board is readable, and a person in scrubs is at the counter, so it shows who the post is for. The hours sign (photo 3) would only repeat the headline, and the cheese pull (photo 2) says nothing about hours or audience. Photo 1's hours and prices match the kit, so nothing in it contradicts the brief.",
+            "cites": [
+              "art-direction",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "OFF AT 2:30? OPEN TILL 3AM.",
+            "reason": "It opens with the shift ending and answers with the exact closing hour. At 27 characters and 5 words it fits the kit's 6-word, 36-character cap. It says \"3AM\" rather than \"open late\" and has no exclamation mark.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "voice-examples",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "$4 CHEESE",
+            "reason": "For a promo the stamp carries the price. The entry price is the most useful small fact, and it's said out loud the way the kit writes it. The hour is already in the headline, so the badge doesn't repeat it. It is 9 characters, within the kit's 10, and it is the post's one pink element besides the wordmark.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "visual-system",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Pepperoni $5. Slice of the night $6. Wednesday to Sunday.",
+            "reason": "It adds the rest of the short menu and the days, without repeating the $4 in the badge or the hour in the headline. It states no discount, since the brief has none, and names no flavor for the slice of the night.",
+            "cites": [
+              "positioning-core",
+              "guardrails",
+              "terminology",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "call to action",
+            "choice": "Walk up.",
+            "reason": "It says how to get a slice. There's no ordering, so no \"order now\" and no \"link in bio\". It's 2 words, within the 3-word limit.",
+            "cites": [
+              "social-rules",
+              "terminology",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Four short sentences: full name on first mention, hours, prices and payment, then a shouted sign-off line, with one hashtag.",
+            "reason": "The image leaves out the 9pm opening time and the payment methods, so the caption carries them. It follows the lead-with-time, one-detail, sign-off-with-hours pattern. It stays under 300 characters, has no emoji, and uses only one hashtag.",
+            "cites": [
+              "voice-examples",
+              "social-rules",
+              "positioning-core",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "unused slots",
+            "choice": "quote, attribution, date and details left null.",
+            "reason": "The offer-badge template has no such slots, and the brief supplies no quote or event details.",
+            "cites": [
+              "guardrails"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the kit: the headline and subhead use exact hours and prices, the CTA is walk-up only, and the photo is a night window shot that matches the art direction. The only observation is minor and does not require a revision."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "offer-badge",
+        "photo": "uploads/photo-03-till-3am-sign.jpg",
+        "slots": {
+          "headline": "Off the clock? We're still open.",
+          "subhead": "Walk-up pizza window in Columbus, for everyone getting off a late shift.",
+          "cta": "Walk up and order",
+          "badge": "Till 3am",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Long shift behind you? The window at Third Shift Slice is open till 3am, so dinner doesn't have to be a gas station snack. Walk up, order from the regular menu, and eat something hot on the way home. #ColumbusOhio #LateNightPizza #ThirdShift"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "offer-badge",
+            "reason": "The intent is promo, and offer-badge is the template built for promo. There is no discount, so the stamp carries the real menu entry price, not an invented deal. Photo-led is for announcements and would leave the price without a place.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-03-till-3am-sign.jpg",
+            "reason": "The brief is about being open till 3am, and this photo shows exactly that on a hand-lettered sign, with Wed-Sun beside it. Photo 1 is crowded with text, including a 2:47AM line and the full menu, and would compete with the headline. Photo 2 is appetizing but says nothing about hours.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "\"Till 3am\"",
+            "reason": "The closing time is the single most important small fact for this promo. The brief has no discount and no price, so the hours are the offer. It fits the 12-character limit.",
+            "cites": []
+          },
+          {
+            "decision": "price and 2am details from the plan",
+            "choice": "Left out the $4 starting price and the \"off around 2am\" framing",
+            "reason": "Neither appears in the brief, which supplies only the standard menu and hours with no discount. Using them would invent facts, so the copy speaks to late-shift workers generally.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "\"Off the clock? We're still open.\"",
+            "reason": "It speaks to the late-shift reader's situation and gives the reason to care without repeating the badge's 3am. It is 32 characters, under the 40 limit.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Walk-up pizza window in Columbus, for everyone getting off a late shift.",
+            "reason": "It adds the concrete detail of what the place is and where, using only facts from the business description. It stays within 90 characters.",
+            "cites": []
+          },
+          {
+            "decision": "cta",
+            "choice": "\"Walk up and order\"",
+            "reason": "It gives a simple next step that matches the walk-up window format. It doesn't promise a link, a deal or a time beyond the brief.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "A short, plain caption with the 3am hours, the regular menu and a few local hashtags",
+            "reason": "The caption adds context the image leaves out (the regular menu, a hot meal on the way home) without new claims. It has no link in bio, since the brief gives no link or ordering action.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "tip-fold-it",
+      "intent": "tip",
+      "goal": "Teach how to eat a slice one-handed on the walk to the car.",
+      "details": "Fold the slice in half lengthwise so the tip doesn't flop. Hold it at the crust. Napkin under the fold.",
+      "kit": {
+        "template": "type-led",
+        "photo": null,
+        "slots": {
+          "headline": "FOLD IT.",
+          "subhead": "Lengthwise, so the tip doesn't flop. Hold the crust. Napkin under the fold.",
+          "cta": null,
+          "badge": "One hand.",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Off the floor and walking to the car? Fold the slice, hold the crust, napkin under the fold. One hand for the slice, one for your keys. Window's open till 3am. #nightshift"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "type-led (1:1)",
+            "reason": "The kit names type-led as the first choice for tips (\"one line, painted big\"), and the brief has nothing that argues against it. The instruction is the content, so no photo is needed.",
+            "cites": [
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Type-led takes no photo. None of the three would help anyway: the cheese pull (photo 2) shows a flat, unfolded slice being lifted, which is the opposite of the fold technique. The window and taped-sign shots are about hours and prices, not eating.",
+            "cites": [
+              "social-rules",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "FOLD IT.",
+            "reason": "Two words, in capitals, and it is the instruction. It matches the kit's own tip sample (\"Fold it.\") and the three-words-then-stop rule, and it stays well inside the 36-character limit.",
+            "cites": [
+              "voice-core",
+              "voice-examples",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Lengthwise, so the tip doesn't flop. Hold the crust. Napkin under the fold.",
+            "reason": "It carries all three steps from the brief in short, plain sentences with no adjectives. It comes to 75 characters, under the kit's 80 limit. The headline holds the verb and the subhead adds the how.",
+            "cites": [
+              "social-rules",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "One hand.",
+            "reason": "This is the handwritten note, the post's one accent element. It gives the payoff of the tip (the other hand is free) without repeating the steps, and at 9 characters it fits the kit's 10-character limit.",
+            "cites": [
+              "social-rules",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Short caption that speaks to the shift, repeats the one-hand image, and signs off with the exact hour and one hashtag.",
+            "reason": "The caption follows the kit pattern: lead with the situation, give one plain detail, end on the hours. It is four sentences and under 300 characters. It uses \"the floor\" and \"the window\" the way the audience does, with no 'Link in bio' and no exclamation marks. One hashtag is within the zero-to-two rule.",
+            "cites": [
+              "voice-examples",
+              "social-rules",
+              "terminology",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "omitted slots",
+            "choice": "CTA, quote, attribution, date and details left null.",
+            "reason": "The type-led template only has headline, subhead, badge and caption. Adding a CTA to a tip would also repeat the hours already in the caption.",
+            "cites": [
+              "social-rules"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the type-led tip template and the brief's instructions exactly, uses only kit-approved facts and terms, and renders cleanly with no clipping or overlap. The only remarks are minor accent-color notes."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "type-led",
+        "photo": null,
+        "slots": {
+          "headline": "Fold it lengthwise. Hold the crust.",
+          "subhead": "Folding keeps the tip from flopping. Napkin under the fold, and you're walking to the car.",
+          "cta": null,
+          "badge": "One hand!",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "How to eat a slice one-handed on the walk to the car:\n\n1. Fold it in half lengthwise so the tip doesn't flop.\n2. Hold it at the crust.\n3. Napkin under the fold.\n\nWalk-up window, open till 3am. Link in bio.\n\n#ThirdShiftSlice #ColumbusOhio #LateShift #PizzaTips"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "type-led",
+            "reason": "The intent is a tip, and type-led is the template built for tips, where the instruction itself is the content. The brief gives no concrete reason to depart from it. Three short steps read faster as text than a photo can show them.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Type-led takes no photo. None of the three photos shows the fold, the crust grip or the napkin under the fold. The cheese-pull shot shows a slice lifted flat and drooping, which is the floppy tip the tip warns against. The window and sign shots are about the business and hours, not the technique.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "Fold it lengthwise. Hold the crust.",
+            "reason": "The tip is the content, so the headline gives the two core moves in short imperative sentences. It is 35 characters, within the 40 limit.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Folding keeps the tip from flopping. Napkin under the fold, and you're walking to the car.",
+            "reason": "It gives the reason for the fold and the third step without repeating the headline's wording. It is 89 characters, within the 90 limit, and it speaks to the late-shift reader heading to the car.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "One hand!",
+            "reason": "The template offers a handwritten accent. It states the payoff in 9 characters, under the 12 limit, and doesn't repeat any other slot.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Numbered three-step list, then the window's hours and 'link in bio' with a few hashtags.",
+            "reason": "The image has little room, so the caption repeats the steps in order for easy reference. It adds only the late hours from the business description. I left out any prices, addresses and links beyond 'link in bio' since none were supplied.",
+            "cites": []
+          },
+          {
+            "decision": "omitted slots",
+            "choice": "No photo, CTA, quote, date or details",
+            "reason": "The type-led template has no slots for them, and the brief supplies no such facts.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "event-shift-change-night",
+      "intent": "event",
+      "goal": "Invite hospital staff to a thank-you night at the window.",
+      "details": "Event name: Shift Change Night. Date: Saturday, Nov 22. Time: 9pm to 3am, at the window. Show a hospital badge and the first cheese slice is free.",
+      "kit": {
+        "template": "event-card",
+        "photo": null,
+        "slots": {
+          "headline": "SHIFT CHANGE NIGHT",
+          "subhead": "Show a hospital badge. First cheese slice is free.",
+          "cta": "Walk up.",
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": "Saturday, Nov 22",
+          "details": "9pm to 3am, at the window",
+          "caption": "Third Shift Slice is saying thanks to hospital staff. Shift Change Night is Saturday, Nov 22, 9pm to 3am at the window. Show a hospital badge and the first cheese slice is free. WINDOW'S OPEN TILL 3. #nightshift"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "event-card",
+            "reason": "The brief is an event with a date and an hour, and the kit's first choice for events is the event card because date and hour read at a glance. The brief gives no concrete reason to pick anything else.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The event card takes no photo. The window photo would also be redundant, since the card already carries the date, hours and place. The cheese pull would be a close-up of cheese, which the art direction says to avoid overusing, and it would bury the date.",
+            "cites": [
+              "art-direction",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "SHIFT CHANGE NIGHT",
+            "reason": "The event name from the brief, in capitals. It is three words and 18 characters, well inside the kit's 6-word, 36-character limit.",
+            "cites": [
+              "social-rules",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "date and details",
+            "choice": "Date: \"Saturday, Nov 22\". Details: \"9pm to 3am, at the window\".",
+            "reason": "The template requires these exactly as given in the brief. I used the brief's wording and added no other facts. \"At the window\" also matches the kit's term, not \"location\".",
+            "cites": [
+              "terminology",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Show a hospital badge. First cheese slice is free.",
+            "reason": "It adds the one concrete detail, what the badge gets you, in short plain sentences with no party tone. It is 50 characters, under the kit's 80. It names \"cheese\" as the plain menu name and uses no hype words.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "call to action",
+            "choice": "Walk up.",
+            "reason": "The kit's CTA style says where and when, not \"click\", and walk-up is the ordering model. It is two words and has no exclamation mark. I left out \"link in bio\" because there is nothing to buy online. I avoided \"Bring your badge\" because the subhead already says it.",
+            "cites": [
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Four short sentences that name the full brand once, give the date and time, repeat the badge offer, and sign off with the hours in caps. It ends with one hashtag.",
+            "reason": "This follows the caption pattern of leading with the plain fact and signing off with the hours. It is under 300 characters. It uses the full name on first mention and \"the window\" after. It has no emoji and no drinking or party language, and it uses one hashtag from the kit's approved set.",
+            "cites": [
+              "voice-examples",
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "unused slots",
+            "choice": "badge, quote and attribution left null",
+            "reason": "The event-card template has none of these slots. The date is already the template's accent element.",
+            "cites": []
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post uses only facts from the brief and kit, follows the event-card template, and renders cleanly with legible, uncut text. The only observation is that the yellow headline adds a second accent color beside the pink date, which the kit doesn't prohibit."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "event-card",
+        "photo": null,
+        "slots": {
+          "headline": "Shift Change Night",
+          "subhead": "Show a hospital badge and the first cheese slice is on us.",
+          "cta": "Bring your badge",
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": "Saturday, Nov 22",
+          "details": "9pm to 3am, at the window",
+          "caption": "Shift Change Night is our thank-you to hospital staff. Saturday, Nov 22, 9pm to 3am, at the window. Show a hospital badge and the first cheese slice is free. Come straight from your shift, we'll be up with you. #ShiftChangeNight #Columbus #ColumbusOhio #ThirdShiftSlice"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "event-card",
+            "reason": "The brief is an event invitation, and the event card is built for that job. It makes the date, time and place readable at a glance, which is what hospital staff need to plan around a shift.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The event card takes no photo, and none of the three would help it. The window shot shows regular Wed-Sun hours and a price board that could distract from the one-night offer. The cheese pull is appealing but belongs to a different template. The 3AM sign repeats the hours without adding anything.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "Shift Change Night",
+            "reason": "The template's headline slot is for the event name, and the brief supplies it. The name already speaks to shift workers, so no rewording was needed.",
+            "cites": []
+          },
+          {
+            "decision": "date and details",
+            "choice": "Saturday, Nov 22 and 9pm to 3am, at the window",
+            "reason": "The template requires these exactly as given in the brief. Both are well inside the character limits, so a nurse coming off shift can check the date and time at a glance.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Show a hospital badge and the first cheese slice is on us.",
+            "reason": "It carries the free-slice offer, the reason to come and the one concrete detail the other slots lack, as the plan's angle called for. It doesn't repeat the date or time.",
+            "cites": []
+          },
+          {
+            "decision": "call to action",
+            "choice": "Bring your badge",
+            "reason": "The optional CTA gives hospital staff a simple next step. It stays short, at 16 of 24 characters, and doesn't restate the offer.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "A short thank-you with the full when, where and offer, plus hashtags",
+            "reason": "The caption states the details in plain words for people who read under the image. It adds a warm line about being up late with them and uses only facts from the brief. I left out 'link in bio' because the brief mentions no link or sign-up.",
+            "cites": []
+          },
+          {
+            "decision": "unused slots",
+            "choice": "badge, quote and attribution left null",
+            "reason": "The event-card template doesn't have these slots, so they stay empty.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "testimonial-renee",
+      "intent": "testimonial",
+      "goal": "Share a regular's words about why she stops at the window.",
+      "details": "Regular's quote (use exactly): \"I get off at 2:30. This is the only light on the street.\" Regular: Renee, ER nurse. Fictional, written for the demo.",
+      "kit": {
+        "template": "quote-card",
+        "photo": null,
+        "slots": {
+          "headline": null,
+          "subhead": null,
+          "cta": null,
+          "badge": "Till 3am.",
+          "quote": "I get off at 2:30. This is the only light on the street.",
+          "attribution": "Renee, ER nurse",
+          "date": null,
+          "details": null,
+          "caption": "Renee gets off at 2:30. Third Shift Slice is the window she walks up to. Hot slice, paper plate, open till 3am, Wed–Sun. #nightshift"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "quote-card",
+            "reason": "The kit names the quote card as the first choice for testimonials, and nothing in the brief argues against it. The quote is short and strong, so it can carry the post alone without a wordmark competing.",
+            "cites": [
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The quote card takes no photo. Photo 01 shows a woman in scrubs at the window, but she isn't Renee, and using her would imply a real person we can't vouch for. The cheese pull and the taped sign add nothing to her words.",
+            "cites": [
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "quote",
+            "choice": "Renee's line exactly as supplied, with no quotation marks or other characters added in the text",
+            "reason": "The brief says to use the quote verbatim. The critique's flagged yellow quotation mark is a render decoration, not part of the copy, so the slot stays plain text. The renderer should drop the mark or draw it in paper-white so the pink badge is the card's only accent.",
+            "cites": [
+              "guardrails",
+              "visual-system",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "attribution",
+            "choice": "Renee, ER nurse",
+            "reason": "It uses only the name and job from the brief, in the testimonial pattern of first name and job. The time is already in the quote, so repeating it would waste the slot.",
+            "cites": [
+              "voice-examples",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "Till 3am.",
+            "reason": "The badge carries the one small fact a tired reader needs, the exact closing hour, and it stays under the 10-character kit limit. It's the card's single pink accent. It doesn't repeat the quote, which gives the 2:30 getting-off time.",
+            "cites": [
+              "social-rules",
+              "voice-core",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Unchanged from the previous draft: Renee's shift, the window, hot slice on a paper plate, hours, one hashtag",
+            "reason": "The critique didn't flag it. It is short, plain and specific, and it uses only kit facts. It has no link in bio, no exclamation marks, no hype words and one hashtag.",
+            "cites": [
+              "voice-examples",
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "headline, subhead, CTA, date, details",
+            "choice": "Left null",
+            "reason": "The quote-card template has no slots for these, so the quote leads alone.",
+            "cites": [
+              "social-rules"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The quote is exact, the attribution and badge come from the brief and kit, and the caption uses only kit facts. The quote card renders cleanly with no cut-off or overlapping text."
+        },
+        "drafts": 2
+      },
+      "nokit": {
+        "template": "quote-card",
+        "photo": null,
+        "slots": {
+          "headline": null,
+          "subhead": null,
+          "cta": null,
+          "badge": "Till 3am",
+          "quote": "I get off at 2:30. This is the only light on the street.",
+          "attribution": "Renee, ER nurse",
+          "date": null,
+          "details": null,
+          "caption": "Renee gets off at 2:30. The window's open till 3am, so there's still a light on when she does. If you're coming off a late shift in Columbus, walk up. We're here. #ColumbusOhio #NightShift #LateShift #ThirdShiftSlice"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "quote-card",
+            "reason": "The job is a testimonial, and quote-card is the template built for it. Its layout has no wordmark, so the regular's words get the whole card. Nothing in the brief gives a reason to pick a different template.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Quote-card takes no photo. The photos would also compete with the quote. The window shot has a woman in scrubs, but it shows a customer ordering, not Renee. Using it would imply she is Renee, and the wall text \"2:47AM\" doesn't fit a quote about getting off at 2:30. The cheese pull and the sign shots don't add to the testimonial.",
+            "cites": []
+          },
+          {
+            "decision": "quote",
+            "choice": "Renee's words exactly as supplied, with no edits",
+            "reason": "The brief requires the exact quote, and it already gives the reason to stop. The template's quote slot allows 120 characters and this quote is about 56.",
+            "cites": []
+          },
+          {
+            "decision": "attribution",
+            "choice": "Renee, ER nurse",
+            "reason": "It names her and her job, which explains why she gets off at 2:30. It fits the 40-character limit.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "Till 3am",
+            "reason": "The badge is the one accent element, and the closing time is the most useful small fact for a late-shift reader. It fits the 12-character limit and doesn't repeat the quote.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Short caption that carries the hours and speaks to other late-shift workers, plus a few local and shift hashtags",
+            "reason": "The image has no wordmark, so the caption names the business through its hashtag and adds the hours. I left out the plan's 'Wed-Sun' because neither the brief nor the business details give days, and I only used the 'till 3am' that was supplied.",
+            "cites": []
+          },
+          {
+            "decision": "unused slots",
+            "choice": "Left headline, subhead, cta, date and details null",
+            "reason": "The quote-card template has no such slots, so only quote, attribution, badge and caption are filled.",
+            "cites": []
+          }
+        ]
+      }
+    }
+  ]
+}

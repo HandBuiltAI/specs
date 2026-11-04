@@ -33,6 +33,7 @@ Hollis Ware is a one-person ceramics studio in Portland, Maine, selling stonewar
 | `visual-system.json` | Colors, contrast limits, type roles, shape and spacing |
 | `tokens.css` | Generated from visual-system (`npm run tokens -- hollis-ware`); don't edit |
 | `art-direction.md` | North-light photography, photo and type together, the three reference shots |
+| `layout-system.md` | How a post is composed: grid, space, devices, photo placement (read when composing a layout) |
 | `social-rules.md` | Sizes, slot lengths, CTA and hashtag style, logo on posts, template per intent |
 | `guardrails.yaml` | What never to say or show |
 | `_retrieval-rules.yaml` | Which chunks load for each job |

@@ -35,7 +35,7 @@
   background-size: 200% 100%; animation: c-shimmer 1.4s infinite linear;
 }
 @keyframes c-shimmer { to { background-position: -200% 0; } }
-.c-error { color: var(--signal); font-size: 14px; display: flex; gap: 8px; align-items: flex-start; margin: 0; }
+.c-error { color: var(--signal-ink); font-size: 14px; display: flex; gap: 8px; align-items: flex-start; margin: 0; }
 .c-error b { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--signal); display: grid; place-items: center; font-size: 11px; }
 .c-card[data-status="error"] [aria-checked="true"], .c-card[data-status="error"] [data-error="true"] { box-shadow: inset 0 0 0 1.5px var(--signal); }
 
@@ -108,7 +108,7 @@
 .c-line:disabled { opacity: 1; cursor: default; }
 .c-line-k { font-family: var(--f-mono); font-size: 11px; color: var(--ink-2); padding-top: 3px; }
 .c-line[aria-checked="true"] { background: var(--ink); color: var(--on-ink); }
-.c-line[aria-checked="true"] .c-line-k { color: var(--signal); }
+.c-line[aria-checked="true"] .c-line-k { color: var(--signal-ink); }
 
 /* PhotoPicker */
 .c-photos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s2); }
@@ -131,7 +131,7 @@
 /* SourceCard */
 .c-fact { font-size: 28px; letter-spacing: -0.035em; font-weight: 600; line-height: 1.05; margin: 0; text-wrap: balance; }
 .c-conflict { background: var(--sunken); border-radius: var(--r-inner); padding: var(--s3) var(--s4); display: grid; gap: 6px; font-size: 14px; }
-.c-flag { color: var(--signal); }
+.c-flag { color: var(--signal-ink); }
 .c-edit { display: grid; gap: 4px; }
 .c-edit textarea { font-size: 20px; letter-spacing: -0.02em; font-weight: 500; min-height: 0; }
 
@@ -142,7 +142,7 @@
 .c-field label { margin: 0; }
 .c-field input[aria-invalid="true"], .c-field textarea[aria-invalid="true"] { border-color: var(--signal); }
 .c-count { font-family: var(--f-mono); font-size: 10.5px; color: var(--ink-2); justify-self: end; }
-.c-count[data-over="true"] { color: var(--signal); }
+.c-count[data-over="true"] { color: var(--signal-ink); }
 
 /* PostPreview */
 .c-post { position: relative; width: 100%; max-width: 100%; border-radius: 14px; overflow: hidden; background: var(--sunken); }

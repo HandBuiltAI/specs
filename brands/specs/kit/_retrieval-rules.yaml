@@ -1,0 +1,31 @@
+# Which chunks load for each job. Budgets are approximate token caps.
+kit: specs
+version: 1
+profiles:
+  post_generate:
+    always: [voice-core, visual-system, art-direction, social-rules, terminology]
+    if_relevant:
+      - chunk: positioning-core
+        when: The copy states a fact (models, limits, formats, price, URL). Usually promo and announcement.
+      - chunk: voice-examples
+        when: Always useful for headlines; drop first if over budget.
+      - chunk: audience-designers
+        when: The brief is about winning new visitors (promo, announcement).
+      - chunk: guardrails
+        when: Promo, testimonial, or any post that makes a claim.
+    budget: 3000
+  post_critique:
+    always: [voice-core, art-direction, guardrails, social-rules]
+    if_relevant:
+      - chunk: terminology
+        when: The copy names the kit, a feature or a screen.
+      - chunk: positioning-core
+        when: The copy states a fact that needs checking against the facts list.
+    budget: 2000
+  intake_gaps:
+    always: [readme]
+    summaries_only: true
+    if_relevant:
+      - chunk: any
+        when: confidence is needs-review
+    budget: 1500
