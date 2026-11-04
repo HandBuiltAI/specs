@@ -10,7 +10,7 @@ import { update, type KV } from "./store.ts";
 
 export type PostRecord = {
   id: string;
-  brand: DemoBrandId;
+  brand: DemoBrandId | "session";
   intent: PostIntent;
   brief: Brief;
   regenerationOf: string | null;

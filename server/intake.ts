@@ -30,7 +30,8 @@ import { assertGenerationOpen } from "./spend.ts";
 import { loadSession, updateSession, type Session } from "./sessions.ts";
 import { update } from "./store.ts";
 import { guardedCall, notBilled, parseBody, freeText, id, type Deps } from "./handlers.ts";
-import { chunkKey, type ChunkRecord } from "./extract.ts";
+import { chunkKey, loadChunks } from "./kit-chunks.ts";
+import type { ChunkRecord } from "./extract.ts";
 
 // ---------- storage ----------
 
@@ -49,17 +50,6 @@ export type IntakeState = { turns: Turn[]; resolutions: Resolutions; modelTurns:
 const intakeKey = (sid: string) => `intake/${sid}`;
 const empty = (): IntakeState => ({ turns: [], resolutions: {}, modelTurns: 0, running: false });
 
-async function loadChunks(deps: Deps, s: Session): Promise<IntakeChunks> {
-  const out: IntakeChunks = {};
-  for (const t of [...EXTRACT_CHUNKS.map((c) => c.id), "conflicts"] as const) {
-    if (s.extraction?.targets[t]?.status !== "done") continue;
-    const rec = (await deps.kv.get<ChunkRecord>(chunkKey(s.id, t)))?.value;
-    if (!rec) continue;
-    if (rec.target === "conflicts") out.conflicts = { conflicts: rec.conflicts };
-    else out[rec.target] = { draft: rec.draft };
-  }
-  return out;
-}
 
 const pendingOf = (st: IntakeState) => {
   const last = st.turns.at(-1);
