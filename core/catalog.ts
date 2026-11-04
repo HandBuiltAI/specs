@@ -29,6 +29,12 @@ export const KIT_CHUNKS = [
   "guardrails",
 ] as const;
 const chunkId = z.string().regex(/^[a-z][a-z0-9-]{1,40}$/, "a chunk id like voice-core");
+const whyNote = z.object({
+  decision: short(160),
+  choice: z.string().max(400).optional(),
+  reason: z.string().max(600).optional(),
+  chunks: z.array(chunkId).max(6),
+});
 
 export const POST_INTENTS = ["promo", "announcement", "event", "testimonial", "tip"] as const;
 
@@ -96,10 +102,18 @@ export const catalogProps = {
   }),
   PostPreview: z.object({
     format: z.enum(["1:1", "4:5"]),
-    /** The filled template HTML. Rendered in a sandboxed frame with scripts off. */
+    /** The filled template HTML. Rendered in a frame with scripts off. */
     html: z.string().min(1).max(60_000),
     alt: short(200),
-    rationale: z.array(z.object({ decision: short(160), chunks: z.array(chunkId).min(1).max(4) })).max(8),
+    /** "Why this works": each decision with the kit chunks behind it. Pinned to the post where it can be. */
+    rationale: z.array(whyNote).max(16),
+    caption: short(2200).optional(),
+    /** The same brief made with no kit, for the with / without toggle. */
+    baseline: z
+      .object({ format: z.enum(["1:1", "4:5"]), html: z.string().min(1).max(60_000), alt: short(200), rationale: z.array(whyNote).max(16), caption: short(2200).optional() })
+      .optional(),
+    /** File name stem for the PNG download. */
+    fileName: z.string().regex(/^[a-z0-9-]{1,80}$/).optional(),
   }),
   KitProgress: z.object({
     chunks: z.array(z.object({ id: chunkId, status: z.enum(["complete", "needs-review", "missing"]) })).min(1).max(16),

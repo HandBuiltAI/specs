@@ -1,0 +1,205 @@
+{
+  "runId": "fixture",
+  "brand": "half-acre-club",
+  "totalUsd": 0,
+  "briefs": [
+    {
+      "id": "announce-box-01",
+      "intent": "announcement",
+      "goal": "Announce that Box 01 is pea shoots and that it's shipping.",
+      "details": "Box 01 is pea shoots. Ready to cut in about ten days."
+    },
+    {
+      "id": "promo-join",
+      "intent": "promo",
+      "goal": "Get new people to join.",
+      "details": "No discount."
+    }
+  ],
+  "posts": [
+    {
+      "briefId": "announce-box-01",
+      "variant": "kit",
+      "photo": "uploads/photo-02-day-six-sill.jpg",
+      "usage": [],
+      "warnings": [],
+      "plan": {
+        "template": "photo-led",
+        "photo": "uploads/photo-02-day-six-sill.jpg",
+        "angle": "Lead with the windowsill.",
+        "rationale": [
+          {
+            "decision": "template",
+            "choice": "photo-led",
+            "reason": "Fixture note about the layout.",
+            "cites": [
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "day six sill",
+            "reason": "Fixture note about the photo.",
+            "cites": [
+              "art-direction"
+            ]
+          }
+        ]
+      },
+      "drafts": [
+        {
+          "png": "",
+          "html": "",
+          "checks": [],
+          "slots": {
+            "headline": "Fixture headline.",
+            "subhead": "Fixture supporting line.",
+            "cta": null,
+            "badge": "Box 01",
+            "quote": null,
+            "attribution": null,
+            "date": null,
+            "details": null,
+            "caption": "Fixture caption."
+          },
+          "rationale": [
+            {
+              "decision": "headline",
+              "choice": "Fixture headline.",
+              "reason": "Fixture note.",
+              "cites": [
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "supporting line",
+              "choice": "Fixture supporting line.",
+              "reason": "Fixture note.",
+              "cites": [
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Box 01",
+              "reason": "Fixture note.",
+              "cites": [
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Fixture caption.",
+              "reason": "Fixture note.",
+              "cites": [
+                "social-rules"
+              ]
+            }
+          ],
+          "critique": {
+            "verdict": "pass",
+            "summary": "Fixture critique.",
+            "issues": []
+          }
+        }
+      ]
+    },
+    {
+      "briefId": "announce-box-01",
+      "variant": "nokit",
+      "photo": "uploads/photo-01-box-opened.jpg",
+      "usage": [],
+      "warnings": [],
+      "plan": {
+        "template": "photo-led",
+        "photo": "uploads/photo-01-box-opened.jpg",
+        "angle": "Generic.",
+        "rationale": [
+          {
+            "decision": "template",
+            "choice": "photo-led",
+            "reason": "Fixture.",
+            "cites": []
+          }
+        ]
+      },
+      "drafts": [
+        {
+          "png": "",
+          "html": "",
+          "checks": [],
+          "slots": {
+            "headline": "Fixture generic headline!",
+            "subhead": "Fixture generic line.",
+            "cta": null,
+            "badge": null,
+            "quote": null,
+            "attribution": null,
+            "date": null,
+            "details": null,
+            "caption": "Generic caption."
+          },
+          "rationale": [
+            {
+              "decision": "headline",
+              "choice": "Fixture generic headline!",
+              "reason": "Fixture.",
+              "cites": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "briefId": "promo-join",
+      "variant": "kit",
+      "photo": "uploads/photo-03-first-cut.jpg",
+      "usage": [],
+      "warnings": [],
+      "plan": {
+        "template": "offer-badge",
+        "photo": "uploads/photo-03-first-cut.jpg",
+        "angle": "Fixture.",
+        "rationale": []
+      },
+      "drafts": [
+        {
+          "png": "",
+          "html": "",
+          "checks": [],
+          "slots": {
+            "headline": "Fixture promo headline.",
+            "subhead": "Fixture promo line.",
+            "cta": "Join the club",
+            "badge": "$24/month",
+            "quote": null,
+            "attribution": null,
+            "date": null,
+            "details": null,
+            "caption": "Fixture caption."
+          },
+          "rationale": [
+            {
+              "decision": "call to action",
+              "choice": "Join the club",
+              "reason": "Fixture.",
+              "cites": [
+                "terminology"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "briefId": "promo-join",
+      "variant": "nokit",
+      "photo": null,
+      "usage": [],
+      "warnings": [],
+      "plan": null,
+      "drafts": [],
+      "error": "fixture failure"
+    }
+  ]
+}
