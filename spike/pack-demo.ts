@@ -26,7 +26,10 @@ if (!existsSync(brandDir(run.brand))) throw new Error(`No brand folder for "${ru
 const version = (p: PostRecord | undefined) => {
   if (!p || p.error || !p.drafts.length) return null;
   const last = p.drafts.at(-1)!;
-  return { template: p.plan.template, photo: p.photo, slots: last.slots, notes: [...p.plan.rationale, ...last.rationale] };
+  // The plan's notes on copy are intentions the draft's own notes replace, so keep only its
+  // layout and photo choices.
+  const planNotes = p.plan.rationale.filter((n) => /template|layout|photo|image/i.test(n.decision));
+  return { template: p.plan.template, photo: p.photo, slots: last.slots, notes: [...planNotes, ...last.rationale] };
 };
 
 const posts: DemoPosts["posts"] = [];
