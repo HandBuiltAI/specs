@@ -6,7 +6,7 @@
 // items, nothing is still marked needs-review, and every conflict between uploads has an answer
 // (or the owner chose to skip it). The model only picks which gap to ask about and how.
 import { z } from "zod";
-import { catalogProps, type ComponentName, type ParsedCall } from "./catalog.ts";
+import type { ComponentName, ParsedCall } from "./catalog.ts";
 import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type ExtractChunkId } from "./extract.ts";
 import { asData, fillPrompt } from "./prompts.ts";
 
@@ -116,23 +116,28 @@ export function progress(chunks: IntakeChunks, gaps: Gap[]): ChunkProgress[] {
 
 /** The catalog components intake may use. BriefForm and PostPreview belong to making posts; KitProgress is always on screen. */
 export const INTAKE_COMPONENTS = ["SourceCard", "ChoiceChips", "SwatchPicker", "FontPairCard", "ToneSlider", "LineCompare", "PhotoPicker"] as const satisfies readonly ComponentName[];
-type IntakeComponent = (typeof INTAKE_COMPONENTS)[number];
 
-// The SDK sends the component name to the API as a description, not a hard constraint, but it
-// validates the answer against this full schema, and the server checks it again with parseCall.
-const CallSchema = z.union(
-  INTAKE_COMPONENTS.map((name) => z.object({ component: z.enum([name]), props: catalogProps[name] })) as unknown as [
-    z.ZodObject<{ component: z.ZodEnum<{ [K in IntakeComponent]: K }>; props: z.ZodType }>,
-    z.ZodObject<{ component: z.ZodEnum<{ [K in IntakeComponent]: K }>; props: z.ZodType }>,
-  ],
-);
-
+// The props travel as a JSON string, not as a nested schema: a union of all seven components'
+// props compiles to a structured-output grammar the API rejects as too large (gate run, Nov 4).
+// The prompt lists each component's props, and the server checks them strictly with parseCall.
 export const IntakeTurnSchema = z.object({
   gap: z.string().describe("The id of the gap this turn resolves, copied exactly from the gaps list."),
   say: z.string().describe("At most one short sentence to the owner, shown above the component. Plain words, no greeting."),
-  call: CallSchema.describe("Exactly one component from the catalog, with its props."),
+  component: z.enum(INTAKE_COMPONENTS).describe("Exactly one component from the catalog."),
+  props: z.string().describe("The component's props as one JSON object, following that component's shape in the catalog section."),
 });
 export type IntakeTurnOutput = z.infer<typeof IntakeTurnSchema>;
+
+/** The model's component call as plain data, ready for parseCall. Bad JSON comes back as an error. */
+export function rawCall(out: IntakeTurnOutput): { ok: true; call: { component: string; props: unknown } } | { ok: false; error: string } {
+  try {
+    const props: unknown = JSON.parse(out.props);
+    if (!props || typeof props !== "object" || Array.isArray(props)) return { ok: false, error: "props isn't a JSON object" };
+    return { ok: true, call: { component: out.component, props } };
+  } catch {
+    return { ok: false, error: "props isn't valid JSON" };
+  }
+}
 
 /** First sentence only, capped: the spec allows one component plus at most one sentence per turn. */
 export function oneSentence(s: string): string {

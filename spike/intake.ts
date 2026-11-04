@@ -18,6 +18,7 @@ import {
   findGaps,
   intakePrompt,
   oneSentence,
+  rawCall,
   targetChunk,
   type IntakeChunks,
   type Resolutions,
@@ -95,10 +96,11 @@ for (let turn = 1; turn <= LIMITS.intakeTurns; turn++) {
   }
   const seconds = (Date.now() - t0) / 1000;
   const gap = gaps.find((g) => g.id === data.gap);
-  const parsed = parseCall(data.call);
+  const out = rawCall(data);
+  const parsed = out.ok ? parseCall(out.call) : out;
   if (!gap || !parsed.ok) {
     const error = !gap ? `pointed at "${data.gap}", which isn't open` : parsed.ok ? "" : parsed.error;
-    log.push({ turn, seconds, usd, gap: data.gap, kind: "", component: data.call.component, say: data.say, rawSay: data.say, answer: "", ok: false, error });
+    log.push({ turn, seconds, usd, gap: data.gap, kind: "", component: data.component, say: data.say, rawSay: data.say, answer: "", ok: false, error });
     console.log(`  turn ${turn}: INVALID ${error}`);
     continue;
   }

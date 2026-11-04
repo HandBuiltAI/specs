@@ -73,6 +73,13 @@ export function intakeTurnFor(user: string): unknown {
   };
 }
 
+/** Tests write turns as { gap, say, call }; the model sends the call's props as a JSON string. */
+function asModelTurn(t: unknown): unknown {
+  const x = t as { gap: string; say: string; call?: { component: string; props: unknown }; props?: string };
+  if (!x.call) return t;
+  return { gap: x.gap, say: x.say, component: x.call.component, props: JSON.stringify(x.call.props) };
+}
+
 export function makeDeps(
   opts: { env?: Record<string, string | undefined>; usd?: number; turnstileOk?: boolean; fail?: (step: string) => Error | null; intake?: (user: string) => unknown } = {},
 ) {
@@ -83,7 +90,7 @@ export function makeDeps(
     if (err) throw err;
     const usage: Usage = { step: o.step, model: "claude-sonnet-5-5", input: 1000, output: 500, cacheRead: 0, cacheWrite: 0, usd: opts.usd ?? 0.05 };
     const data =
-      o.step === "intake" ? (opts.intake ?? intakeTurnFor)(o.user)
+      o.step === "intake" ? asModelTurn((opts.intake ?? intakeTurnFor)(o.user))
       : o.step === "plan" ? PLAN
       : o.step === "write" ? WRITTEN
       : o.step === "read" ? EVIDENCE

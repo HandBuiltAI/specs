@@ -212,6 +212,9 @@ test("the model can't point at a closed gap or a photo that wasn't uploaded", as
   const { deps } = makeDeps({ intake: () => reply });
   const { sid, ids } = await draftedSession(deps, true);
   await expectRefusal(await turn(deps, { sessionId: sid }), 502, "model_output");
+  // Props that aren't JSON are refused the same way.
+  reply = { gap: "need:art-direction:photo-rule", say: "Hi.", component: "ChoiceChips", props: "{not json" };
+  await expectRefusal(await turn(deps, { sessionId: sid }), 502, "model_output");
   // The failed turn released its claim, so the owner can try again.
   const gap = "need:art-direction:photo-rule";
   reply = {

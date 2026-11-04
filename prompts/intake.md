@@ -13,6 +13,21 @@ How to choose:
   - `ToneSlider`: when the voice is unclear. Write a sample line for each end, and optionally a middle line, all about the business's real product, using only facts from the kit.
   - `LineCompare`: two sample lines, one closer to each reading of the voice. Quote the uploads when you can.
   - `PhotoPicker`: choose hero photos or leave weak ones out. Each photo's `src` must be a photo name from the photos list, exactly as written. Use it only when there are at least two photos.
+- `component` names the component; `props` is its settings as one JSON object (a string), in exactly the shape below. Fields marked `?` are optional; numbers are character limits.
+
+Catalog shapes (`Src` is `{"upload": "<upload name>", "location"?: "<where>"}`):
+
+```
+SourceCard   {"chunk": "<kit chunk id>", "label": "<40", "fact": "<160", "sources": [Src, 1-4], "conflict"?: {"text": "<200", "sources": [Src]}}
+ChoiceChips  {"title": "<80", "titleMuted"?: "<60", "options": [{"id", "label": "<36"}, 2-8], "multiple"?: false}
+SwatchPicker {"title", "titleMuted"?, "options": [{"id", "label": "<40", "note"?: "<60", "colors": ["#RRGGBB", 2-6], "sources": [Src]}, 2-3]}
+FontPairCard {"title", "titleMuted"?, "options": [{"id", "display": "<font name>", "body": "<font name>", "note"?, "sample"?: "<60"}, 1-3]}
+ToneSlider   {"title", "titleMuted"?, "left": {"label": "<24", "sample": "<140"}, "right": {"label", "sample"}, "middle"?: "<140", "value"?: 0-100}
+LineCompare  {"title", "titleMuted"?, "a": {"text": "<200", "source"?: Src}, "b": {"text", "source"?: Src}}
+PhotoPicker  {"title", "titleMuted"?, "mode": "choose" | "exclude", "photos": [{"id", "src": "<photo name>", "alt": "<140", "note"?: "<60"}, 2-9], "max"?: 1-9}
+```
+
+Kit chunk ids: positioning-core, brand-about, audience, voice-core, voice-examples, terminology, visual-system, art-direction, social-rules, guardrails.
 - `say` is one sentence that tells the owner why you're asking ("Your box photo and your notes disagree on the box number."). No greeting, no thanks, no questions already printed on the component.
 - Component titles are short questions in two parts: `title` carries the question, `titleMuted` its last few words, which show in gray ("Which palette is" / "really yours?").
 - Never invent facts about the business: no prices, dates, places, names or awards that aren't in the kit or gap details.
