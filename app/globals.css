@@ -202,3 +202,24 @@ main.posts .posts-lede { max-width: 46rem; }
 .posts-item { display: grid; gap: var(--s3); min-width: 0; }
 .posts-item header { padding: 0 var(--s3); }
 .posts-goal { margin: var(--s1) 0 0; font-weight: 500; letter-spacing: -0.01em; text-wrap: balance; }
+
+/* Start screen */
+main.start .start-lede { max-width: 40rem; font-size: 18px; }
+.demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--s5); margin-top: var(--s5); }
+.demo-card { margin: 0; display: flex; flex-direction: column; padding: 0; overflow: hidden; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; }
+.demo-card:hover { transform: translateY(-2px); }
+.demo-card:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.demo-plate { background: var(--plate-bg); color: var(--plate-ink); }
+.demo-plate img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.demo-wordmark { margin: 0; padding: 18px 20px 20px; min-height: 100px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; font-family: var(--plate-font); font-weight: var(--plate-weight); letter-spacing: var(--plate-tracking); font-size: 34px; line-height: 0.95; }
+.demo-wordmark-2 { font-size: calc(1em * var(--plate-line2-scale)); letter-spacing: var(--plate-line2-tracking); margin-top: 0.3em; }
+.demo-body { padding: var(--s4) var(--s5) var(--s5); display: flex; flex-direction: column; gap: var(--s2); flex: 1; }
+.demo-body p { margin: 0; }
+.demo-foot { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); margin-top: auto; padding-top: var(--s3); }
+.demo-foot .swatches { margin: 0; }
+.demo-foot .swatch { margin-right: 0; }
+.start-own > span { white-space: nowrap; }
+.start-own { display: flex; justify-content: space-between; align-items: center; gap: var(--s5); text-decoration: none; max-width: 46rem; }
+.start-own p { margin: var(--s2) 0 0; }
+.start-links { margin-top: var(--s7); }
+@media (max-width: 560px) { .start-own { flex-direction: column; align-items: flex-start; } }

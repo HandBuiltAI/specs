@@ -59,3 +59,11 @@ test("pack-demo turns a spike run into demo posts, skipping failed versions", ()
     else writeFileSync(brandFile, saved);
   }
 });
+
+test("tokenValues resolves role variables to brand values", async () => {
+  const { tokenValues } = await import("../core/kit.ts");
+  const t = tokenValues(":root { --color-ink: #111; --font-x: \"A\", sans-serif; --role-text: var(--color-ink); --role-y: var(--missing); }");
+  assert.equal(t["--role-text"], "#111");
+  assert.equal(t["--font-x"], "\"A\", sans-serif");
+  assert.equal(t["--role-y"], "");
+});
