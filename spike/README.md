@@ -20,6 +20,7 @@ cp .env.example .env             # then paste your API key after ANTHROPIC_API_K
 | `npm run review -- output/<run-id>` | Rebuilds a run's review page from its `run.json` | No |
 | `npm run tokens -- half-acre-club` | Regenerates `tokens.css` from `visual-system.json` | No |
 | `npm run spike -- spike/extract.ts half-acre-club` | Phase 4 gate: extracts a kit from the brand's messy uploads and compares it with the hand-built kit | Yes, roughly $0.30–0.50 |
+| `npm run spike -- spike/compose.ts third-shift-slice` | Phase 6: lays out the brand's packed demo posts from its `layout-system` chunk instead of the shared templates, and writes a template-vs-composed page to `output/compose-<run-id>/` (same photo and copy, only the layout changes) | Yes, under $0.50 |
 | `npm run review-extract -- output/extract-<run-id>` | Rebuilds an extraction run's page from its `run.json`, scored against the current checklist | No |
 
 Open `output/<run-id>/index.html` in a browser to review a run. Tick "I'd show this to a client" and pick the better post per brief; the tally at the top is the phase 2 gate. **Blind mode** hides the labels and reasoning and shuffles sides, for asking a designer friend.
@@ -46,3 +47,9 @@ Models, `max_tokens` and effort per step live in `core/config.ts`. Kit chunks pe
 3. **Assemble** (`prompts/assemble.md`, Sonnet 5.5, medium effort): one call per kit chunk plus one for conflicts. The evidence is cached text: the first call writes the cache, the rest read it.
 
 Open `output/extract-<run-id>/index.html`. At the top: the checklist score (facts it should find and things it must not invent), and any call slower than 20 seconds, since the deployed app cuts each Claude call off at 26. Below: each extracted chunk next to the hand-built one. The extracted kit is also written as files to `output/extract-<run-id>/kit/`.
+
+## Composed layouts (phase 6)
+
+`spike/compose.ts` tests whether the model can design each post's layout from the brand's `layout-system` chunk, so posts stop looking like the same six templates in different colors. It reuses a brand's packed demo posts (`demo-posts.json`), so the copy and photo are already approved and only the layout changes.
+
+For each post: **compose** (`prompts/compose.md`, Sonnet 5.5) returns HTML and CSS, then code checks it (`core/compose.ts`): copy can only come from the slots (the model leaves `data-slot` elements empty and code fills them), colors and fonts only through the kit's CSS variables, a short list of tags, no inline styles or URLs. The page is rendered and probed for text off the canvas or clipped, overlapping slots, type under 24px, low contrast and copy sitting straight on the photo. Any problem goes back to the model once; if the second try fails too, the post falls back to its template.

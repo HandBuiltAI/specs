@@ -93,4 +93,5 @@ Models: Sonnet 5.5 for extraction (read, assemble), plan and write; Haiku 5.5 fo
 - Three fictional demo brands (warm and handmade, bold and loud, minimal and premium), labeled as fictional.
 - URL extraction (later phase): Claude web fetch tool, homepage plus one or two pages, capped; paste box fallback.
 - A2UI renderer: our own small loop, not CopilotKit (Scott, 2026-11-04): one guarded Haiku call per turn, validated against `core/catalog.ts`; catalog components stay plain React so CopilotKit or `@a2ui/react` can slot in later.
+- Layouts (Scott, 2026-11-04): the model composes each post's layout from the kit's `layout-system` chunk (`prompts/compose.md`), checked in code by `core/compose.ts` (copy filled by code, colors and fonts only via kit variables, render probe); the six templates are the fallback. Still HTML/CSS, never image generation.
 - License: MIT for code. Fictional brands, prompts, and design assets are all rights reserved, stated in the README.

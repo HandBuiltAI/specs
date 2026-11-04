@@ -120,6 +120,8 @@ Posts are rendered from HTML/CSS templates filled by Claude, not generated as im
 
 **Templates:** start with six layouts (photo-led, type-led, quote card, split, offer badge, event card), each with named slots and character limits. Templates use only color and type roles, never brand values, so one set serves every brand. The logo renders in a logo slot that takes an uploaded SVG or PNG, falling back to a text wordmark set in the brand's wordmark font when no logo is uploaded.
 
+**Composed layouts (added Nov 4, 2026):** shared templates made every brand compose the same way, so each kit now has a `layout-system` chunk and a compose step designs each post's HTML/CSS from it. Code fills in the copy and allows colors and fonts only through the kit's tokens, then a render probe checks for overflow, overlap, small type, low contrast and text on photos. The six templates remain the fallback when a composition fails its checks.
+
 **Model choices**
 
 | Step | Model | Why |

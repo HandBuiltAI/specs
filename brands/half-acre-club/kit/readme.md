@@ -33,6 +33,7 @@ Half Acre Club is a monthly growing kit for renters: one small project per box, 
 | `visual-system.json` | Colors, contrast limits, type roles, shape and spacing |
 | `tokens.css` | Generated from visual-system (`npm run tokens -- half-acre-club`); don't edit |
 | `art-direction.md` | Photo treatment, photo and type together, the three reference shots |
+| `layout-system.md` | How a post is composed: grid, space, devices, photo placement (read when composing a layout) |
 | `social-rules.md` | Sizes, slot lengths, CTA and hashtag style, logo on posts, template per intent |
 | `guardrails.yaml` | What never to say or show |
 | `_retrieval-rules.yaml` | Which chunks load for each job |
