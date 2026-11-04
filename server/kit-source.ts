@@ -3,7 +3,7 @@
 // serves both.
 import "server-only";
 import { CONTENT, DEMO_BRAND_IDS, type DemoBrandId } from "./generated/content.ts";
-import { kitFromChunks, businessNameOf } from "../core/session-kit.ts";
+import { kitFromChunks, businessNameOf, googleFontsHref } from "../core/session-kit.ts";
 import type { Image } from "../core/claude.ts";
 import { Refusal } from "./http.ts";
 import type { Session } from "./sessions.ts";
@@ -20,6 +20,8 @@ export type KitSource = {
   photos: KitPhoto[];
   tokensCss: string;
   wordmarkLines: string[];
+  /** The stylesheet that loads the kit's fonts in the browser. */
+  fontsHref: string;
 };
 
 export const isDemoBrand = (b: string): b is DemoBrandId => (DEMO_BRAND_IDS as readonly string[]).includes(b);
@@ -34,6 +36,7 @@ export function demoKit(brand: DemoBrandId): KitSource {
     photos: b.photos.map((p) => ({ file: p.file, alt: p.alt, mediaType: p.mediaType, base64: p.base64 })),
     tokensCss: b.kit["tokens.css"] ?? CONTENT.neutralTokensCss,
     wordmarkLines: b.wordmark,
+    fontsHref: "/generated/fonts/fonts.css",
   };
 }
 
@@ -61,7 +64,7 @@ export async function sessionKit(deps: { kv: KV }, session: Session): Promise<Ki
     used.add(file);
     photos.push({ file, alt: `Uploaded photo: ${up.label ?? "photo"}`, mediaType: mediaType as Image["mediaType"], base64: Buffer.from(bytes).toString("base64"), uploadId: up.id });
   }
-  return { id: "session", files: kit.files, businessName: name, businessLine: line.slice(0, 300), photos, tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines };
+  return { id: "session", files: kit.files, businessName: name, businessLine: line.slice(0, 300), photos, tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, fontsHref: googleFontsHref(Object.values(kit.fonts)) };
 }
 
 export async function kitFor(deps: { kv: KV }, session: Session, brand: DemoBrandId | "session"): Promise<KitSource> {

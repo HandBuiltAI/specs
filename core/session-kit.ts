@@ -114,7 +114,7 @@ const DISPLAY_FONTS = new Set<string>(["Archivo Black", "DM Serif Display", "Pla
 
 export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["fonts"]): string {
   const font = (f: string) => `"${f}", system-ui, sans-serif`;
-  const headingWeight = DISPLAY_FONTS.has(fonts.heading) ? 400 : 600;
+  const headingWeight = DISPLAY_FONTS.has(fonts.heading) ? 400 : 700;
   const lines = [
     `  --color-background: ${colors.background};`,
     `  --color-text: ${colors.text};`,
@@ -122,7 +122,7 @@ export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["
     `  --color-accent: ${colors.accent};`,
     `  --color-label: ${colors.label};`,
     `  --font-wordmark: ${font(fonts.wordmark)};`,
-    `  --weight-wordmark: ${DISPLAY_FONTS.has(fonts.wordmark) || SCRIPT_FONTS.has(fonts.wordmark) ? 400 : 600};`,
+    `  --weight-wordmark: ${DISPLAY_FONTS.has(fonts.wordmark) || SCRIPT_FONTS.has(fonts.wordmark) ? 400 : 700};`,
     `  --tracking-wordmark: 0;`,
     `  --wordmark-line2-tracking: 0.3em;`,
     `  --wordmark-line2-scale: 0.45;`,
@@ -228,4 +228,13 @@ export function businessNameOf(chunks: IntakeChunks): string | null {
   const item = lastItem(chunks["positioning-core"]?.draft.items ?? [], "fact: business_name", "fact: business name", "fact: name", "business_name", "name");
   const name = item?.value.split(/\n/)[0]?.replace(/^["“]|["”]$/g, "").trim();
   return name ? name.slice(0, 60) : null;
+}
+
+const SINGLE_WEIGHT = new Set(["Archivo Black", "DM Serif Display", "Instrument Serif"]);
+
+/** The Google Fonts stylesheet for a kit's curated fonts, for rendering its posts in the browser. */
+export function googleFontsHref(fonts: string[]): string {
+  const families = [...new Set(fonts)].filter((f) => (CURATED_FONTS as readonly string[]).includes(f)).sort();
+  const spec = (f: string) => `family=${encodeURIComponent(f).replace(/%20/g, "+")}${SINGLE_WEIGHT.has(f) ? "" : ":wght@400;700"}`;
+  return `https://fonts.googleapis.com/css2?${families.map(spec).join("&")}&display=swap`;
 }

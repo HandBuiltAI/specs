@@ -6,6 +6,7 @@ import { z } from "zod";
 import { LIMITS } from "../core/limits.ts";
 import { WriteSchema } from "../core/schemas.ts";
 import { Refusal, json, readJson } from "./http.ts";
+import { CONTENT } from "./generated/content.ts";
 import { assertGenerationOpen } from "./spend.ts";
 import { loadSession, updateSession } from "./sessions.ts";
 import { guardedCall, notBilled, parseBody, id, type Deps } from "./handlers.ts";
@@ -24,6 +25,11 @@ export async function kitFiles(req: Request, deps: Deps) {
     files: kit.files,
     tokensCss: kit.tokensCss,
     wordmarkLines: kit.wordmarkLines,
+    fontsHref: kit.fontsHref,
+    templates: CONTENT.templates,
+    templatesManifest: CONTENT.templatesManifest,
+    baseCss: CONTENT.baseCss,
+    neutralTokensCss: CONTENT.neutralTokensCss,
     photos: kit.photos.map((p) => ({ file: p.file, uploadId: p.uploadId })),
   });
 }

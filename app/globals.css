@@ -237,3 +237,10 @@ main.kitpage .kitpage-lede { max-width: 42rem; }
 .kitpage-file summary { cursor: pointer; color: var(--ink-2); margin-top: var(--s2); }
 .kitpage-file pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--f-mono); font-size: 11.5px; line-height: 1.5; background: var(--sunken); border-radius: var(--r-inner); padding: var(--s3); max-height: 28rem; overflow: auto; margin: var(--s2) 0 0; }
 .kit-download { display: grid; gap: var(--s2); justify-items: end; }
+
+/* Make posts, for the visitor's own kit (after Fill the gaps). */
+.make-posts { margin-top: var(--s8); padding-top: var(--s6); border-top: 1px solid var(--line); display: grid; gap: var(--s5); }
+.make-posts h2 span { color: var(--ink-2); }
+.make-brief { display: grid; gap: var(--s2); max-width: 46rem; }
+.make-brief .c-seg { margin-bottom: var(--s2); flex-wrap: wrap; }
+.make-brief label { margin-top: var(--s2); font-weight: 500; }

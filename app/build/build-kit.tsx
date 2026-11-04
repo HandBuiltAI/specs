@@ -12,6 +12,7 @@ import { call, pool, sendForm, type ApiError } from "../lib/api.ts";
 import { prepareImage } from "../lib/images.ts";
 import { Turnstile } from "../lib/turnstile.tsx";
 import Intake from "./intake.tsx";
+import MakePosts from "./make-posts.tsx";
 
 type UploadKindApi = "image" | "logo" | "pdf" | "url" | "pasted" | "note";
 type Upload = { id: string; kind: UploadKindApi; label: string; colors?: Swatch[]; pages?: number };
@@ -329,6 +330,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
           ))}
           <p className="muted small">Uploads cited: {Object.values(labelOf).join(", ")}</p>
           {sessionId && draftingDone && <Intake sessionId={sessionId} onKitChanged={() => loadKit(sessionId).catch(() => {})} />}
+          {sessionId && draftingDone && <MakePosts sessionId={sessionId} />}
         </>
       )}
     </>

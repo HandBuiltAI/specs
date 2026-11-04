@@ -182,7 +182,7 @@ export function PostPreview(props: Props) {
 /** The post's @font-face rules with each font inlined as a data URL. html-to-image can't find
  *  fonts linked inside the frame on its own, and a PNG without them falls back to system type. */
 async function embeddedFontCss(doc: Document): Promise<string> {
-  const links = [...doc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].filter((l) => l.href.includes("/fonts/"));
+  const links = [...doc.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].filter((l) => l.href.includes("/fonts/") || l.href.includes("fonts.googleapis.com"));
   const out: string[] = [];
   for (const link of links) {
     const css = await (await fetch(link.href)).text();
