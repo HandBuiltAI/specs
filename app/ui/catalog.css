@@ -147,16 +147,32 @@
 /* PostPreview */
 .c-post { position: relative; width: 100%; max-width: 100%; border-radius: 14px; overflow: hidden; background: var(--sunken); }
 .c-post iframe { border: 0; transform-origin: 0 0; position: absolute; top: 0; left: 0; pointer-events: none; }
-.c-why {
-  position: absolute; inset: 0; padding: var(--s5); display: grid; align-content: end; gap: var(--s3);
-  background: color-mix(in srgb, #0d0d0e 82%, transparent); color: #f3f3f1; backdrop-filter: blur(4px);
-  opacity: 0; transition: opacity 0.3s var(--ease); pointer-events: none;
+/* "Why this works": art-director markup on the post, notes below it */
+.c-post[data-why="true"] iframe { filter: saturate(0.6) brightness(0.92); transition: filter 0.3s var(--ease); }
+.c-pins { position: absolute; inset: 0; pointer-events: none; }
+.c-pin-box { position: absolute; border: 1.5px dashed rgba(255, 255, 255, 0.9); outline: 1.5px dashed rgba(14, 14, 15, 0.55); outline-offset: 0; border-radius: 4px; transition: background 0.2s; }
+.c-pin-box[data-hot="true"] { background: rgba(255, 255, 255, 0.18); border-style: solid; }
+.c-pin-tags { position: absolute; top: -11px; left: -11px; display: flex; gap: 3px; pointer-events: auto; }
+.c-pin {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--r-pill);
+  background: #0e0e0f; color: #fff; font: 600 11px/1 var(--f-mono); box-shadow: 0 0 0 2px #fff; cursor: default;
 }
-.c-why[data-on="true"] { opacity: 1; pointer-events: auto; }
-.c-why .c-name { color: #ff5236; }
-.c-why ol { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--s3); counter-reset: why; }
-.c-why li { display: grid; gap: 2px; font-size: 14px; line-height: 1.35; }
-.c-why-chunks { font-family: var(--f-mono); font-size: 10.5px; color: #8e8e93; }
+.c-why-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; counter-reset: why; }
+.c-why-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--s3); padding: var(--s3); border-radius: var(--r-inner); transition: background 0.2s; }
+.c-why-list li[data-hot="true"] { background: var(--sunken); }
+.c-why-list li[data-pinned="false"] .c-pin { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.c-why-list p { margin: 2px 0 0; font-size: 14px; line-height: 1.4; }
+.c-why-k { font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.c-why-choice { font-weight: 500; overflow-wrap: anywhere; }
+.c-why-reason { color: var(--ink-2); }
+.c-why-chunks { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; font-family: var(--f-mono); font-size: 10.5px; }
+.c-why-chunks span { border: 1px solid var(--line); border-radius: var(--r-pill); padding: 2px 8px; }
+.c-why-chunks em { color: var(--ink-2); font-style: normal; }
+.c-seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: var(--r-pill); background: var(--sunken); justify-self: start; }
+.c-seg button { background: none; color: var(--ink-2); border-radius: var(--r-pill); padding: 7px 14px; font-size: 13px; font-weight: 500; margin: 0; }
+.c-seg button[aria-checked="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+.c-caption summary { cursor: pointer; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.c-caption p { margin: var(--s2) 0 0; font-size: 14px; white-space: pre-line; overflow-wrap: anywhere; }
 
 /* KitProgress */
 .c-kp-num { font-size: 88px; letter-spacing: -0.06em; font-weight: 600; line-height: 0.85; font-variant-numeric: tabular-nums; }

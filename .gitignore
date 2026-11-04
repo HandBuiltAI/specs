@@ -20,3 +20,8 @@ dist/
 next-env.d.ts
 # Generated from prompts/, templates/ and brands/ by `npm run content`
 server/generated/
+# Fonts and demo photos copied for the browser by `npm run content`
+public/generated/
+
+# Written by `next dev` for AI agents; CLAUDE.md is this repo's guide
+AGENTS.md

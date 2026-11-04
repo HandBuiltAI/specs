@@ -192,3 +192,13 @@ main.build > .card, main.build > p, main.build > h1, main.build > h2, main.build
   .intake-grid { grid-template-columns: 1fr; }
   .intake-side { position: static; }
 }
+
+/* Make posts (demo brands) */
+main.posts .posts-lede { max-width: 46rem; }
+.posts-kit { display: flex; justify-content: space-between; align-items: center; gap: var(--s5); max-width: 46rem; flex-wrap: wrap; }
+.posts-kit p { margin: var(--s1) 0 0; }
+.posts-kit > div { flex: 1 1 280px; }
+.posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: var(--s5); margin: var(--s6) 0; align-items: start; }
+.posts-item { display: grid; gap: var(--s3); min-width: 0; }
+.posts-item header { padding: 0 var(--s3); }
+.posts-goal { margin: var(--s1) 0 0; font-weight: 500; letter-spacing: -0.01em; text-wrap: balance; }
