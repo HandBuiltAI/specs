@@ -41,7 +41,8 @@ export type ChunkRecord =
   | { target: "conflicts"; conflicts: Conflicts["conflicts"]; warnings: string[] };
 
 export const evidenceKey = (sid: string, uploadId: string) => `extract/${sid}/evidence/${uploadId}`;
-export const chunkKey = (sid: string, target: string) => `extract/${sid}/chunk/${target}`;
+export { chunkKey } from "./kit-chunks.ts";
+import { chunkKey } from "./kit-chunks.ts";
 
 const KIND: Record<UploadRecord["kind"], UploadKind> = { image: "photo", logo: "logo", pdf: "pdf", url: "url", pasted: "pasted", note: "note" };
 const emptyExtraction = (): ExtractionState => ({ locked: false, reads: {}, targets: {} });

@@ -28,6 +28,12 @@ export const WRITTEN: Written = {
   rationale: [{ decision: "headline", choice: "Pea shoots. Ten days.", reason: "Matches the voice anchor.", cites: ["voice-core"] }],
 };
 
+export const COMPOSED = {
+  html: '<section class="card"><h1 data-slot="headline"></h1></section><img data-slot="photo"><div data-slot="wordmark"></div>',
+  css: ".card{position:absolute;inset:var(--safe-margin);background:var(--role-background)} h1{font-family:var(--font-heading);color:var(--role-heading);font-size:96px}",
+  rationale: [{ decision: "layout", choice: "One card", reason: "Paper on a counter.", cites: ["layout-system"] }],
+};
+
 export type Sent = { step: string; system: string; user: string; cachedText?: string; fetchDomain?: string; images?: number; documents?: number };
 
 export const EVIDENCE: Evidence = {
@@ -94,6 +100,7 @@ export function makeDeps(
       : o.step === "plan" ? PLAN
       : o.step === "write" ? WRITTEN
       : o.step === "read" ? EVIDENCE
+      : o.step === "compose" ? COMPOSED
       : o.user.includes("Target: conflicts") ? CONFLICTS
       : DRAFT;
     return { data: data as never, usage };

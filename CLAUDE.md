@@ -12,6 +12,8 @@ The app's look is agreed with Scott ("Quiet room. Loud brand."): gray canvas, wh
 
 Fill the gaps (`/build`, after the reveal): `POST /api/intake` writes the owner's reply into the kit (no model call), runs the completeness check in code (`core/intake.ts`: required items per chunk, no needs-review items, every conflict answered or skipped), and if gaps remain asks Haiku (`prompts/intake.md`) for one gap, one component, one sentence. Capped at 12 questions per session.
 
+Make posts from the visitor's own kit (`/build`, after Fill the gaps): `core/session-kit.ts` turns drafted chunks into kit files and tokens; `server/kit-source.ts` gives plan, write and compose one kit shape for demo brands and sessions; `POST /api/posts/compose` (two tries, probe issues as codes only) and `POST /api/posts/baseline` (no-kit version); the browser runs `LAYOUT_PROBE` and falls back to the template.
+
 - Phase 5 gate check: `npm run spike -- spike/intake.ts output/extract-<run-id>` (uses the phase 4 gate's drafted kit; transcript in `output/intake-<run-id>/`).
 
 Phase 4 (for reference):

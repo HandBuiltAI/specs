@@ -20,8 +20,8 @@ export const EXTRACT_CHUNKS = [
   {
     id: "positioning-core",
     title: "Positioning",
-    job: "What the business is, who it serves, the promise, how it differs, and a facts list (offer, price, shipping, location, founding, people) holding only facts an upload states.",
-    labels: "what_it_is, who_its_for, promise, differentiator, fact: <name>",
+    job: "What the business is, who it serves, the promise, how it differs, and a facts list (business name, offer, price, shipping, location, founding, people) holding only facts an upload states.",
+    labels: "what_it_is, who_its_for, promise, differentiator, fact: business_name, fact: <name>",
   },
   {
     id: "brand-about",

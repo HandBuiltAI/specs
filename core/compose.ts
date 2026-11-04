@@ -190,7 +190,36 @@ export function buildComposedPage(opts: {
   return `<!doctype html><html><head>${head}</head><body><main class="${cls}">${html}</main></body></html>`;
 }
 
-export type ProbeIssue = { slot: string; problem: string };
+export const PROBE_CODES = ["off_canvas", "clipped", "not_visible", "small_type", "faded", "on_photo", "contrast", "overlap", "photo_missing", "photo_small"] as const;
+export type ProbeCode = (typeof PROBE_CODES)[number];
+/** One problem the probe found. `problem` is for people; `code` and `n` are what the browser sends back to the server. */
+export type ProbeIssue = { slot: string; problem: string; code: ProbeCode; n?: number };
+
+const SLOT_NAMES = [...TEXT_SLOTS, "photo", "wordmark"] as const;
+/** A probe issue as the browser reports it: names and numbers only, never free text, so it can't carry a prompt. */
+export const ProbeReportSchema = z.strictObject({
+  slot: z.string().regex(new RegExp(`^(${SLOT_NAMES.join("|")})(\\+(${SLOT_NAMES.join("|")}))?$`)),
+  code: z.enum(PROBE_CODES),
+  n: z.number().finite().min(0).max(10000).optional(),
+});
+
+/** The sentence the compose step reads for a reported issue. */
+export function probeText(i: { slot: string; code: ProbeCode; n?: number }): string {
+  const n = i.n === undefined ? "" : String(Math.round(i.n * 10) / 10);
+  const text: Record<ProbeCode, string> = {
+    off_canvas: `runs off the canvas${n ? ` (by ${n}px)` : ""}`,
+    clipped: "is clipped by its box",
+    not_visible: "isn't visible",
+    small_type: `type is ${n || "under 24"}px; 24px is the smallest that reads on a phone`,
+    faded: "text is faded",
+    on_photo: "sits straight on the photo; put it on a panel or move it",
+    contrast: `contrast ${n ? `${n}:1 ` : ""}is too low`,
+    overlap: "overlap",
+    photo_missing: "did not load",
+    photo_small: "too small or off the canvas",
+  };
+  return `${i.slot}: ${text[i.code]}`;
+}
 
 /**
  * Runs inside the rendered page (Playwright's page.evaluate) and returns layout problems a
@@ -225,23 +254,23 @@ export const LAYOUT_PROBE = `(() => {
     const slot = el.dataset.slot;
     const range = document.createRange(); range.selectNodeContents(el);
     const r = range.getBoundingClientRect();
-    if (!r.width || !r.height) { issues.push({ slot, problem: 'not visible' }); continue; }
+    if (!r.width || !r.height) { issues.push({ slot, code: 'not_visible', problem: 'not visible' }); continue; }
     const lb = lineBox(el);
     boxes.push({ slot, el, r: lb });
     // Vertically, judge by the line boxes: a display face's font box sits well above its capitals.
     const off = [['left', P.left - r.left], ['top', P.top - lb.top], ['right', r.right - P.right], ['bottom', lb.bottom - P.bottom]].filter(([, d]) => d > 1);
-    if (off.length) issues.push({ slot, problem: 'runs off the canvas (' + off.map(([s, d]) => Math.round(d) + 'px past the ' + s).join(', ') + ')' });
+    if (off.length) issues.push({ slot, code: 'off_canvas', n: Math.round(Math.max(...off.map(([, d]) => d))), problem: 'runs off the canvas (' + off.map(([s, d]) => Math.round(d) + 'px past the ' + s).join(', ') + ')' });
     const cs = getComputedStyle(el);
-    if (el.scrollWidth > el.clientWidth + 2 && cs.overflowX !== 'visible') issues.push({ slot, problem: 'clipped horizontally' });
-    if (el.scrollHeight > el.clientHeight + 2 && cs.overflowY !== 'visible') issues.push({ slot, problem: 'clipped vertically' });
+    if (el.scrollWidth > el.clientWidth + 2 && cs.overflowX !== 'visible') issues.push({ slot, code: 'clipped', problem: 'clipped horizontally' });
+    if (el.scrollHeight > el.clientHeight + 2 && cs.overflowY !== 'visible') issues.push({ slot, code: 'clipped', problem: 'clipped vertically' });
     const size = parseFloat(cs.fontSize);
-    if (slot !== 'wordmark' && size < 24) issues.push({ slot, problem: 'type is ' + Math.round(size) + 'px; 24px is the smallest that reads on a phone' });
-    if (cs.opacity !== '1' || parseFloat(cs.opacity) < 1) issues.push({ slot, problem: 'text is faded (opacity ' + cs.opacity + ')' });
+    if (slot !== 'wordmark' && size < 24) issues.push({ slot, code: 'small_type', n: Math.round(size), problem: 'type is ' + Math.round(size) + 'px; 24px is the smallest that reads on a phone' });
+    if (cs.opacity !== '1' || parseFloat(cs.opacity) < 1) issues.push({ slot, code: 'faded', problem: 'text is faded (opacity ' + cs.opacity + ')' });
     let bg = null, bgEl = el;
     for (let n = el; n; n = n.parentElement) { const c = parse(getComputedStyle(n).backgroundColor); if (c && c.a >= 0.85) { bg = c; bgEl = n; break; } if (n === post) break; }
     const fg = parse(cs.color);
-    if (PR && [...range.getClientRects()].some((l) => hit(l, PR) > 0.04 * l.width * l.height) && (bgEl === post || !bg)) issues.push({ slot, problem: 'sits straight on the photo; put it on a panel or move it' });
-    else if (fg && bg) { const cr = ratio(fg, bg); const large = size >= 40 || (size >= 30 && parseInt(cs.fontWeight) >= 700); if (cr < (large ? 3 : 4.5)) issues.push({ slot, problem: 'contrast ' + cr.toFixed(1) + ':1 is too low' }); }
+    if (PR && [...range.getClientRects()].some((l) => hit(l, PR) > 0.04 * l.width * l.height) && (bgEl === post || !bg)) issues.push({ slot, code: 'on_photo', problem: 'sits straight on the photo; put it on a panel or move it' });
+    else if (fg && bg) { const cr = ratio(fg, bg); const large = size >= 40 || (size >= 30 && parseInt(cs.fontWeight) >= 700); if (cr < (large ? 3 : 4.5)) issues.push({ slot, code: 'contrast', n: Math.round(cr * 10) / 10, problem: 'contrast ' + cr.toFixed(1) + ':1 is too low' }); }
   }
   const frames = [...new Set(boxes.map((b) => frame(b.el)).filter(Boolean))];
   const saved = frames.map((f) => f.getAttribute('style'));
@@ -252,9 +281,9 @@ export const LAYOUT_PROBE = `(() => {
     let a = boxes[i], b = boxes[j];
     const fa = frame(a.el);
     if (fa && fa === frame(b.el)) { a = { slot: a.slot, r: a.flat }; b = { slot: b.slot, r: b.flat }; }
-    if (hit(a.r, b.r) > 0.1 * Math.min(a.r.width * a.r.height, b.r.width * b.r.height)) issues.push({ slot: a.slot + '+' + b.slot, problem: 'overlap' });
+    if (hit(a.r, b.r) > 0.1 * Math.min(a.r.width * a.r.height, b.r.width * b.r.height)) issues.push({ slot: a.slot + '+' + b.slot, code: 'overlap', problem: 'overlap' });
   }
-  if (photo && (!photo.complete || !photo.naturalWidth)) issues.push({ slot: 'photo', problem: 'did not load' });
-  if (PR && hit(PR, P) < 0.08 * P.width * P.height) issues.push({ slot: 'photo', problem: 'too small or off the canvas' });
+  if (photo && (!photo.complete || !photo.naturalWidth)) issues.push({ slot: 'photo', code: 'photo_missing', problem: 'did not load' });
+  if (PR && hit(PR, P) < 0.08 * P.width * P.height) issues.push({ slot: 'photo', code: 'photo_small', problem: 'too small or off the canvas' });
   return issues;
 })()`;

@@ -18,6 +18,7 @@ import type { VerifyTurnstile } from "./turnstile.ts";
 import type { CallStep } from "./claude.ts";
 import { createSession, loadSession, updateSession, claimIpSlot, type PostRecord, type UploadRecord } from "./sessions.ts";
 import { planPrompt, resolvePlan, writePrompt, cleanWritten, estimateInputTokens } from "./pipeline.ts";
+import { kitFor } from "./kit-source.ts";
 import { checkImage, checkPdf, checkUrl } from "./uploads.ts";
 import { uploadLabel, type UploadKind } from "../core/extract.ts";
 import { isHex } from "../core/colors.ts";
@@ -68,7 +69,8 @@ export const id = z.string().min(1).max(64);
 const StartSessionBody = z.strictObject({ turnstileToken: z.string().min(1).max(4096) });
 const CreatePostBody = z.strictObject({
   sessionId: id,
-  brand: z.enum(DEMO_BRAND_IDS),
+  /** A demo brand, or "session" for the kit this session drafted from its own uploads. */
+  brand: z.union([z.enum(DEMO_BRAND_IDS), z.literal("session")]),
   intent: z.enum(POST_INTENTS),
   brief: z.strictObject({ goal: freeText.refine((s) => s.trim().length > 0, { message: "Required." }), details: freeText }),
   regenerationOf: id.optional(),
@@ -257,7 +259,9 @@ export async function createPost(req: Request, deps: Deps) {
   const body = parseBody(CreatePostBody, await readJson(req, LIMITS.jsonBodyBytes));
   const now = deps.now();
   await assertGenerationOpen(deps.kv, deps.settings, now);
-  await loadSession(deps.kv, body.sessionId, now);
+  const session0 = await loadSession(deps.kv, body.sessionId, now);
+  // Before claiming a post: a session kit that isn't ready refuses here, at no cost.
+  const kit = await kitFor(deps, session0, body.brand);
 
   // Claim a post (or the one regeneration) before calling Claude, so parallel requests can't overshoot.
   const postId = crypto.randomUUID();
@@ -282,7 +286,7 @@ export async function createPost(req: Request, deps: Deps) {
 
   let planned;
   try {
-    planned = await guardedCall(deps, "plan", planPrompt(body.brand, body.intent, body.brief), PlanSchema);
+    planned = await guardedCall(deps, "plan", planPrompt(kit, body.intent, body.brief), PlanSchema);
   } catch (err) {
     // Give the slot back only if nothing was spent; otherwise the post counts.
     const refund = notBilled(err);
@@ -295,7 +299,7 @@ export async function createPost(req: Request, deps: Deps) {
     throw err;
   }
 
-  const { template, photo, warnings } = resolvePlan(body.brand, planned.data);
+  const { template, photo, warnings } = resolvePlan(kit, planned.data);
   const session = await updateSession(deps.kv, body.sessionId, (s) => ({
     ...s,
     posts: { ...s.posts, [postId]: { ...s.posts[postId]!, status: "planned", plan: planned.data, photo, warnings } },
@@ -315,7 +319,7 @@ export async function writePost(req: Request, deps: Deps) {
   const body = parseBody(WritePostBody, await readJson(req, LIMITS.jsonBodyBytes));
   const now = deps.now();
   await assertGenerationOpen(deps.kv, deps.settings, now);
-  await loadSession(deps.kv, body.sessionId, now);
+  const session0 = await loadSession(deps.kv, body.sessionId, now);
 
   // Each plan gets written once; claiming "writing" stops a second, parallel write.
   let post!: PostRecord;
@@ -327,10 +331,17 @@ export async function writePost(req: Request, deps: Deps) {
     return { ...s, posts: { ...s.posts, [p.id]: post } };
   });
 
-  const { template, photo } = resolvePlan(post.brand, post.plan!);
+  let kit;
+  try {
+    kit = await kitFor(deps, session0, post.brand);
+  } catch (err) {
+    await updateSession(deps.kv, body.sessionId, (s) => ({ ...s, posts: { ...s.posts, [post.id]: { ...s.posts[post.id]!, status: "planned" } } }));
+    throw err;
+  }
+  const { template, photo } = resolvePlan(kit, post.plan!);
   let written;
   try {
-    written = await guardedCall(deps, "write", writePrompt(post.brand, post.intent, post.brief, post.plan!, photo), WriteSchema);
+    written = await guardedCall(deps, "write", writePrompt(kit, post.intent, post.brief, post.plan!, photo), WriteSchema);
   } catch (err) {
     const back = notBilled(err) ? "planned" : "failed";
     await updateSession(deps.kv, body.sessionId, (s) => ({ ...s, posts: { ...s.posts, [post.id]: { ...s.posts[post.id]!, status: back } } }));
