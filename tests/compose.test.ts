@@ -1,7 +1,7 @@
 // Brand-composed layouts: code, not the model, owns the copy, colors and fonts.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkComposition, checkCss, buildComposedPage } from "../core/compose.ts";
+import { checkComposition, checkCss, buildComposedPage, TEXT_SLOTS } from "../core/compose.ts";
 
 const slots = { headline: "FOLD IT.", subhead: "Lengthwise, so the tip doesn't flop.", cta: null, badge: "ONE HAND.", quote: null, attribution: null, date: null, details: null };
 const good = {
@@ -52,4 +52,20 @@ test("an alt on the photo is allowed and replaced by code", () => {
   assert.deepEqual(checkComposition(withPhoto, slots, true).errors, []);
   const page = buildComposedPage({ composition: withPhoto, slots, aspect: "4:5", tokensCss: "", wordmarkLines: ["X"], photo: { src: "p.jpg", alt: "The window at night" } });
   assert.match(page, /<img class="photo" data-slot="photo" src="p.jpg" alt="The window at night">/);
+});
+
+test("every packed demo layout still passes the code check", async () => {
+  const { readFileSync, existsSync } = await import("node:fs");
+  const { DemoPostsSchema } = await import("../core/demo.ts");
+  for (const brand of ["half-acre-club", "third-shift-slice", "hollis-ware"]) {
+    const file = `brands/${brand}/demo-posts.json`;
+    if (!existsSync(file)) continue;
+    const demo = DemoPostsSchema.parse(JSON.parse(readFileSync(file, "utf8")));
+    for (const p of demo.posts) {
+      if (!p.kit.composed) continue;
+      const slots = Object.fromEntries(TEXT_SLOTS.map((s) => [s, p.kit.slots[s] ?? null]));
+      const check = checkComposition({ html: p.kit.composed.html, css: p.kit.composed.css }, slots, Boolean(p.kit.photo));
+      assert.deepEqual(check.errors, [], `${brand} ${p.briefId}`);
+    }
+  }
 });
