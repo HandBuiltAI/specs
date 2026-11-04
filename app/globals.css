@@ -164,3 +164,31 @@ ul.items { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s3
 .showcase-item { break-inside: avoid; margin-bottom: var(--s5); display: grid; gap: var(--s2); }
 .answer { font-family: var(--f-mono); font-size: 11px; color: var(--ink-2); margin: 0 var(--s3); overflow-wrap: anywhere; }
 .answer span { color: var(--signal); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; }
+
+/* Fill the gaps (phase 5) */
+main.build { max-width: 64rem; }
+main.build > .card, main.build > p, main.build > h1, main.build > h2, main.build .uploads, main.build .chunk { max-width: 46rem; }
+.intake { margin-top: var(--s8); padding-top: var(--s6); border-top: 1px solid var(--line); }
+.intake-grid { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: var(--s5); align-items: start; margin-top: var(--s5); }
+.intake-side { position: sticky; top: var(--s4); }
+.intake-thread { display: grid; gap: var(--s4); min-width: 0; }
+.intake-done { display: grid; gap: 4px; padding: var(--s3) var(--s4); border-radius: var(--r-inner); background: var(--surface); opacity: 0.85; }
+.intake-done .eyebrow { justify-self: start; }
+.intake-say { margin: 0; color: var(--ink-2); font-size: 14px; }
+.intake-say.now { color: var(--ink); font-size: 18px; letter-spacing: -0.015em; font-weight: 500; text-wrap: balance; }
+.intake-answer { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+.intake-now { display: grid; gap: var(--s3); }
+.intake-type { display: grid; gap: 6px; }
+.intake-type label { margin: 0; }
+.intake-type-row { display: flex; gap: var(--s2); }
+.intake-type-row input { border-radius: var(--r-pill); padding-inline: 18px; }
+.intake-type-row button { margin: 0; flex: none; }
+.intake-type-foot { display: flex; justify-content: space-between; align-items: center; }
+.intake-type-foot button { margin: 0; }
+.intake-complete { background: var(--ink); color: var(--on-ink); border-radius: var(--r-card); padding: var(--s5); display: grid; gap: var(--s2); }
+.intake-complete .eyebrow { color: var(--signal); }
+.intake-complete p { margin: 0; font-size: 17px; letter-spacing: -0.01em; }
+@media (max-width: 820px) {
+  .intake-grid { grid-template-columns: 1fr; }
+  .intake-side { position: static; }
+}

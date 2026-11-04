@@ -11,6 +11,7 @@ import type { Swatch } from "../../core/colors.ts";
 import { call, pool, sendForm, type ApiError } from "../lib/api.ts";
 import { prepareImage } from "../lib/images.ts";
 import { Turnstile } from "../lib/turnstile.tsx";
+import Intake from "./intake.tsx";
 
 type UploadKindApi = "image" | "logo" | "pdf" | "url" | "pasted" | "note";
 type Upload = { id: string; kind: UploadKindApi; label: string; colors?: Swatch[]; pages?: number };
@@ -222,6 +223,11 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
   const started = uploads.length > 0;
   const nothingChosen = !photos.length && !logo && !pdf && !url.trim() && !pasted.trim() && !note.trim();
   const tooLong = charCount(note) > LIMITS.messageChars || charCount(pasted) > LIMITS.pastedChars;
+  // The gaps step starts once every chunk has finished drafting (or used up its tries).
+  const targetIds = [...EXTRACT_CHUNKS.map((c) => c.id as string), "conflicts"];
+  const draftingDone =
+    targetIds.some((t) => targets[t]?.status === "done") &&
+    targetIds.every((t) => targets[t]?.status === "done" || (targets[t]?.status === "failed" && targets[t]!.attempts >= LIMITS.extractAttempts));
   const labelOf = useMemo(() => Object.fromEntries(uploads.map((u) => [u.id, u.label])), [uploads]);
 
   return (
@@ -322,6 +328,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
             />
           ))}
           <p className="muted small">Uploads cited: {Object.values(labelOf).join(", ")}</p>
+          {sessionId && draftingDone && <Intake sessionId={sessionId} onKitChanged={() => loadKit(sessionId).catch(() => {})} />}
         </>
       )}
     </>

@@ -63,7 +63,19 @@ export const CONFLICTS: Conflicts = {
   ],
 };
 
-export function makeDeps(opts: { env?: Record<string, string | undefined>; usd?: number; turnstileOk?: boolean; fail?: (step: string) => Error | null } = {}) {
+/** A default intake turn: a SourceCard about the first open gap listed in the prompt. */
+export function intakeTurnFor(user: string): unknown {
+  const gap = user.match(/- id: (\S+)/)?.[1] ?? "none";
+  return {
+    gap,
+    say: "Your uploads disagree on this. A second sentence that should be cut.",
+    call: { component: "SourceCard", props: { chunk: "brand-about", label: "First box", fact: "Your first box is Box 01.", sources: [{ upload: "rough-notes.pdf", location: "page 1" }] } },
+  };
+}
+
+export function makeDeps(
+  opts: { env?: Record<string, string | undefined>; usd?: number; turnstileOk?: boolean; fail?: (step: string) => Error | null; intake?: (user: string) => unknown } = {},
+) {
   const sent: Sent[] = [];
   const callStep: CallStep = async (o) => {
     sent.push({ step: o.step, system: o.system, user: o.user, cachedText: o.cachedText, fetchDomain: o.fetchDomain, images: o.images?.length, documents: o.documents?.length });
@@ -71,7 +83,8 @@ export function makeDeps(opts: { env?: Record<string, string | undefined>; usd?:
     if (err) throw err;
     const usage: Usage = { step: o.step, model: "claude-sonnet-5-5", input: 1000, output: 500, cacheRead: 0, cacheWrite: 0, usd: opts.usd ?? 0.05 };
     const data =
-      o.step === "plan" ? PLAN
+      o.step === "intake" ? (opts.intake ?? intakeTurnFor)(o.user)
+      : o.step === "plan" ? PLAN
       : o.step === "write" ? WRITTEN
       : o.step === "read" ? EVIDENCE
       : o.user.includes("Target: conflicts") ? CONFLICTS

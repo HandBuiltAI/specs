@@ -154,7 +154,7 @@ Four features ship in the MVP because together they tell the story: the app unde
 
 The worst case is capped at the prepaid credit balance: if every other guard fails, the app stops working rather than running up a bill.
 
-**Stack:** Next.js (App Router) and TypeScript, CopilotKit for the A2UI renderer and runtime, the Anthropic TypeScript SDK, html-to-image for PNG export, JSZip for the kit export, Netlify for hosting and functions, Netlify Blobs for session state and spend tracking, Cloudflare Turnstile for bot checks.
+**Stack:** Next.js (App Router) and TypeScript, a small in-house A2UI loop (catalog schemas in zod, plain React components), the Anthropic TypeScript SDK, html-to-image for PNG export, JSZip for the kit export, Netlify for hosting and functions, Netlify Blobs for session state and spend tracking, Cloudflare Turnstile for bot checks.
 
 **Architecture:**
 
@@ -198,7 +198,7 @@ Post quality gets proven before any UI is built, because that is where the earli
 2. **Quality spike, no UI.** A plain script takes the kit and a post intent and produces HTML/CSS posts through plan, write and critique. Run the with-kit / without-kit comparison. *Gate: four of five posts are ones you would show a client.*
 3. **Scaffold with guardrails.** Next.js on Netlify, the server function, every guard in the table above. *Gate: the deployed endpoint refuses raw prompts, over-cap uploads and calls after the tripwire.*
 4. **Extraction and DNA reveal.** Uploads to chunks with sources, streamed to the screen. *Gate: extraction from that brand's messy uploads gets close to the hand-built kit.*
-5. **A2UI intake.** CopilotKit with the custom catalog, resolving gaps until the completeness check passes.
+5. **A2UI intake.** The custom catalog, resolving gaps until the completeness check passes. *Gate: on the drafted demo kit, every turn is one valid component plus at most one sentence, the known conflict is asked about early, the kit passes the completeness check within the question cap, a typed answer can't redirect the agent, and no turn nears the function time limit.*
 6. **Signature layer and demos.** Overlay, toggle, kit export, three precomputed demo brands, the app's own brand kit.
 7. **Launch and case study.** Public URL, open-source repo with a clear readme, case study on the portfolio site.
 
@@ -217,5 +217,5 @@ Post quality gets proven before any UI is built, because that is where the earli
 - [x] Domain: specs.humanbuiltai.work, a subdomain of the portfolio site, so no new domain to buy
 - [x] Demo brands: three fictional brands that contrast (warm and handmade, bold and loud, minimal and premium), each with a deliberately messy uploads folder, logos designed in-house, licensed or AI-generated photos, labeled as fictional
 - [x] URL extraction: fetch server-side with Claude's web fetch tool, capped to the homepage plus one or two pages and a content-token limit; fetched text is treated as data, never instructions; a paste box is the fallback
-- [x] A2UI renderer: CopilotKit for the MVP; catalog components stay plain React so a later switch to the official `@a2ui/react` is cheap
+- [x] A2UI renderer: our own small loop (changed from CopilotKit on 2026-11-04): one guarded Haiku call per turn returns one validated catalog component, rendered by plain React components, so the spend guards and the ~26-second function limit apply to every turn. Catalog components stay plain React so CopilotKit or the official `@a2ui/react` can still slot in later
 - [x] License: MIT for the code; fictional brands, prompts and design assets all rights reserved, stated in the readme
