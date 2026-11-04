@@ -17,6 +17,7 @@ import {
   intakePrompt,
   oneSentence,
   progress,
+  rawCall,
   targetChunk,
   type Gap,
   type IntakeChunks,
@@ -208,15 +209,17 @@ async function nextTurn(deps: Deps, session: Session, chunks: IntakeChunks, gaps
   const gap = gaps.find((g) => g.id === data.gap);
   if (!gap) throw new Refusal(502, "model_output", "The next question pointed at a gap that isn't open. Try again.");
 
+  const out = rawCall(data);
+  if (!out.ok) throw new Refusal(502, "model_output", "The next question came back malformed. Try again.");
   // Photos are named by upload in the prompt; the browser fetches them by upload id.
-  let raw: unknown = data.call;
-  if (data.call.component === "PhotoPicker") {
-    const props = data.call.props as { photos: { src: string }[] };
-    const known = props.photos.flatMap((p) => {
+  let raw: unknown = out.call;
+  const photoProps = out.call.props as { photos?: unknown };
+  if (out.call.component === "PhotoPicker" && Array.isArray(photoProps.photos)) {
+    const known = (photoProps.photos as { src?: unknown }[]).flatMap((p) => {
       const u = photos.find((x) => x.label === p.src);
       return u ? [{ ...p, src: `upload:${u.id}` }] : [];
     });
-    raw = { ...data.call, props: { ...props, photos: known } };
+    raw = { ...out.call, props: { ...photoProps, photos: known } };
   }
   const parsed = parseCall(raw);
   if (!parsed.ok) throw new Refusal(502, "model_output", "The next question came back malformed. Try again.");
