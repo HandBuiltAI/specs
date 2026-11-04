@@ -3,6 +3,7 @@
   "sourceRun": "2026-11-04T18-46-40",
   "packedAt": "2026-11-04T18:52:35.747Z",
   "costUsd": 0.68,
+  "composeCostUsd": 0.25,
   "posts": [
     {
       "briefId": "announce-slice-of-the-night",
@@ -102,6 +103,117 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"wall\"><figure class=\"shot\"><img data-slot=\"photo\" alt=\"\"></figure><div class=\"sign\"><span class=\"tape\" aria-hidden=\"true\"></span><strong data-slot=\"badge\"></strong></div><h1 data-slot=\"headline\"></h1><p data-slot=\"subhead\"></p><div class=\"mark\" data-slot=\"wordmark\"></div></div>",
+          "css": ".wall{position:absolute;inset:0;background:var(--role-background);overflow:hidden}.shot{position:absolute;left:0;top:0;width:100%;height:700px;margin:0;overflow:hidden}.shot img{width:100%;height:100%;object-fit:cover;object-position:50% 40%;display:block}.sign{position:absolute;right:64px;top:560px;background:var(--role-text);color:var(--color-night);padding:28px 40px 12px;transform:rotate(3deg);border-radius:var(--radius);z-index:2}.sign strong{font-family:var(--font-heading);font-weight:var(--weight-heading);font-size:170px;line-height:1;display:block}.tape{position:absolute;left:50%;top:-20px;width:120px;height:40px;margin-left:-60px;background:var(--color-paint);opacity:.85;transform:rotate(-4deg)}h1{position:absolute;left:64px;right:64px;top:720px;margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);color:var(--role-heading);font-size:128px;line-height:.92;text-transform:uppercase;max-width:700px}p{position:absolute;left:64px;bottom:64px;width:560px;margin:0;font-family:var(--font-body);font-weight:var(--weight-body);font-size:36px;line-height:1.3;color:var(--role-text)}.mark{position:absolute;right:64px;bottom:64px;text-align:right;font-family:var(--font-wordmark);color:var(--role-wordmark);font-size:40px;line-height:1;text-transform:uppercase;letter-spacing:var(--tracking-wordmark);text-shadow:0 0 18px var(--role-accent)}.mark span{display:block}.mark span+span{font-size:calc(1em * var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);margin-top:6px}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Photo block bleeding off top and sides, stacked yellow headline on black below",
+              "reason": "Announcement is photo-led at 4:5; type sits on the black, away from the busy window.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "128px Anton yellow, stacked, tight leading, left aligned",
+              "reason": "Painted wall line device; wraps to three lines within the width left of the margin.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "price as hero",
+              "choice": "$6 on a crooked paper sign with tape, overlapping the photo edge",
+              "reason": "Breaks the grid once and makes the price loud; black on paper has strong contrast.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "pink",
+              "choice": "Only the wordmark glows pink, bottom right",
+              "reason": "One pink element per post; the photo's neon is already pink.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "photo crop",
+              "choice": "object-fit cover, positioned to keep the window and customer",
+              "reason": "Keeps the subject and neon sign in frame.",
+              "cites": [
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "FRIDAY: HOT HONEY SOPPRESSATA",
+              "reason": "Puts the news (the day and the flavor) up front in capitals. It is 29 characters and 4 words, inside the kit's 36-character, 6-word limit, and plain with no hype words.",
+              "cites": [
+                "social-rules",
+                "voice-core",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "$6",
+              "reason": "The price is the single most important small fact, and the kit says prices go out loud. It is the post's one marker accent. The kit's 10-character badge limit is stricter than the template's 12.",
+              "cites": [
+                "social-rules",
+                "voice-core",
+                "positioning-core",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Till it's gone. Window's open 9pm to 3am.",
+              "reason": "Adds the scarcity and the exact hours without repeating Friday or the price, which the headline and badge already carry. It uses the exact time instead of 'open late'. It is 41 characters, under the 80 limit.",
+              "cites": [
+                "voice-core",
+                "voice-examples",
+                "terminology",
+                "positioning-core"
+              ]
+            },
+            {
+              "decision": "call to action",
+              "choice": "Left null",
+              "reason": "The template has no CTA slot. The hours in the subhead and the caption's 'WINDOW'S OPEN TILL 3' do that job, and there is no 'order now' or 'link in bio' because the window is walk-up only.",
+              "cites": [
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Four short sentences with the full brand name on first mention, the slice details, the standing menu prices, a shouted hours sign-off and one hashtag.",
+              "reason": "It follows the caption pattern of leading with the slice, giving one plain detail and signing off with the hours. It is under 300 characters, uses no emoji or ranking words, and uses only supplied facts (cheese $4, pepperoni $5).",
+              "cites": [
+                "voice-examples",
+                "social-rules",
+                "terminology",
+                "positioning-core"
+              ]
+            },
+            {
+              "decision": "flavor and facts",
+              "choice": "Used hot honey and soppressata, $6 and 'Friday only, till it runs out' exactly as the brief supplied them.",
+              "reason": "The kit says not to name a flavor unless the brief does, and this brief does. The plan's headline wording was tightened to fit the limits and the brand's capitals style.",
+              "cites": [
+                "positioning-core"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-20-55"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the brief and kit: the hot honey soppressata, $6, Friday-only details and the 9pm to 3am hours all come from the brief or kit, and the voice is short and loud with no banned terms. Only minor notes remain: the cropped sign at the bottom of the photo and a loose 'till 3' in the caption."
@@ -238,6 +350,119 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"wrap\"><h1 data-slot=\"headline\"></h1><figure class=\"ph\"><img data-slot=\"photo\"></figure><div class=\"badge\" data-slot=\"badge\"></div><p class=\"sub\" data-slot=\"subhead\"></p><footer class=\"foot\"><p class=\"cta\" data-slot=\"cta\"></p><div class=\"wm\" data-slot=\"wordmark\"></div></footer></div>",
+          "css": ".wrap{position:absolute;inset:0;background:var(--role-background);overflow:hidden}h1{position:absolute;left:64px;right:64px;top:56px;margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);color:var(--role-heading);font-size:150px;line-height:.9;text-transform:uppercase;width:952px}.ph{position:absolute;margin:0;left:360px;right:0;top:500px;height:540px;overflow:hidden}.ph img{width:100%;height:100%;object-fit:cover;object-position:50% 62%;display:block}.badge{position:absolute;left:64px;top:560px;width:250px;padding:20px 16px;background:var(--color-paper);color:var(--color-night);font-family:var(--font-hand);font-size:56px;line-height:1;text-align:center;transform:rotate(-3deg);border-radius:var(--radius);box-shadow:0 0 0 6px var(--color-night)}.sub{position:absolute;left:64px;right:64px;top:1070px;margin:0;font-family:var(--font-body);font-weight:var(--weight-body);font-size:38px;line-height:1.2;color:var(--role-text);width:700px}.foot{position:absolute;left:64px;right:64px;bottom:64px;display:flex;justify-content:space-between;align-items:flex-end}.cta{margin:0;font-family:var(--font-heading);font-size:80px;line-height:.9;color:var(--role-heading);text-transform:uppercase}.wm{font-family:var(--font-wordmark);color:var(--role-wordmark);font-size:40px;line-height:.95;text-align:right;text-transform:uppercase;text-shadow:0 0 16px var(--color-neon);display:flex;flex-direction:column;align-items:flex-end}.wm span:nth-child(2){font-size:calc(40px*var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking)}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Huge stacked yellow headline on black, photo block bleeding off right edge, taped badge overlapping it",
+              "reason": "Follows the window-wall idea; the photo runs off one side and the crooked badge breaks the grid once.",
+              "cites": [
+                "layout-system",
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "150px Anton yellow on black across top",
+              "reason": "Loud and readable; copy stays off the photo.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Paper taped sign with marker $4 CHEESE, rotated -3deg, in night text",
+              "reason": "Price as hero on paper; marker is the only hand element; no pink on paper.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "pink",
+              "choice": "Wordmark only is pink with glow",
+              "reason": "One pink element per post.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "photo crop",
+              "choice": "object-fit cover, position lower center",
+              "reason": "Keeps the neon window and the woman in scrubs.",
+              "cites": [
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "OFF AT 2:30? OPEN TILL 3AM.",
+              "reason": "It opens with the shift ending and answers with the exact closing hour. At 27 characters and 5 words it fits the kit's 6-word, 36-character cap. It says \"3AM\" rather than \"open late\" and has no exclamation mark.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "voice-examples",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "$4 CHEESE",
+              "reason": "For a promo the stamp carries the price. The entry price is the most useful small fact, and it's said out loud the way the kit writes it. The hour is already in the headline, so the badge doesn't repeat it. It is 9 characters, within the kit's 10, and it is the post's one pink element besides the wordmark.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "visual-system",
+                "positioning-core"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Pepperoni $5. Slice of the night $6. Wednesday to Sunday.",
+              "reason": "It adds the rest of the short menu and the days, without repeating the $4 in the badge or the hour in the headline. It states no discount, since the brief has none, and names no flavor for the slice of the night.",
+              "cites": [
+                "positioning-core",
+                "guardrails",
+                "terminology",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "call to action",
+              "choice": "Walk up.",
+              "reason": "It says how to get a slice. There's no ordering, so no \"order now\" and no \"link in bio\". It's 2 words, within the 3-word limit.",
+              "cites": [
+                "social-rules",
+                "terminology",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Four short sentences: full name on first mention, hours, prices and payment, then a shouted sign-off line, with one hashtag.",
+              "reason": "The image leaves out the 9pm opening time and the payment methods, so the caption carries them. It follows the lead-with-time, one-detail, sign-off-with-hours pattern. It stays under 300 characters, has no emoji, and uses only one hashtag.",
+              "cites": [
+                "voice-examples",
+                "social-rules",
+                "positioning-core",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "unused slots",
+              "choice": "quote, attribution, date and details left null.",
+              "reason": "The offer-badge template has no such slots, and the brief supplies no quote or event details.",
+              "cites": [
+                "guardrails"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-20-55"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the kit: the headline and subhead use exact hours and prices, the CTA is walk-up only, and the photo is a night window shot that matches the art direction. The only observation is minor and does not require a revision."
@@ -396,6 +621,87 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"wall\"><h1 data-slot=\"headline\"></h1><p data-slot=\"subhead\"></p><div class=\"sign\"><span class=\"tape\"></span><span data-slot=\"badge\"></span></div><div data-slot=\"wordmark\"></div></div>",
+          "css": ".wall{position:absolute;inset:0;background:var(--role-background);overflow:hidden}h1{position:absolute;left:var(--safe-margin);top:56px;margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);color:var(--role-heading);font-size:300px;line-height:0.95;white-space:nowrap;text-transform:uppercase}p[data-slot=subhead]{position:absolute;left:var(--safe-margin);top:420px;margin:0;width:580px;font-family:var(--font-body);font-weight:var(--weight-body);font-size:44px;line-height:1.25;color:var(--role-text)}.sign{position:absolute;right:var(--safe-margin);top:440px;width:300px;padding:48px 20px 36px;background:var(--role-text);transform:rotate(3deg);border-radius:var(--radius);text-align:center}.sign [data-slot=badge]{display:block;font-family:var(--font-hand);font-weight:var(--weight-hand);font-size:64px;line-height:1.05;color:var(--color-night)}.tape{position:absolute;top:-18px;left:90px;width:120px;height:36px;background:var(--color-paint);opacity:.85;transform:rotate(-4deg)}[data-slot=wordmark]{position:absolute;left:var(--safe-margin);bottom:var(--safe-margin);display:flex;flex-direction:column;font-family:var(--font-wordmark);color:var(--role-wordmark);font-size:56px;line-height:1;letter-spacing:var(--tracking-wordmark);text-transform:uppercase;text-shadow:0 0 18px var(--role-accent)}[data-slot=wordmark] span:nth-child(2){font-size:calc(1em * var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking)}",
+          "rationale": [
+            {
+              "decision": "headline scale",
+              "choice": "Single line at 300px, nowrap, starting at the safe margin",
+              "reason": "The earlier 372px overflowed; 300px of Anton fits the 952px width for 8 characters while still filling the width as the painted wall line.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "taped sign",
+              "choice": "Paper panel with marker 'One hand.' rotated 3deg and a yellow tape strip",
+              "reason": "Gives the one crooked grid-break and uses the hand font once, in night on paper for contrast.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "neon",
+              "choice": "Pink only on the glowing wordmark, bottom left",
+              "reason": "One pink element per post, per brand rule and logo placement.",
+              "cites": [
+                "social-rules",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "FOLD IT.",
+              "reason": "Two words, in capitals, and it is the instruction. It matches the kit's own tip sample (\"Fold it.\") and the three-words-then-stop rule, and it stays well inside the 36-character limit.",
+              "cites": [
+                "voice-core",
+                "voice-examples",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Lengthwise, so the tip doesn't flop. Hold the crust. Napkin under the fold.",
+              "reason": "It carries all three steps from the brief in short, plain sentences with no adjectives. It comes to 75 characters, under the kit's 80 limit. The headline holds the verb and the subhead adds the how.",
+              "cites": [
+                "social-rules",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "One hand.",
+              "reason": "This is the handwritten note, the post's one accent element. It gives the payoff of the tip (the other hand is free) without repeating the steps, and at 9 characters it fits the kit's 10-character limit.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Short caption that speaks to the shift, repeats the one-hand image, and signs off with the exact hour and one hashtag.",
+              "reason": "The caption follows the kit pattern: lead with the situation, give one plain detail, end on the hours. It is four sentences and under 300 characters. It uses \"the floor\" and \"the window\" the way the audience does, with no 'Link in bio' and no exclamation marks. One hashtag is within the zero-to-two rule.",
+              "cites": [
+                "voice-examples",
+                "social-rules",
+                "terminology",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "omitted slots",
+              "choice": "CTA, quote, attribution, date and details left null.",
+              "reason": "The type-led template only has headline, subhead, badge and caption. Adding a CTA to a tip would also repeat the hours already in the caption.",
+              "cites": [
+                "social-rules"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-20-55"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the type-led tip template and the brief's instructions exactly, uses only kit-approved facts and terms, and renders cleanly with no clipping or overlap. The only remarks are minor accent-color notes."
@@ -553,6 +859,110 @@
             "cites": []
           }
         ],
+        "composed": {
+          "html": "<header class=\"top\"><div class=\"sign\"><p class=\"date\" data-slot=\"date\"></p><p class=\"details\" data-slot=\"details\"></p></div></header><h1 class=\"headline\" data-slot=\"headline\"></h1><p class=\"sub\" data-slot=\"subhead\"></p><footer class=\"foot\"><p class=\"cta\" data-slot=\"cta\"></p><div class=\"wm\" data-slot=\"wordmark\"></div></footer>",
+          "css": ".post{position:relative;background:var(--role-background);overflow:hidden;color:var(--role-text);display:flex;flex-direction:column;justify-content:space-between;padding:var(--safe-margin);box-sizing:border-box}.top{display:flex;justify-content:flex-end;padding-right:16px}.sign{position:relative;width:560px;box-sizing:border-box;background:var(--color-paper);color:var(--color-night);padding:28px 32px 24px;transform:rotate(3deg);border-radius:var(--radius)}.sign::before{content:\"\";position:absolute;top:-18px;left:200px;width:140px;height:34px;background:var(--color-paint);opacity:.85;transform:rotate(-4deg)}.date{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);font-size:64px;line-height:1;text-transform:uppercase;letter-spacing:var(--tracking-heading)}.details{margin:10px 0 0;font-family:var(--font-body);font-weight:700;font-size:34px;line-height:1.2}.headline{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);color:var(--role-heading);font-size:190px;line-height:.88;text-transform:uppercase;letter-spacing:var(--tracking-heading);width:640px}.sub{margin:0;width:760px;font-family:var(--font-body);font-weight:var(--weight-body);font-size:36px;line-height:1.25;color:var(--role-text)}.foot{display:flex;justify-content:space-between;align-items:flex-end}.cta{margin:0;font-family:var(--font-heading);font-size:72px;line-height:1;color:var(--role-text);text-transform:uppercase}.wm{font-family:var(--font-wordmark);color:var(--role-wordmark);font-size:40px;line-height:1;text-align:right;text-transform:uppercase;text-shadow:0 0 18px var(--role-accent)}.wm span{display:block}.wm span+span{font-size:calc(1em*var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);margin-top:4px}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Single flex column (sign, headline, subhead, footer) with space-between instead of absolute positioning",
+              "reason": "Elements stack in flow so none can overlap, fixing the rejected attempt; heights budgeted to fit the 952px content area.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "Stacked yellow Anton capitals at 190px, leading .88, on black",
+              "reason": "Painted wall line device, tight stacked lines, sized so three lines fit the height alongside the other copy.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "taped sign",
+              "choice": "Paper panel rotated 3° with yellow tape holding date and details in night text, offset right",
+              "reason": "Date and hour read at a glance; the crooked sign is the one grid break.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "neon",
+              "choice": "Only the wordmark is pink, with glow, bottom right",
+              "reason": "One pink element per post; logo bottom corner.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "left out",
+              "choice": "No photo, no marker font, no menu board",
+              "reason": "Brief has no photo; the event needs only one or two devices.",
+              "cites": [
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "SHIFT CHANGE NIGHT",
+              "reason": "The event name from the brief, in capitals. It is three words and 18 characters, well inside the kit's 6-word, 36-character limit.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "date and details",
+              "choice": "Date: \"Saturday, Nov 22\". Details: \"9pm to 3am, at the window\".",
+              "reason": "The template requires these exactly as given in the brief. I used the brief's wording and added no other facts. \"At the window\" also matches the kit's term, not \"location\".",
+              "cites": [
+                "terminology",
+                "positioning-core"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Show a hospital badge. First cheese slice is free.",
+              "reason": "It adds the one concrete detail, what the badge gets you, in short plain sentences with no party tone. It is 50 characters, under the kit's 80. It names \"cheese\" as the plain menu name and uses no hype words.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "call to action",
+              "choice": "Walk up.",
+              "reason": "The kit's CTA style says where and when, not \"click\", and walk-up is the ordering model. It is two words and has no exclamation mark. I left out \"link in bio\" because there is nothing to buy online. I avoided \"Bring your badge\" because the subhead already says it.",
+              "cites": [
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Four short sentences that name the full brand once, give the date and time, repeat the badge offer, and sign off with the hours in caps. It ends with one hashtag.",
+              "reason": "This follows the caption pattern of leading with the plain fact and signing off with the hours. It is under 300 characters. It uses the full name on first mention and \"the window\" after. It has no emoji and no drinking or party language, and it uses one hashtag from the kit's approved set.",
+              "cites": [
+                "voice-examples",
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "unused slots",
+              "choice": "badge, quote and attribution left null",
+              "reason": "The event-card template has none of these slots. The date is already the template's accent element.",
+              "cites": []
+            }
+          ],
+          "sourceRun": "2026-11-04T19-20-55"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post uses only facts from the brief and kit, follows the event-card template, and renders cleanly with legible, uncut text. The only observation is that the yellow headline adds a second accent color beside the pink date, which the kit doesn't prohibit."
@@ -710,6 +1120,103 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"wall\"><div class=\"quote-wrap\"><span class=\"mark\" aria-hidden=\"true\">“</span><blockquote data-slot=\"quote\" class=\"quote\"></blockquote></div><p data-slot=\"attribution\" class=\"attr\"></p><div class=\"badge\" data-slot=\"badge\"></div><div data-slot=\"wordmark\" class=\"wordmark\"></div></div>",
+          "css": ".wall{position:absolute;inset:0;background:var(--role-background);overflow:hidden}.quote-wrap{position:absolute;left:var(--safe-margin);right:var(--safe-margin);top:150px}.mark{position:absolute;left:-6px;top:-120px;font-family:var(--font-heading);font-size:300px;line-height:1;color:var(--role-heading)}.quote{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);text-transform:uppercase;color:var(--role-heading);font-size:132px;line-height:0.92}.attr{position:absolute;left:var(--safe-margin);top:700px;margin:0;font-family:var(--font-body);font-weight:var(--weight-body);font-size:40px;line-height:1.3;color:var(--role-text)}.badge{position:absolute;right:var(--safe-margin);bottom:110px;transform:rotate(3deg);background:var(--role-text);color:var(--color-night);font-family:var(--font-hand);font-size:72px;line-height:1;padding:20px 32px;border-radius:var(--radius);white-space:nowrap}.badge::before{content:\"\";position:absolute;left:50%;top:-22px;width:120px;height:40px;margin-left:-60px;background:color-mix(in srgb,var(--color-paint) 55%,transparent);transform:rotate(-4deg)}.wordmark{position:absolute;left:var(--safe-margin);bottom:var(--safe-margin);font-family:var(--font-wordmark);color:var(--role-wordmark);text-transform:uppercase;font-size:44px;line-height:1;letter-spacing:var(--tracking-wordmark);text-shadow:0 0 18px var(--role-accent)}.wordmark span{display:block}.wordmark span+span{font-size:calc(1em*var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);margin-top:4px}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Huge stacked yellow quote on black, attribution below, taped paper badge lower right, wordmark lower left",
+              "reason": "Quote is the hero as a painted wall line; black space around it keeps it a testimonial rather than a promo.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "quote scale",
+              "choice": "132px Anton capitals, tight leading, filling the width",
+              "reason": "The brand never whispers; stacked capitals nearly touch the 64px margins.",
+              "cites": [
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "taped sign",
+              "choice": "Paper badge with marker 'Till 3am.' rotated 3° with tape strip, black text",
+              "reason": "Breaks the grid once with a crooked element; black on paper has high contrast and the large marker is allowed.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "neon",
+              "choice": "Wordmark is the only pink element, with glow",
+              "reason": "One pink thing per post; the badge stays paper.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "quote mark",
+              "choice": "Large yellow opening quote mark",
+              "reason": "A single decorative character signals the testimonial.",
+              "cites": [
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "quote",
+              "choice": "Renee's line exactly as supplied, with no quotation marks or other characters added in the text",
+              "reason": "The brief says to use the quote verbatim. The critique's flagged yellow quotation mark is a render decoration, not part of the copy, so the slot stays plain text. The renderer should drop the mark or draw it in paper-white so the pink badge is the card's only accent.",
+              "cites": [
+                "guardrails",
+                "visual-system",
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "attribution",
+              "choice": "Renee, ER nurse",
+              "reason": "It uses only the name and job from the brief, in the testimonial pattern of first name and job. The time is already in the quote, so repeating it would waste the slot.",
+              "cites": [
+                "voice-examples",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Till 3am.",
+              "reason": "The badge carries the one small fact a tired reader needs, the exact closing hour, and it stays under the 10-character kit limit. It's the card's single pink accent. It doesn't repeat the quote, which gives the 2:30 getting-off time.",
+              "cites": [
+                "social-rules",
+                "voice-core",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Unchanged from the previous draft: Renee's shift, the window, hot slice on a paper plate, hours, one hashtag",
+              "reason": "The critique didn't flag it. It is short, plain and specific, and it uses only kit facts. It has no link in bio, no exclamation marks, no hype words and one hashtag.",
+              "cites": [
+                "voice-examples",
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "headline, subhead, CTA, date, details",
+              "choice": "Left null",
+              "reason": "The quote-card template has no slots for these, so the quote leads alone.",
+              "cites": [
+                "social-rules"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-20-55"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The quote is exact, the attribution and badge come from the brief and kit, and the caption uses only kit facts. The quote card renders cleanly with no cut-off or overlapping text."

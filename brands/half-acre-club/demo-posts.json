@@ -3,6 +3,7 @@
   "sourceRun": "2026-11-03T20-06-44",
   "packedAt": "2026-11-04T18:31:35.391Z",
   "costUsd": 0.62,
+  "composeCostUsd": 0.22,
   "posts": [
     {
       "briefId": "announce-box-01",
@@ -100,6 +101,105 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"ground\"><header class=\"top\"><div data-slot=\"wordmark\" class=\"wm\"></div><div class=\"badge\" data-slot=\"badge\"></div></header><h1 data-slot=\"headline\"></h1><figure class=\"print\"><span class=\"tape\" aria-hidden=\"true\"></span><img data-slot=\"photo\" alt=\"\"></figure><div class=\"card\"><p data-slot=\"subhead\"></p></div></div>",
+          "css": ".ground{position:absolute;inset:0;background:var(--role-background);overflow:hidden}.top{position:absolute;top:72px;left:72px;right:72px;display:flex;justify-content:space-between;align-items:flex-start}.wm{font-family:var(--font-wordmark);font-weight:var(--weight-wordmark);font-variation-settings:var(--variation-wordmark);letter-spacing:var(--tracking-wordmark);color:var(--role-wordmark);font-size:34px;line-height:1.05;display:flex;flex-direction:column}.wm span:first-child{font-style:italic}.wm span:last-child{font-size:calc(1em * var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);font-style:normal}.badge{font-family:var(--font-hand);font-weight:var(--weight-hand);font-size:64px;line-height:1;color:var(--role-accent);border:4px solid var(--role-accent);border-radius:50% 45% 52% 48%;padding:8px 28px;transform:rotate(var(--stamp-rotation))}h1{position:absolute;top:176px;left:72px;width:700px;margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);font-variation-settings:var(--variation-heading);color:var(--role-heading);font-size:112px;line-height:1}.print{position:absolute;left:72px;top:560px;width:620px;height:620px;margin:0;background:var(--role-background);border:3px solid var(--role-text);padding:16px;box-sizing:border-box;transform:rotate(1.5deg);box-shadow:0 4px 10px color-mix(in srgb,var(--role-text) 25%,transparent)}.print img{width:100%;height:100%;object-fit:cover;object-position:45% 60%;display:block}.tape{position:absolute;top:-22px;left:50%;width:160px;height:48px;margin-left:-80px;background:color-mix(in srgb,var(--role-background) 65%,transparent);border:1px solid color-mix(in srgb,var(--role-text) 20%,transparent);transform:rotate(-4deg);z-index:2}.card{position:absolute;right:72px;bottom:72px;width:400px;background:var(--role-background);border:3px solid var(--role-text);border-radius:var(--radius);padding:28px 30px;box-sizing:border-box}.card p{margin:0;font-family:var(--font-body);font-size:32px;line-height:var(--leading-body);color:var(--role-text)}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Headline top-left on cream, taped photo print lower left, instruction card lower right overlapping the photo's side, clear top-right corner below the badge.",
+              "reason": "Paper-on-counter composition: off-center, uncrowded, copy on cream and never over the photo.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "photo",
+              "choice": "Square print with cream border, 1.5° tilt, taped on top, cropped toward the shoots and the tape label.",
+              "reason": "Photo is a stuck-down print; the crop keeps the plants and the handwritten Day 6 label.",
+              "cites": [
+                "layout-system",
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Hand-font Box 01 circled in tomato red as the only red element.",
+              "reason": "Respects the one-red-thing rule and flags the box number.",
+              "cites": [
+                "visual-system",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "112px Fraunces in pea green over three lines, on cream.",
+              "reason": "Large heading in pea, meets the 3:1 large-type contrast, and reads first.",
+              "cites": [
+                "visual-system",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "wordmark",
+              "choice": "Small stacked wordmark top-left in pea.",
+              "reason": "Signs the post in a corner as the social rules require.",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "Pea shoots. One windowsill.",
+              "reason": "Leads with the concrete plant and the space, in short fragments like the reference line. It is 27 characters and 4 words, inside the 40-character, 6-word limit. It states the small space as the setup, with no apology.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Ready to cut in about ten days. Box 01 ships the first week of the month.",
+              "reason": "Gives the ten-day figure from the brief, worded as \"about\" to match it. It also carries the shipping fact the announcement needs, from the kit's facts. It adds no prices, dates or claims, and at 73 characters it fits the 90 limit.",
+              "cites": [
+                "positioning-core",
+                "voice-examples",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Box 01",
+              "reason": "The badge is the post's one red element, and a box number is what the kit says it is for. Keeping the number there leaves the headline free for the plant and the space.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Five short sentences, under 400 characters. It names the full club name once, gives one useful detail (turn the tub if the shoots lean), then closes with a single \"You've got this.\", \"link in bio\" and two project-specific hashtags.",
+              "reason": "Follows the caption pattern: the concrete thing first, one detail, then one calm line of reassurance at the end. The tub tip fits the day-six photo. There is no hype, no exclamation marks and no banned words.",
+              "cites": [
+                "voice-examples",
+                "voice-core",
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "omitted slots",
+              "choice": "CTA, quote, attribution, date and details left null",
+              "reason": "The photo-led template has no slots for them. The action, \"link in bio\", goes in the caption as the kit directs.",
+              "cites": [
+                "social-rules"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-22-28"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the kit closely: the facts match positioning-core (about ten days, takeout tub, ships the first week of the month), the headline echoes the reference line, slot lengths are within limits, and the render is clean with one red accent (the Box 01 badge). Two small items are worth a look but don't break a written rule."
@@ -296,6 +396,109 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"ground\"><figure class=\"print\"><img data-slot=\"photo\"><span class=\"tape\" aria-hidden=\"true\"></span></figure><b class=\"badge\" data-slot=\"badge\"></b><section class=\"card\"><h1 data-slot=\"headline\"></h1><hr class=\"dots\"><p data-slot=\"subhead\"></p></section><div class=\"cta\" data-slot=\"cta\"></div><div class=\"mark\" data-slot=\"wordmark\"></div></div>",
+          "css": ".ground{position:absolute;inset:0;background:var(--role-background);overflow:hidden}.print{position:absolute;margin:0;left:72px;top:72px;width:936px;height:600px;padding:16px;box-sizing:border-box;background:color-mix(in srgb,var(--color-cream) 80%,var(--color-soil));border-radius:var(--radius);box-shadow:0 3px 8px color-mix(in srgb,var(--color-soil) 25%,transparent)}.print img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;display:block}.tape{position:absolute;width:170px;height:44px;top:-18px;left:40px;transform:rotate(-5deg);background:color-mix(in srgb,var(--role-background) 65%,transparent);border:1px solid color-mix(in srgb,var(--color-soil) 15%,transparent)}.badge{position:absolute;right:72px;top:626px;display:block;font-family:var(--font-hand);font-weight:var(--weight-hand);font-size:72px;line-height:1;color:var(--role-accent);background:var(--role-background);border:4px solid var(--role-accent);border-radius:var(--radius);padding:12px 28px}.card{position:absolute;left:72px;top:728px;width:760px;box-sizing:border-box;padding:28px 36px 32px;background:var(--role-background);border:3px solid var(--role-text);border-radius:var(--radius);transform:rotate(1deg)}h1{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);font-variation-settings:var(--variation-heading);color:var(--role-heading);font-size:80px;line-height:1.02}.dots{border:0;border-top:4px dotted var(--role-text);margin:20px 0}p{margin:0;font-family:var(--font-body);font-size:34px;line-height:var(--leading-body);color:var(--role-text)}.cta{position:absolute;left:72px;top:1180px;font-family:var(--font-body);font-weight:700;font-size:34px;line-height:1;color:var(--role-background);background:var(--role-text);border-radius:var(--radius);padding:22px 36px}.mark{position:absolute;right:72px;bottom:72px;text-align:right;font-family:var(--font-wordmark);font-weight:var(--weight-wordmark);font-variation-settings:var(--variation-wordmark);letter-spacing:var(--tracking-wordmark);color:var(--role-wordmark);font-size:40px;line-height:1}.mark span{display:block}.mark span:first-child{font-style:var(--wordmark-line1-style)}.mark span:last-child{font-size:calc(1em * var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);margin-top:6px}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Taped photo print on top, instruction card below, CTA button and wordmark in the bottom row, clear space bottom right",
+              "reason": "Photo-led 4:5 promo: copy sits on cream, not over the photo, and the brand's counter-top feel holds.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "photo crop",
+              "choice": "Cover crop, object-position 50% 60%, no tilt, one tape strip",
+              "reason": "Keeps the shoots and the Day 6 tape label in view. Rotation is limited to the tape and the card, so there are at most two rotated objects.",
+              "cites": [
+                "layout-system",
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "price badge",
+              "choice": "Price in the hand font, tomato red, in a bordered box overlapping the photo's bottom edge",
+              "reason": "The price leads the promo and is the post's one red element; the CTA is soil brown so it isn't a second red.",
+              "cites": [
+                "visual-system",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "headline and card",
+              "choice": "80px pea-green Fraunces on a cream card with a soil border and a dotted rule above the subhead",
+              "reason": "The headline reads large on the card and stays off the photo. The subhead sits in body type at 34px in soil brown for contrast.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "One windowsill. One project a month.",
+              "reason": "The promo sample headline fits this brief exactly. It is 36 characters and 6 words, within the kit's limit, and it names the concrete setup in short fragments. The price and exit go in the badge and subhead.",
+              "cites": [
+                "voice-examples",
+                "social-rules",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "$24/month",
+              "reason": "The badge is the post's one red element and carries the price, the first fact the brief asked to lead with. It is 9 characters, under the 12 limit.",
+              "cites": [
+                "social-rules",
+                "visual-system",
+                "positioning-core"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "$24 a month, everything in the box, cancel anytime.",
+              "reason": "It states the price and the exit in plain words, as the brief asked. It adds no discount, since none exists, and no invented detail. It is 51 characters, under the 90 limit.",
+              "cites": [
+                "positioning-core",
+                "voice-examples",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "cta",
+              "choice": "Join the club",
+              "reason": "A plain three-word verb for the next step, with no exclamation mark and no urgency. 'Link in bio' stays in the caption, not on the image.",
+              "cites": [
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Concrete offer, Box 01 detail, what's in the box, cancel anytime, link in bio, one quiet closing line, two project hashtags.",
+              "reason": "It leads with the concrete thing and uses only kit facts: $24, pea shoots, about ten days, and the seeds, soil puck and card. 'Save the tub' follows the takeout-tub habit. The single 'You've got this.' closes it, with no health claims, history or exclamation marks. It is well under 400 characters.",
+              "cites": [
+                "voice-core",
+                "voice-examples",
+                "positioning-core",
+                "terminology",
+                "social-rules",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "omitted slots",
+              "choice": "quote, attribution, date and details left null",
+              "reason": "The offer-badge template doesn't have these slots. The shipping window is left out of the image text because the brief only asked for price and cancel anytime.",
+              "cites": [
+                "guardrails"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-22-28"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post stays within the supplied facts ($24/month, cancel anytime, Box 01 pea shoots in a takeout tub, about ten days), uses plain calm voice with one closing 'You've got this.', and renders cleanly with legible type and one red accent. Two small notes: the headline doesn't carry the price the brief asked to lead with, and the badge covers part of the handwritten label in the photo."
@@ -467,6 +670,97 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"ground\"><div class=\"card\"><span class=\"tape\" aria-hidden=\"true\"></span><h1 data-slot=\"headline\"></h1><hr class=\"tear\"><p data-slot=\"subhead\"></p></div><div class=\"scrap\" aria-hidden=\"true\"></div></div>",
+          "css": ".ground{position:absolute;inset:0;background:var(--role-background);}.card{position:absolute;left:var(--safe-margin);top:112px;width:800px;padding:72px 64px 64px;background:var(--role-background);border:3px solid var(--role-text);border-radius:var(--radius);transform:rotate(var(--stamp-rotation));box-shadow:6px 8px 0 color-mix(in srgb,var(--role-text) 15%,transparent);}.tape{position:absolute;top:-28px;right:80px;width:180px;height:56px;background:color-mix(in srgb,var(--role-background) 55%,transparent);border:2px solid color-mix(in srgb,var(--role-text) 20%,transparent);transform:rotate(5deg);}h1{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);font-variation-settings:var(--variation-heading);color:var(--role-heading);font-size:112px;line-height:1.02;letter-spacing:-0.01em;}.tear{border:0;border-top:4px dotted var(--role-text);margin:44px 0 40px;opacity:.6;}p{margin:0;font-family:var(--font-body);font-weight:var(--weight-body);color:var(--role-text);font-size:40px;line-height:var(--leading-body);}.scrap{position:absolute;right:var(--safe-margin);bottom:var(--safe-margin);width:120px;height:120px;border:3px dotted var(--role-heading);border-radius:var(--radius);transform:rotate(3deg);}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "One large taped card, off-center to upper left, with a clear lower-right corner",
+              "reason": "Tip posts are type-led and legibility comes first. The card follows the seed-packet-on-counter idea and leaves a clear corner.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "112px Fraunces in pea green on the cream card, over three lines",
+              "reason": "Within the 88–130px range, and pea is allowed for large headings on cream.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "devices",
+              "choice": "Card, masking tape and a dotted tear rule. No red, no stamp, no wordmark.",
+              "reason": "Two rotated objects at most (the card and the tape). The dotted rule separates headline from instruction. A small dotted-outline scrap fills the empty corner without adding a third device. The wordmark was left off to keep the instruction uncluttered.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "body",
+              "choice": "40px Atkinson Hyperlegible in soil brown",
+              "reason": "Meets the 34–40px body range with strong contrast.",
+              "cites": [
+                "visual-system",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "Soil like a wrung-out sponge.",
+              "reason": "It leads with the concrete feel from the brief, in a short fragment (29 characters, 5 words) that stays inside the kit's 40-character, 6-word limit. It follows the rhythm of the kit's sample tip line without copying it.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Not dripping, not dry. If water pools on top, wait a day.",
+              "reason": "These are the two checks from the brief, in plain words. At 57 characters it fits the 90-character limit. It adds no facts, so the reader can check at the sill right away.",
+              "cites": [
+                "social-rules",
+                "voice-core",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Left empty",
+              "reason": "The badge is optional and the post is stronger without it. Any handwritten note would repeat the subhead, and the template's one accent element isn't needed here.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "cta",
+              "choice": "No CTA slot on this template; 'Link in bio' goes in the caption",
+              "reason": "Type-led has no CTA slot. The kit says 'link in bio' belongs in the caption, not on the image.",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Short caption repeating the sponge test, one quiet 'You've got this.' close, link in bio, and two project hashtags",
+              "reason": "It is 5 short sentences and under 400 characters. It uses 'pea shoots' and 'Half Acre Club' per the terminology. Reassurance comes once, at the end. It uses two specific hashtags and no exclamation marks or emoji. It adds no invented facts.",
+              "cites": [
+                "social-rules",
+                "voice-core",
+                "terminology",
+                "voice-examples"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-22-28"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the kit: it teaches the brief's watering rule in plain, concrete words, uses no invented facts, and stays inside the type-led template's limits. The only observations are minor typographic and phrasing notes."
@@ -626,6 +920,111 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"ground\"><div class=\"card\"><div class=\"tape\" aria-hidden=\"true\"></div><h1 data-slot=\"headline\"></h1><hr class=\"dots\"><p data-slot=\"subhead\"></p></div><div class=\"when\"><p class=\"date\" data-slot=\"date\"></p><p class=\"details\" data-slot=\"details\"></p></div><div class=\"stamp\" data-slot=\"wordmark\"></div></div>",
+          "css": ".ground{position:absolute;inset:0;background:var(--role-background);}.card{position:absolute;left:var(--safe-margin);top:var(--safe-margin);width:700px;padding:56px 56px 48px;background:var(--role-background);border:3px solid var(--role-text);border-radius:var(--radius);transform:rotate(var(--stamp-rotation));box-shadow:4px 6px 0 color-mix(in srgb,var(--role-text) 18%,transparent);}.tape{position:absolute;top:-24px;right:60px;width:150px;height:44px;background:color-mix(in srgb,var(--role-text) 14%,transparent);transform:rotate(5deg);}h1{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);font-variation-settings:var(--variation-heading);font-size:128px;line-height:1;color:var(--role-heading);}.dots{border:0;border-top:4px dotted var(--role-text);margin:32px 0;opacity:.6;}.card p{margin:0;font-family:var(--font-body);font-size:38px;line-height:var(--leading-body);color:var(--role-text);}.when{position:absolute;left:var(--safe-margin);bottom:var(--safe-margin);width:560px;}.when p{margin:0;}.date{font-family:var(--font-hand);font-weight:var(--weight-hand);font-size:84px;line-height:1;color:var(--role-accent);padding-bottom:8px;border-bottom:5px solid var(--role-accent);display:inline-block;transform:rotate(-1deg);}.details{margin-top:24px!important;font-family:var(--font-body);font-size:38px;line-height:1.3;color:var(--role-text);}.stamp{position:absolute;right:var(--safe-margin);bottom:var(--safe-margin);padding:16px 22px;border:3px double var(--role-wordmark);border-radius:var(--radius);color:var(--role-wordmark);font-family:var(--font-wordmark);font-weight:var(--weight-wordmark);font-variation-settings:var(--variation-wordmark);letter-spacing:var(--tracking-wordmark);font-size:36px;line-height:1.1;text-align:center;}.stamp span:first-child{display:block;font-style:italic;}.stamp span:last-child{display:block;font-size:calc(1em*var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "One tilted card top-left holding headline and subhead; date and details sit directly on cream bottom-left; stamp bottom-right; clear top-right corner.",
+              "reason": "Counter-top paper feel, off-center but uncrowded, with the date as a second strong reading point.",
+              "cites": [
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "128px Fraunces in pea green on the card, two lines.",
+              "reason": "Largest size allowed, pea passes at large size on cream, never over a photo.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "date",
+              "choice": "84px Caveat in tomato with a drawn underline, the only red element.",
+              "reason": "Event date must read from across the room; the handwritten note is the one red thing.",
+              "cites": [
+                "visual-system",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "devices",
+              "choice": "Card, masking tape, dotted rule, and wordmark stamp with double border; only the card is rotated plus a slight date tilt.",
+              "reason": "Stays within two rotated objects and a few devices, not all at once.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "photo",
+              "choice": "None.",
+              "reason": "Brief supplies no photo; type-led 1:1.",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "First Cut, Live",
+              "reason": "The event name from the brief, used exactly. It is 15 characters, well inside the 36-character limit. \"First cut\" is also the brand's own term for the payoff moment.",
+              "cites": [
+                "terminology",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "date and details",
+              "choice": "Date: \"Thursday, Nov 20\". Details: \"7pm ET on Instagram Live\".",
+              "reason": "The template says to give both exactly as the brief does, so I added nothing and rephrased nothing. Both fit their limits (24 and 60 characters).",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Dana Reyes cuts her first tray of the month. Bring your questions.",
+              "reason": "One concrete detail in two short sentences, at 66 characters against the 90 limit. It names the host and the action and invites questions, in plain words and without hype. It does not name a plant, because the brief doesn't say which one.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "cta",
+              "choice": "Left null",
+              "reason": "The CTA is optional. The brief has no link or sign-up step, so any action line would be invented, and the card reads cleaner with the when and where. The reassurance line goes at the end of the caption instead, where the voice puts it.",
+              "cites": [
+                "social-rules",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Five short sentences repeating the when and where, naming Dana as the founder, then a quiet \"You've got this.\" and one project-specific hashtag.",
+              "reason": "The caption is under 400 characters and uses the full name Half Acre Club on first mention. Reassurance comes once, at the end, and there are no exclamation marks. I used one hashtag, #windowsillgarden, and skipped #peashoots because the brief doesn't say what is being cut. I left out \"link in bio\" because there's no link to point to.",
+              "cites": [
+                "voice-core",
+                "terminology",
+                "social-rules",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "unused slots",
+              "choice": "badge, quote and attribution left null",
+              "reason": "The event-card template doesn't have these slots. The handwritten date is the post's one red element.",
+              "cites": [
+                "visual-system"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-22-28"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the event card template and the brief's facts for date, time, place, host and the live-stream purpose, with one red handwritten accent and clean, legible layout. Two small caption phrasings could be tighter, but nothing breaks a written rule."
@@ -792,6 +1191,103 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"counter\"><div class=\"card\"><span class=\"tape\" aria-hidden=\"true\"></span><span class=\"mark\" aria-hidden=\"true\">“</span><blockquote data-slot=\"quote\"></blockquote><hr class=\"dots\"><p data-slot=\"attribution\"></p></div></div>",
+          "css": ".counter{position:absolute;inset:0;background:var(--role-background);}.card{position:absolute;left:96px;top:128px;width:830px;box-sizing:border-box;padding:56px 64px 56px;background:var(--role-background);border:3px solid var(--role-text);border-radius:var(--radius);box-shadow:6px 8px 0 color-mix(in srgb,var(--role-text) 15%,transparent);transform:rotate(var(--stamp-rotation));}.tape{position:absolute;top:-28px;right:80px;width:170px;height:52px;background:color-mix(in srgb,var(--color-pea) 35%,transparent);transform:rotate(4deg);}.mark{display:block;font-family:var(--font-heading);font-variation-settings:var(--variation-heading);font-weight:var(--weight-heading);color:var(--role-heading);font-size:160px;line-height:0.6;height:80px;}blockquote{margin:0;font-family:var(--font-heading);font-variation-settings:var(--variation-heading);font-weight:var(--weight-heading);color:var(--role-heading);font-size:92px;line-height:1.08;letter-spacing:-0.01em;}.dots{border:0;border-top:4px dotted var(--role-text);margin:40px 0 28px;opacity:.6;}p{margin:0;font-family:var(--font-body);font-weight:var(--weight-body);color:var(--role-text);font-size:40px;line-height:var(--leading-body);}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "One slightly rotated cream card, off-center, with clear space at the bottom and right",
+              "reason": "Quote card needs space around the words; the card device fits the counter-paper idea and leaves a clear corner.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "quote type",
+              "choice": "Fraunces 92px in pea green on the card, with a large opening quote mark",
+              "reason": "Heading role at large size; pea passes at 3:1 for large type. The quote is the only focus.",
+              "cites": [
+                "visual-system",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "devices",
+              "choice": "Tape strip and dotted rule; no wordmark, no red",
+              "reason": "Quote cards leave off the wordmark; tape holds the card down; dotted rule separates attribution like a tear line. Only one rotated object.",
+              "cites": [
+                "social-rules",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "attribution",
+              "choice": "Atkinson 40px soil brown",
+              "reason": "Body text stays soil for legibility.",
+              "cites": [
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "quote",
+              "choice": "Maya's words exactly as supplied, with no edits",
+              "reason": "The brief says to use the quote exactly, and the template requires the exact words. It is 56 characters, well under the 120 limit.",
+              "cites": [
+                "guardrails",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "attribution",
+              "choice": "Maya, Box 01 member",
+              "reason": "This is the name and label from the brief, and it fits the 40-character limit. No last name or other detail was added.",
+              "cites": [
+                "voice-examples",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "caption (revised)",
+              "choice": "Removed the claim that the basil came before Box 01 and added no timeline. The caption states only what the brief supports: Maya killed two basil plants, and her pea shoots ended up on her eggs.",
+              "reason": "The critique flagged the sequence as an invented detail attached to a real member's testimonial. The critique's suggested fix also implies timing ('before she tried growing anything from a box'), so I left timing out entirely. Dead plants get one light line ('Dead plants happen.') with no guilt. I kept the calm single 'You've got this.' at the end, 'link in bio' in the caption, and the full name Half Acre Club on first mention.",
+              "cites": [
+                "guardrails",
+                "voice-core",
+                "terminology",
+                "social-rules",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "hashtags",
+              "choice": "#peashoots #windowsillgarden",
+              "reason": "Two project-specific tags at the end of the caption stay within the zero-to-three rule.",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Left empty",
+              "reason": "The badge is optional, and the quote is stronger with nothing else competing. Leaving it out also avoids adding a red element or a fact the brief didn't supply.",
+              "cites": [
+                "visual-system",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "headline, subhead, CTA, date, details",
+              "choice": "Null",
+              "reason": "The quote card has no slots for these, and the kit says 'Link in bio' belongs in the caption, not on the image.",
+              "cites": [
+                "social-rules"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-22-28"
+        },
         "critique": {
           "verdict": "revise",
           "summary": "The quote card follows the template and brief: the quote is exact, the attribution is correct, there is no wordmark, and the render is clean and legible. The caption adds a specific detail about Maya's harvest that the brief does not supply."

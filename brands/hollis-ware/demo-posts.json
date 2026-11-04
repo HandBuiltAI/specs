@@ -3,6 +3,7 @@
   "sourceRun": "2026-11-04T18-51-06",
   "packedAt": "2026-11-04T19:17:36.553Z",
   "costUsd": 0.66,
+  "composeCostUsd": 0.2,
   "posts": [
     {
       "briefId": "announce-batch-07",
@@ -92,6 +93,108 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"page\"><figure class=\"frame\"><img data-slot=\"photo\" alt=\"\"></figure><div class=\"copy\"><p class=\"badge\" data-slot=\"badge\"></p><h1 data-slot=\"headline\"></h1><p class=\"sub\" data-slot=\"subhead\"></p></div><div class=\"mark\" data-slot=\"wordmark\"></div></div>",
+          "css": ".page{position:absolute;inset:0;background:var(--role-background);color:var(--role-text)}.frame{position:absolute;left:96px;top:96px;width:888px;height:660px;margin:0;overflow:hidden}.frame img{width:100%;height:100%;object-fit:cover;object-position:40% 72%;display:block}.copy{position:absolute;left:96px;top:800px;width:640px}.badge{margin:0 0 24px;font-family:var(--font-hand);font-weight:var(--weight-hand);font-size:40px;line-height:1.1;letter-spacing:0.08em;color:var(--role-accent);text-transform:uppercase}h1{margin:0 0 20px;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);font-size:84px;line-height:1.02;color:var(--role-heading)}.sub{margin:0;font-family:var(--font-body);font-weight:var(--weight-body);font-size:30px;line-height:var(--leading-body);color:var(--role-text);width:600px}.mark{position:absolute;right:96px;bottom:96px;text-align:right;font-family:var(--font-wordmark);font-weight:var(--weight-wordmark);letter-spacing:var(--tracking-wordmark);color:var(--role-wordmark);font-size:44px;line-height:1;display:flex;flex-direction:column;align-items:flex-end}.mark span:nth-child(2){font-size:calc(1em * var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);margin-right:-0.42em;margin-top:8px;color:var(--color-stone)}",
+          "rationale": [
+            {
+              "decision": "Layout",
+              "choice": "Framed photo on top with paper margins, copy hung low on the left edge, wordmark bottom right.",
+              "reason": "Follows the care-card idea: type on paper below the work, one aligned left edge, no centered stacks.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "Photo crop",
+              "choice": "Cover crop at 888×660 positioned low-left to keep the plates and both cups, with window and wall at the edge.",
+              "reason": "Shows glaze, scale and light; the frame uses the 96px margin on three sides and the bottom paper holds the type.",
+              "cites": [
+                "art-direction",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "Clay device",
+              "choice": "The 'This Sunday' label in clay at 40px, Inter spaced capitals, as the post's only clay element.",
+              "reason": "Clay passes only at 40px and up, and one clay element is the limit; it carries the timing without looking like a sale badge.",
+              "cites": [
+                "visual-system",
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "Headline",
+              "choice": "84px light Cormorant, sentence case, wrapping to two short lines.",
+              "reason": "Within the 64–110px range, never bold, not filling the width.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "Subhead and wordmark",
+              "choice": "30px Inter charcoal in a narrow column; small stacked wordmark in the bottom corner with a stone WARE line.",
+              "reason": "Meets the body minimum and keeps the logo quiet, as social-rules places it.",
+              "cites": [
+                "visual-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "Batch 07. Forty pieces.",
+              "reason": "It leads with the batch number and the count, as the tag does. It is 4 words and 23 characters, inside the kit's 5-word, 32-character limit, and it adapts the kit's announcement sample line.",
+              "cites": [
+                "voice-core",
+                "voice-examples",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Oat speckle stoneware. Online, 9am Eastern. No restocks.",
+              "reason": "It names the material and glaze, then gives the release time and the no-restocks fact. The day is left to the badge so no fact is repeated. It is 56 characters, under the 80 limit, and has no urgency words.",
+              "cites": [
+                "voice-core",
+                "voice-examples",
+                "social-rules",
+                "positioning-core"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "This Sunday",
+              "reason": "The badge carries the single most important small fact, when it goes online. It is 11 characters, within the template's 12. It is the post's one clay element, in sentence case.",
+              "cites": [
+                "social-rules",
+                "visual-system",
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "cta",
+              "choice": "Left empty (null)",
+              "reason": "The template has no CTA slot. The release time is already in the subhead and badge, and the caption carries the link in bio.",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Batch 07 breakdown (14 cups, 16 plates, 10 bowls), use detail, release fact with link in bio, then no restocks",
+              "reason": "The image leaves out the piece counts and the dishwasher-safe fact. The caption follows the pattern of batch, one material or use detail, then the release fact. It is four sentences and under 350 characters, with no hashtags, exclamation marks or urgency.",
+              "cites": [
+                "voice-examples",
+                "positioning-core",
+                "social-rules",
+                "terminology"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-26-24"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the brief and kit: the batch, count, material, release time and no-restocks line all come from the brief or positioning facts, the voice matches the reference line, and the render is clean with legible type and one accent element. Two small notes only."
@@ -403,6 +506,87 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"rule\" aria-hidden=\"true\"></div><h1 data-slot=\"headline\"></h1><p data-slot=\"subhead\"></p><div class=\"mark\" data-slot=\"wordmark\"></div>",
+          "css": ".post{background:var(--role-background);position:relative;overflow:hidden}.rule{position:absolute;left:var(--safe-margin);top:424px;width:160px;height:2px;background:var(--role-accent)}h1{position:absolute;left:var(--safe-margin);top:472px;width:720px;margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);color:var(--role-heading);font-size:104px;line-height:1.02}p{position:absolute;left:var(--safe-margin);top:700px;width:620px;margin:0;font-family:var(--font-body);font-weight:var(--weight-body);line-height:var(--leading-body);color:var(--role-text);font-size:30px}.mark{position:absolute;right:var(--safe-margin);bottom:var(--safe-margin);display:flex;flex-direction:column;align-items:flex-start;font-family:var(--font-wordmark);color:var(--role-wordmark);font-size:36px;line-height:1.1}.mark span:last-child{font-size:calc(1em * var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);color:var(--color-stone);margin-top:4px}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Type-led, left-hung, set in the lower-middle with the top third empty.",
+              "reason": "Follows the care-card idea: asymmetric, one edge, lots of empty paper. The tip is one instruction, so it gets space.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "device",
+              "choice": "A single 160px clay hairline above the headline; no other clay.",
+              "reason": "One device per post. The hairline stays the only accent.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "headline scale",
+              "choice": "104px light serif, sentence case, wrapping to short lines in a 720px column.",
+              "reason": "The tip reads first, stays within the 64–110px range and doesn't fill the width.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "subhead and wordmark",
+              "choice": "30px Inter charcoal body in a narrow column. Small stacked wordmark in the bottom-right corner.",
+              "reason": "Meets the body minimum with good contrast. The wordmark sits in a bottom corner, small, inside the 96px margin.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "Let it warm up first.",
+              "reason": "A short, calm declarative that gives the instruction itself. It is five words and 21 characters, inside the kit's 5-word limit, with no exclamation mark and no talk of fragility. This was kept from the earlier draft because the critique didn't flag it.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Fridge to hot oven can crack stoneware. Let it reach room temperature.",
+              "reason": "It adds the concrete detail the headline leaves out: which temperature jump to avoid and what to do instead. It uses only facts from the brief and stays within 80 characters. Kept unchanged.",
+              "cites": [
+                "social-rules",
+                "voice-examples"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Left empty",
+              "reason": "The kit allows only one small label per post, for a batch number or a price. The brief has neither, and anything else would repeat the subhead.",
+              "cites": [
+                "visual-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Removed the 'hot coffee' line. The caption now says 'Dishwasher safe, and made for daily use.' and keeps the #stoneware hashtag.",
+              "reason": "This fixes the critique. Hot coffee is a heat-safety claim the kit doesn't support, and it sat oddly beside a post about temperature limits. Dishwasher safe and daily use are both stated in the kit. The caption is three sentences and under 350 characters, with one hashtag.",
+              "cites": [
+                "voice-examples",
+                "terminology",
+                "social-rules"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-26-24"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The type-led tip post teaches the brief's one instruction in calm, exact copy with no invented facts, and the render is clean: legible serif headline, no overlap or cut-off, no accent element, and the caption's only hashtag is the permitted #stoneware. Every automated check passes."
@@ -564,6 +748,105 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<header class=\"top\"><div class=\"rule\" aria-hidden=\"true\"></div></header><section class=\"copy\"><p class=\"date\" data-slot=\"date\"></p><h1 data-slot=\"headline\"></h1><p class=\"sub\" data-slot=\"subhead\"></p><p class=\"details\" data-slot=\"details\"></p><p class=\"cta\" data-slot=\"cta\"></p></section><div class=\"wm\" data-slot=\"wordmark\"></div>",
+          "css": ".post{background:var(--role-background);color:var(--role-text);position:relative;overflow:hidden}.top{position:absolute;left:var(--safe-margin);top:var(--safe-margin)}.rule{width:160px;height:2px;background:var(--role-accent)}.copy{position:absolute;left:var(--safe-margin);bottom:var(--safe-margin);width:640px}.date{margin:0 0 24px;font-family:var(--font-body);font-weight:var(--weight-hand);font-size:34px;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-stone)}h1{margin:0 0 32px;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);font-size:110px;line-height:1;color:var(--role-heading)}.sub{margin:0 0 16px;font-family:var(--font-body);font-size:32px;line-height:var(--leading-body);color:var(--role-text)}.details{margin:0 0 32px;font-family:var(--font-body);font-size:30px;line-height:var(--leading-body);color:var(--color-stone)}.cta{margin:0;font-family:var(--font-body);font-size:30px;font-weight:var(--weight-hand);letter-spacing:0.06em;color:var(--role-text)}.wm{position:absolute;right:var(--safe-margin);bottom:var(--safe-margin);text-align:right;font-family:var(--font-wordmark);font-size:40px;line-height:1;color:var(--role-wordmark);letter-spacing:var(--tracking-wordmark)}.wm span{display:block}.wm span+span{font-size:calc(1em*var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);margin-top:8px;color:var(--color-stone)}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Left-hung type block set low, upper area empty apart from a short rule",
+              "reason": "Follows the care-card idea: asymmetric, bottom-third type, over a third of canvas empty, no centered stacks.",
+              "cites": [
+                "layout-system"
+              ]
+            },
+            {
+              "decision": "device",
+              "choice": "One 160px clay hairline top left; no other clay",
+              "reason": "One clay element only, as a thin rule that passes contrast limits.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "hierarchy",
+              "choice": "Date in small spaced caps in stone above a 110px light serif headline; details in stone, CTA in charcoal",
+              "reason": "Date is readable first, and the headline stays the largest type. All sizes are 30px or more with contrast above 4.5:1.",
+              "cites": [
+                "visual-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "wordmark",
+              "choice": "Small stacked wordmark in the bottom right, aligned to the baseline margin",
+              "reason": "Brand rule puts the wordmark small in a bottom corner. Event posts can carry it.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "Open studio.",
+              "reason": "The event name from the brief, set as a short declarative with a full stop. It matches the event sample line and stays well inside the 5-word, 32-character limit.",
+              "cites": [
+                "voice-examples",
+                "social-rules",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "date and details",
+              "choice": "Date: \"Saturday, Dec 6\". Details: \"10am to 2pm, at the studio in Portland\".",
+              "reason": "The template asks for the brief's wording exactly, so I kept it unchanged. The date reads at a glance and the time and place sit together. No hours or address were invented.",
+              "cites": [
+                "social-rules",
+                "positioning-core"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "June will be trimming Batch 08 cups.",
+              "reason": "One concrete reason to come, taken straight from the brief. It shows the process instead of calling the work handmade. It is 36 characters, under the kit's 80.",
+              "cites": [
+                "voice-core",
+                "voice-examples",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "call to action",
+              "choice": "Come and watch",
+              "reason": "A plain next step in three words with no urgency and no exclamation mark. It avoids \"Shop now\" style language. It doesn't repeat the date or place, which are already on the card, and it doesn't claim anything about registration or walk-ins.",
+              "cites": [
+                "social-rules",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Three sentences restating the date, time and place, then the trimming, then a quiet invitation.",
+              "reason": "The caption carries the full practical detail in a calm, tag-like voice. It stays under 350 characters and has no hashtags, emoji or urgency. I left out \"link in bio\" and the coffee line because the brief gives no link and doesn't mention coffee.",
+              "cites": [
+                "social-rules",
+                "voice-examples",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "unused slots",
+              "choice": "Badge, quote and attribution left null.",
+              "reason": "The event card doesn't have these slots. The date is already the card's one accent element, so a badge would only repeat it.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-26-24"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post follows the brief and the kit: the date, time, place and Batch 08 detail all match the brief, the open studio schedule matches the kit, and the copy is calm and free of banned words. The render is clean with no cut-off or overlapping text, and the terracotta date is the only clay-colored element."
@@ -717,6 +1000,98 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"card\"><hr class=\"rule\"><blockquote data-slot=\"quote\" class=\"quote\"></blockquote><p data-slot=\"attribution\" class=\"attr\"></p></div>",
+          "css": ".post{background:var(--role-background);position:relative;overflow:hidden}.card{position:absolute;left:var(--safe-margin);right:var(--safe-margin);bottom:var(--safe-margin);display:flex;flex-direction:column;align-items:flex-start}.rule{width:160px;height:2px;border:0;margin:0 0 56px;background:var(--role-accent)}.quote{margin:0;max-width:760px;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);font-size:82px;line-height:1.08;color:var(--role-heading)}.attr{margin:48px 0 0;font-family:var(--font-body);font-weight:var(--weight-body);font-size:30px;line-height:1.45;color:var(--color-stone)}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Left-aligned quote hung low in the bottom half, top ~45% of the canvas left empty, no logo",
+              "reason": "Care-card composition with space around the words; social rules say leave the wordmark off quote cards.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "quote scale",
+              "choice": "82px light serif, sentence case, 760px measure for short lines",
+              "reason": "Within 64-110px range; the 61-character quote breaks into about four lines without overflowing.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "device",
+              "choice": "One 160px 2px clay hairline above the quote",
+              "reason": "It is the single clay element; nothing else uses clay.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "attribution",
+              "choice": "30px Inter in stone below the quote",
+              "reason": "Secondary supporting text, 4.8:1 on paper, meets the body size minimum.",
+              "cites": [
+                "visual-system",
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "quote",
+              "choice": "Ines's words exactly as supplied, with no edits or added punctuation",
+              "reason": "The brief says to use the quote exactly. At 61 characters it fits the 120-character limit, and its two short declaratives match the brand's rhythm.",
+              "cites": [
+                "voice-core",
+                "voice-examples",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "attribution",
+              "choice": "Ines, Batch 05 cup",
+              "reason": "It gives the first name and the piece, as the testimonial pattern asks, and nothing else. It is 18 characters, well inside the 40 limit, and uses the tag-style batch number format.",
+              "cites": [
+                "voice-examples",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "badge",
+              "choice": "Left empty",
+              "reason": "The only fact that fits is the batch number, which the attribution already carries. The Batch 05 price isn't in the kit or the brief, so I didn't invent one. Leaving the badge empty also keeps the card to the quote and the space around it, with no clay element competing.",
+              "cites": [
+                "social-rules",
+                "guardrails",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "headline, subhead, CTA, date, details",
+              "choice": "Null",
+              "reason": "The quote-card template has none of these slots, so only quote, attribution, badge and caption are filled. A CTA and release time would also add urgency or facts the brief doesn't give.",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Four short sentences. They restate the story plainly, add the website line about washing a cup, and close with the material and dishwasher use. It is under 350 characters, with no hashtag and no emoji.",
+              "reason": "The caption carries the use detail the card leaves out, following the pattern of piece, one use detail, close. Dishwasher safe is a stated care fact. Nothing else is claimed: no urgency, no restock hints, no batch availability.",
+              "cites": [
+                "voice-examples",
+                "voice-core",
+                "social-rules",
+                "guardrails",
+                "terminology"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-26-24"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post uses the client's quote and attribution exactly, and the caption draws only on kit lines and the dishwasher-safe fact. The render is clean, with legible type, no cut-off text and no clay-colored accent."

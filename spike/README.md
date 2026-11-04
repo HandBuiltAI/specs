@@ -53,3 +53,7 @@ Open `output/extract-<run-id>/index.html`. At the top: the checklist score (fact
 `spike/compose.ts` tests whether the model can design each post's layout from the brand's `layout-system` chunk, so posts stop looking like the same six templates in different colors. It reuses a brand's packed demo posts (`demo-posts.json`), so the copy and photo are already approved and only the layout changes.
 
 For each post: **compose** (`prompts/compose.md`, Sonnet 5.5) returns HTML and CSS, then code checks it (`core/compose.ts`): copy can only come from the slots (the model leaves `data-slot` elements empty and code fills them), colors and fonts only through the kit's CSS variables, a short list of tags, no inline styles or URLs. The page is rendered and probed for text off the canvas or clipped, overlapping slots, type under 24px, low contrast and copy sitting straight on the photo. Any problem goes back to the model once; if the second try fails too, the post falls back to its template.
+
+### Pack composed layouts into the demo pages
+
+`npx tsx spike/pack-compose.ts output/compose-<run-id>` (free). Re-checks each attempt in the run with the current code check and render probe and saves the first one that passes into `brands/<brand>/demo-posts.json`. Pass several runs for one brand to combine them; later runs win for the posts they cover. Posts with no passing layout keep their template.

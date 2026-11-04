@@ -22,11 +22,20 @@ const VersionSchema = z.object({
   notes: z.array(NoteSchema),
 });
 
+const ComposedSchema = z.object({
+  html: z.string(),
+  css: z.string(),
+  rationale: z.array(NoteSchema),
+  sourceRun: z.string(),
+});
+
 export const DemoPostsSchema = z.object({
   brand: z.string(),
   sourceRun: z.string(),
   packedAt: z.string(),
   costUsd: z.number(),
+  /** What the compose runs cost, once, on top of costUsd. */
+  composeCostUsd: z.number().optional(),
   posts: z.array(
     z.object({
       briefId: z.string(),
@@ -34,6 +43,9 @@ export const DemoPostsSchema = z.object({
       goal: z.string(),
       details: z.string(),
       kit: VersionSchema.extend({
+        /** The layout the compose step designed from the kit's layout-system chunk, when it passed
+         * every check (spike/pack-compose.ts). Without it the post shows its template. */
+        composed: ComposedSchema.optional(),
         critique: z.object({ verdict: z.enum(["pass", "revise"]), summary: z.string() }).nullable(),
         drafts: z.number().int().min(1),
       }),

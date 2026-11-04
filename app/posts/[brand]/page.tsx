@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CONTENT, DEMO_BRAND_IDS, type DemoBrandId } from "../../../server/generated/content.ts";
 import { buildPostPage, type PostLook } from "../../../core/post-html.ts";
 import { findTemplate, parseTemplates } from "../../../core/templates.ts";
+import { buildComposedPage, checkComposition, TEXT_SLOTS, type TextSlot } from "../../../core/compose.ts";
 import type { DemoPost, Note } from "../../../core/demo.ts";
 import type { PropsOf } from "../../../core/catalog.ts";
 import PostsBoard, { type BoardPost } from "./board.tsx";
@@ -53,13 +54,36 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
     } satisfies Omit<PropsOf<"PostPreview">, "baseline" | "fileName">;
   };
 
+  // A layout the compose step designed from the kit's layout-system chunk. It passed the code
+  // check and render probe when it was packed; check it again here and use the template if not.
+  const composed = (p: DemoPost) => {
+    const c = p.kit.composed;
+    if (!c) return null;
+    const slots = Object.fromEntries(TEXT_SLOTS.map((s) => [s, p.kit.slots[s] ?? null])) as Record<TextSlot, string | null>;
+    if (!checkComposition({ html: c.html, css: c.css }, slots, Boolean(p.kit.photo)).ok) return null;
+    const base = version(p.kit, kitLook, "With the kit");
+    return {
+      ...base,
+      html: buildComposedPage({
+        composition: c,
+        slots,
+        aspect: base.format === "4:5" ? "4:5" : "1:1",
+        tokensCss: kitLook.tokensCss,
+        fontsHref: kitLook.fontsHref,
+        wordmarkLines: b.wordmark,
+        photo: p.kit.photo ? { src: `/generated/${brand}/${p.kit.photo}`, alt: base.alt } : null,
+      }),
+      rationale: notes(c.rationale).slice(0, 16),
+    };
+  };
+
   const posts: BoardPost[] = (b.demoPosts?.posts ?? []).map((p) => ({
     id: p.briefId,
     intent: INTENT_LABEL[p.intent],
     goal: p.goal,
     critique: p.kit.critique?.summary ?? null,
     preview: {
-      ...version(p.kit, kitLook, "With the kit"),
+      ...(composed(p) ?? version(p.kit, kitLook, "With the kit")),
       baseline: p.nokit ? version(p.nokit, plainLook, "Without the kit") : undefined,
       fileName: `${brand}-${p.briefId}`.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 80),
     },
@@ -75,7 +99,7 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
         {b.businessLine} Each post was art-directed from the brand kit. Tap <b>Why this works</b> to see which rule shaped each
         choice, and flip to <b>Without kit</b> to see the same brief made with no kit at all.
       </p>
-      <PostsBoard brand={brand} businessName={b.businessName} kit={b.kit} posts={posts} costUsd={b.demoPosts?.costUsd ?? null} />
+      <PostsBoard brand={brand} businessName={b.businessName} kit={b.kit} posts={posts} costUsd={b.demoPosts ? b.demoPosts.costUsd + (b.demoPosts.composeCostUsd ?? 0) : null} />
     </main>
   );
 }
