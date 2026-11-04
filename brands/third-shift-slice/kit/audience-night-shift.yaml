@@ -1,0 +1,50 @@
+chunk_id: audience-night-shift
+domain: audience
+depends_on: [positioning-core]
+token_count: 360
+confidence: high
+sources:
+  - upload: notes-from-tavo.md
+    location: "who comes" paragraph
+  - upload: photo-01-window-at-night.jpg
+    location: banner ("for nurses, bartenders and line cooks getting off at 2am"); person in scrubs at the counter
+version: 1
+fictional: true
+summary: >-
+  The core segment: people whose shift ends after midnight (nurses, bartenders,
+  line cooks) who want something hot and fast on the way home.
+---
+segment: Night-shift workers getting off between midnight and 3am
+who:
+  - Nurses and hospital staff at the 2:30am shift change
+  - Bartenders and servers after close
+  - Line cooks and dishwashers after the kitchen shuts
+situation:
+  - On their feet for ten or twelve hours
+  - Still in scrubs, an apron or kitchen shoes
+  - Everything else nearby is closed, or it's a gas station
+  - Often haven't eaten since the start of the shift
+  - Usually sober; it's the end of a workday, not a night out
+
+wants:
+  - Something hot, right now, that they don't have to think about
+  - A place that's open when they're off, every time
+  - Being recognized as regulars, without fuss
+
+barriers:
+  - belief: '"Nothing''s open this late."'
+    answer: Say the hours. Say 3am. That's the whole pitch.
+  - belief: '"Late-night food means a drunk crowd."'
+    answer: Show scrubs and kitchen shoes, not party shots. Never joke about drinking.
+  - belief: '"I''ll have to wait."'
+    answer: Three slices, walk-up window. Keep it fast in the copy too.
+
+what_wins_them:
+  - The exact time ("2:47am") instead of "late night"
+  - Being named: nurses, bartenders, line cooks
+  - Prices in plain sight
+  - A hot slice photographed under the real fluorescent light
+
+where_they_see_us: Instagram on their phone, on break or on the walk to the car
+
+words_they_use: [shift, off at, close, the floor, the line, scrubs, "on my feet", break]

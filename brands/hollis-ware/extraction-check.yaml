@@ -1,0 +1,86 @@
+# Extraction checklist for Hollis Ware: what extraction from the messy uploads should find,
+# and what it must not invent. Each check passes when the named chunks (rendered as text)
+# match every `find` pattern (use | inside one for alternatives) and no `never` pattern.
+# Patterns are case-insensitive regular expressions.
+brand: hollis-ware
+
+uploads:
+  - file: uploads/care-card.pdf
+    kind: pdf
+  - file: uploads/website-about.md
+    kind: pasted
+  - file: uploads/notes-batch-07.md
+    kind: pasted
+  - file: uploads/photo-01-plates-by-window.jpg
+    kind: photo
+  - file: uploads/photo-02-trimming-a-cup.jpg
+    kind: photo
+  - file: uploads/photo-03-batch-tag.jpg
+    kind: photo
+
+checks:
+  # What it is
+  - id: batches-no-restock
+    what: Numbered batches, never restocked
+    chunks: [positioning-core, brand-about]
+    find: ["batch", "restock|never remade|gone"]
+  - id: stoneware-dishwasher
+    what: Stoneware, food safe, dishwasher safe
+    chunks: [positioning-core, brand-about]
+    find: ["stoneware", "dishwasher"]
+  - id: maker-june
+    what: One maker, June Hollis
+    chunks: [positioning-core, brand-about]
+    find: ["june"]
+  - id: portland
+    what: Portland, Maine
+    chunks: [positioning-core, brand-about]
+    find: ["portland"]
+  - id: open-studio
+    what: Open studio first Saturday, 10 to 2
+    chunks: [positioning-core, brand-about]
+    find: ["first saturday"]
+  # Voice and words
+  - id: tag-format
+    what: Keeps the tag format "Batch 07 · 12/40"
+    chunks: [voice-core, voice-examples, terminology]
+    find: ["12/40"]
+  - id: avoid-one-of-a-kind
+    what: Avoids "one of a kind"
+    chunks: [terminology, guardrails, voice-core]
+    find: ["one of a kind"]
+  - id: avoid-artisan
+    what: Avoids "artisan" / "made with love"
+    chunks: [terminology, guardrails, voice-core]
+    find: ["artisan|with love|soul"]
+  - id: no-exclamation
+    what: No exclamation marks
+    chunks: [voice-core, guardrails, social-rules]
+    find: ["exclamation"]
+  # Look
+  - id: north-light
+    what: North-window light
+    chunks: [art-direction]
+    find: ["north"]
+  - id: no-styled-breakfast
+    what: No styled breakfasts or flowers in cups
+    chunks: [art-direction, guardrails]
+    find: ["breakfast|flower|succulent"]
+  # The deliberate conflicts
+  - id: conflict-cup-price
+    what: Catches $36 on the site and card against $38 on the tag and notes
+    chunks: [conflicts]
+    find: ["36"]
+  - id: conflict-batch-size
+    what: Catches "around thirty" against 40
+    chunks: [conflicts]
+    find: ["thirty|30"]
+  # Things the uploads don't say, so extraction must not invent them
+  - id: no-stockists
+    what: No invented shops or stockists
+    chunks: [positioning-core, brand-about]
+    never: ["stockist|available at|carried by"]
+  - id: no-oven-temp
+    what: No invented oven temperature
+    chunks: [positioning-core, brand-about, guardrails]
+    never: ["\\d{3} ?°|\\d{3} ?degrees"]

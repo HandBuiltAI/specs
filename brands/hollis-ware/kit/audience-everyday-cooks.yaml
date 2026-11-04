@@ -1,0 +1,46 @@
+chunk_id: audience-everyday-cooks
+domain: audience
+depends_on: [positioning-core]
+token_count: 330
+confidence: medium
+sources:
+  - upload: website-about.md
+    location: '"the things you reach for every day"; "meant to be used"'
+  - upload: founder-interview
+    location: Specs thread, 2026-11-04 (Scott approved the draft brand)
+version: 1
+fictional: true
+summary: >-
+  The core segment: people who cook at home and want a few plain, well-made
+  pieces they'll use daily, and who like knowing who made them.
+---
+segment: Home cooks who buy a few good pieces at a time
+age: 30s to 60s
+situation:
+  - Cook most nights; use the same two cups every morning
+  - Own a mismatched set and don't mind that
+  - Would rather buy one cup they love than a boxed set of eight
+  - Check a small studio's release date and set a reminder
+
+wants:
+  - Pieces that feel good in the hand and survive the dishwasher
+  - To know who made it and how many there are
+  - Something that will look a little different from anyone else's
+
+barriers:
+  - belief: '"Handmade means fragile."'
+    answer: Say dishwasher and microwave safe, plainly, every time it fits.
+  - belief: '"It''ll be sold out before I see it."'
+    answer: Give the release day and time exactly. Don't manufacture urgency beyond that.
+  - belief: '"It''s precious, for display."'
+    answer: Show it in use, by a window, on linen. Never on a plinth.
+
+what_wins_them:
+  - The batch number and the count (12/40)
+  - Material facts: stoneware, cone 6, food safe
+  - A calm photo in real north light
+  - The price stated plainly
+
+where_they_see_us: Instagram feed, saved posts, and the release-day reminder
+
+words_they_use: [mug, cup, everyday, speckled, glaze, dishwasher, studio]

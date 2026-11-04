@@ -1,0 +1,33 @@
+/* Generated from visual-system.json by spike/build-tokens.ts. Do not edit by hand. */
+:root {
+  --color-night: #111111; /* Wall black */
+  --color-paper: #F4F1EA; /* Sign paper */
+  --color-paint: #F5C518; /* Sign-paint yellow */
+  --color-neon: #FF2E88; /* Neon pink */
+  --font-wordmark: "Anton", system-ui, sans-serif;
+  --weight-wordmark: 400;
+  --tracking-wordmark: 0.01em;
+  --wordmark-line2-tracking: 0.28em;
+  --wordmark-line2-scale: 0.72;
+  --font-heading: "Anton", system-ui, sans-serif;
+  --weight-heading: 400;
+  --tracking-heading: 0.005em;
+  --min-size-heading: 64px;
+  --font-body: "Archivo", system-ui, sans-serif;
+  --weight-body: 500;
+  --leading-body: 1.3;
+  --min-size-body: 32px;
+  --font-hand: "Permanent Marker", system-ui, sans-serif;
+  --weight-hand: 400;
+  --min-size-hand: 56px;
+  --radius: 2px;
+  --stamp-rotation: -3deg;
+  --safe-margin: 64px;
+  --unit: 8px;
+  --role-background: var(--color-night);
+  --role-text: var(--color-paper);
+  --role-heading: var(--color-paint);
+  --role-accent: var(--color-neon);
+  --role-wordmark: var(--color-neon);
+  --role-label: var(--color-paper);
+}

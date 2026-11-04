@@ -1,0 +1,49 @@
+chunk_id: terminology
+domain: voice
+depends_on: [voice-core, positioning-core]
+token_count: 430
+confidence: high
+sources:
+  - upload: notes-from-tavo.md
+    location: whole note (menu words, "what I don't want")
+  - upload: photo-01-window-at-night.jpg
+    location: price board wording
+version: 1
+fictional: true
+summary: >-
+  Words Third Shift Slice uses (the window, slice of the night, regulars, off
+  at) and words it avoids (drunk food, artisan, gourmet, location, best in town).
+---
+use:
+  - term: Third Shift Slice
+    note: Full name on first mention in a caption; "the window" after. Never "TSS".
+  - term: the window
+    instead_of: [our location, the restaurant, the shop]
+    why: It literally is a window, and it's the brand.
+  - term: slice of the night
+    note: The nightly special, $6, written on the board. Lowercase in copy; caps on signs.
+  - term: regulars
+    instead_of: [customers, guests, foodies]
+    why: The same nurses and cooks come every week.
+  - term: off at / off the floor / after close
+    why: How the audience says their shift ended.
+  - term: till 3am
+    note: Always the exact hour. "Till 3" is fine once the am is clear.
+  - term: walk up
+    why: The ordering model, said plainly. No tables, no phone.
+  - term: cheese, pepperoni
+    note: Plain menu names, never "classic margherita" or "pepperoni supreme".
+
+avoid:
+  - term: [drunk food, munchies, after the bar, hangover]
+    why: Tavo asked by name. Most of the window's people are coming off work, not out of a bar.
+  - term: [artisan, artisanal, gourmet, elevated, craft, chef-driven]
+    why: It's a slice on a paper plate. Hype words make it sound like a chain's ad.
+  - term: [best in Columbus, best pizza, famous, legendary]
+    why: Unprovable rankings.
+  - term: [location, restaurant, eatery]
+    why: Chain words; there's one window.
+  - term: [late night eats, open late]
+    why: Vague. Say the time.
+  - term: [delivery, order online, call ahead]
+    why: None of these exist; walk-up only.

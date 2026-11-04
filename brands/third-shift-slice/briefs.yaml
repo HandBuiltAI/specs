@@ -1,0 +1,57 @@
+# Test briefs for the quality spike and the demo posts: one per post intent.
+# The kit run and the no-kit baseline both get the business line, the photo list and the brief.
+# Only the kit run gets the brand kit.
+# Fictional: every fact below is invented for the Specs demo.
+brand: third-shift-slice
+business_name: Third Shift Slice
+business_line: A walk-up pizza window in Columbus, Ohio, open till 3am for people getting off a late shift.
+
+photos:
+  - file: uploads/photo-01-window-at-night.jpg
+    alt: >-
+      The window at night from the sidewalk: black wall, a painted banner reading
+      "THIRD SHIFT SLICE", a pink neon SLICE sign, a yellow sign "WED-SUN 9PM-3AM
+      COLUMBUS, OH", a paper price board (cheese $4, pepperoni $5, slice of the
+      night $6, cash + card), and a woman in scrubs ordering at the counter. The
+      wall reads "HOT SLICE. 2:47AM. WINDOW'S OPEN."
+  - file: uploads/photo-02-cheese-pull.jpg
+    alt: >-
+      A hand lifting a slice of cheese pizza off a white paper plate, cheese
+      stretching, under fluorescent kitchen light, a stack of napkins behind.
+  - file: uploads/photo-03-till-3am-sign.jpg
+    alt: >-
+      A paper sign taped inside the window glass, hand-lettered in black marker:
+      "OPEN TILL 3AM · WED-SUN", with a pink marker underline. The kitchen is
+      soft behind it, squeeze bottles on the counter.
+
+briefs:
+  - id: announce-slice-of-the-night
+    intent: announcement
+    goal: Announce Friday's slice of the night.
+    details: Hot honey and soppressata. $6. Friday only, till it runs out.
+
+  - id: promo-open-till-3
+    intent: promo
+    goal: Tell people getting off a late shift that the window's open till 3am.
+    details: Nothing beyond the standard menu and hours. No discount.
+
+  - id: tip-fold-it
+    intent: tip
+    goal: Teach how to eat a slice one-handed on the walk to the car.
+    details: >-
+      Fold the slice in half lengthwise so the tip doesn't flop. Hold it at the
+      crust. Napkin under the fold.
+
+  - id: event-shift-change-night
+    intent: event
+    goal: Invite hospital staff to a thank-you night at the window.
+    details: >-
+      Event name: Shift Change Night. Date: Saturday, Nov 22. Time: 9pm to 3am, at
+      the window. Show a hospital badge and the first cheese slice is free.
+
+  - id: testimonial-renee
+    intent: testimonial
+    goal: Share a regular's words about why she stops at the window.
+    details: >-
+      Regular's quote (use exactly): "I get off at 2:30. This is the only light on the street."
+      Regular: Renee, ER nurse. Fictional, written for the demo.

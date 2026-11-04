@@ -1,0 +1,45 @@
+chunk_id: guardrails
+domain: guardrails
+depends_on: [positioning-core, voice-core, art-direction]
+token_count: 420
+confidence: high
+sources:
+  - upload: notes-from-tavo.md
+    location: '"what I don''t want" paragraph'
+  - upload: CLAUDE.md
+    location: Rules (never invent facts)
+version: 1
+fictional: true
+summary: >-
+  Hard limits for Third Shift Slice posts: no drinking jokes, no invented facts
+  or flavors, no rankings, no delivery or ordering that doesn't exist.
+---
+never_say:
+  - rule: Facts not in positioning-core or the brief
+    examples: [a street address, delivery apps, discounts, new hours, awards, press, other locations]
+    why: The brand is fictional but consistent; an invented fact breaks the kit and the demo's point.
+  - rule: A slice-of-the-night flavor the brief didn't name
+    why: It changes nightly; a guessed flavor is a wrong menu.
+  - rule: A testimonial quote, name or job the brief didn't supply
+    why: A made-up quote is a fake review, even for a fictional brand.
+  - rule: Drinking jokes, "drunk food", hangovers, "after the bar"
+    why: Tavo asked by name. The audience is coming off a shift.
+  - rule: Rankings and superlatives ("best in Columbus", "famous", "legendary")
+    why: Unprovable.
+  - rule: Delivery, online ordering, phone orders, reservations or seating
+    why: None exist. Walk-up only.
+  - rule: Health or diet claims
+    why: Not what it sells, and not true of a slice at 3am.
+  - rule: Mockery of any job or of tired people
+    why: The regulars are nurses and cooks; the joke is never on them.
+
+never_show:
+  - Bars, drinks, beer bottles, or people visibly drunk
+  - Daylight shots of the window
+  - Styled pizza on boards or marble, garnish arranged for a camera
+  - Delivery bags, tables or a dining room
+  - More than one neon-pink element besides the wordmark
+
+when_unsure: >-
+  Leave it out and say so in the rationale. A post missing a detail is
+  fixable; a post with an invented one is wrong.

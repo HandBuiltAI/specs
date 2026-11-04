@@ -13,7 +13,7 @@ import { wordmarkLines } from "../core/kit.ts";
 import { DemoPostsSchema } from "../core/demo.ts";
 
 // Demo brands whose kits the server can use. Each needs kit/ and briefs.yaml.
-const DEMO_BRANDS = ["half-acre-club"] as const;
+const DEMO_BRANDS = ["half-acre-club", "third-shift-slice", "hollis-ware"] as const;
 
 const read = (path: string) => readFileSync(path, "utf8");
 

@@ -1,0 +1,115 @@
+{
+  "meta": {
+    "chunk_id": "visual-system",
+    "domain": "visual",
+    "depends_on": ["positioning-core"],
+    "token_count": 760,
+    "confidence": "high",
+    "sources": [
+      { "upload": "photo-01-plates-by-window.jpg", "location": "off-white walls, linen, speckled oat glaze" },
+      { "upload": "photo-03-batch-tag.jpg", "location": "kraft tag with handwritten batch number" },
+      { "upload": "care-card.pdf", "location": "serif name, thin clay-colored rule, charcoal text on off-white" },
+      { "upload": "founder-interview", "location": "Specs thread, 2026-11-04 (fonts: Cormorant Garamond, Inter)" }
+    ],
+    "version": 1,
+    "fictional": true,
+    "summary": "A care card on linen by a north window: off-white paper, charcoal text, a light serif, and clay only on small type and thin rules. Lots of empty space. Fonts: Cormorant Garamond (wordmark, headings), Inter (body, labels)."
+  },
+  "concept": "A care card on linen by a north window. Off-white paper, charcoal type, one thin clay-colored line, and room around everything.",
+  "color": {
+    "paper": {
+      "hex": "#F4F1EC",
+      "name": "Studio white",
+      "role": "Main background, like the studio wall and the care card.",
+      "rule": "Paper covers most of every post. Empty space is part of the look: leave at least a third of the canvas with nothing in it."
+    },
+    "charcoal": {
+      "hex": "#2B2A28",
+      "name": "Kiln charcoal",
+      "role": "Headings and body text.",
+      "rule": "All type is charcoal (12.7:1 on paper), except one small clay label."
+    },
+    "stone": {
+      "hex": "#6F6A63",
+      "name": "Stone gray",
+      "role": "Secondary text: attributions, small labels, the second line of a lockup.",
+      "rule": "4.8:1 on paper. For small supporting text only, never headings."
+    },
+    "clay": {
+      "hex": "#B5734B",
+      "name": "Raw clay",
+      "role": "A thin rule, a tag number, a price label.",
+      "rule": "One clay element per post, and small: 3.4:1 on paper, so only type 40px and up or a hairline rule. It's the bare clay at the rim, not a paint color."
+    }
+  },
+  "pairings": {
+    "allowed": [["charcoal", "paper"], ["stone", "paper"], ["clay", "paper"]],
+    "avoid": [
+      { "pair": ["paper", "clay"], "reason": "Paper text on a clay fill turns the accent into a button and fails contrast for small type." },
+      { "pair": ["clay", "charcoal"], "reason": "Clay on charcoal goes muddy. Keep the background paper." }
+    ]
+  },
+  "roles": {
+    "note": "Maps the shared post templates' color roles to this brand's colors. Templates only ever use roles, so the same layout works for every brand.",
+    "background": "paper",
+    "text": "charcoal",
+    "heading": "charcoal",
+    "accent": "clay",
+    "wordmark": "charcoal",
+    "label": "paper"
+  },
+  "material_notes": [
+    "The glaze color in photos varies by batch and by light. Never recolor a photo to match the palette.",
+    "North light is cool and even. Don't warm photos up; the paper hex is for type backgrounds, not a grade."
+  ],
+  "type": {
+    "wordmark": {
+      "description": "A light, high-contrast serif: 'Hollis' over a small, widely spaced WARE, like the care card.",
+      "stand_in_font": "Cormorant Garamond",
+      "weight": 400,
+      "letter_spacing": "0.01em",
+      "case": "as written",
+      "lockup": ["Hollis", "WARE"],
+      "rule": "Quiet and small. The spaced WARE keeps it a mark, not a headline.",
+      "confidence": "high",
+      "lockup_style": { "line2_tracking": "0.42em", "line2_scale": 0.42 }
+    },
+    "heading": {
+      "stand_in_font": "Cormorant Garamond",
+      "weight": 400,
+      "color": "charcoal",
+      "min_px_at_1080": 56,
+      "letter_spacing": "-0.01em",
+      "description": "Light serif in sentence case, set large with plenty of air. Never bold, never all caps.",
+      "confidence": "high"
+    },
+    "body": {
+      "description": "A neutral sans for facts: material, count, price, release time.",
+      "stand_in_font": "Inter",
+      "weight": 400,
+      "color": "charcoal",
+      "min_px_at_1080": 30,
+      "line_height": 1.45,
+      "rule": "Set facts the way the tag does: short, with middle dots between them.",
+      "confidence": "high"
+    },
+    "hand": {
+      "description": "Not handwriting: a small spaced-out label in Inter, like a batch number on a shelf.",
+      "stand_in_font": "Inter",
+      "weight": 500,
+      "color": "clay",
+      "rule": "At most one label per post: the batch and number, or the price. The brand has no handwriting font; the only handwriting is on the real tags in photos.",
+      "confidence": "high",
+      "min_px_at_1080": 40
+    }
+  },
+  "shape": {
+    "radius_px": 0,
+    "stamp_rotation_deg": 0,
+    "rule": "Square corners, nothing rotated. Calm comes from alignment and space."
+  },
+  "spacing": {
+    "safe_margin_px_at_1080": 96,
+    "unit_px": 8
+  }
+}

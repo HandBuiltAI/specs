@@ -1,0 +1,61 @@
+chunk_id: positioning-core
+domain: positioning
+depends_on: []
+token_count: 560
+confidence: high
+sources:
+  - upload: founder-interview
+    location: Specs thread, 2026-11-04 (Scott approved the draft brand)
+  - upload: notes-from-tavo.md
+    location: whole note (who comes, menu, hours, what not to say)
+  - upload: photo-01-window-at-night.jpg
+    location: painted banner and price board
+version: 1
+fictional: true
+summary: >-
+  Third Shift Slice is a fictional walk-up pizza window in Columbus, Ohio, open
+  9pm to 3am Wednesday to Sunday, for people who get off work when everyone
+  else is asleep: nurses, bartenders and line cooks.
+---
+what_it_is: >-
+  A walk-up pizza window. No tables, no delivery, no phone orders. You walk
+  up, get a slice on a paper plate, and eat it on the curb or on the way home.
+  One owner, one oven, a short menu.
+
+who_its_for: >-
+  People getting off work late: nurses coming off a hospital shift around
+  2:30am, bartenders after close, line cooks after the kitchen shuts. People
+  who've been on their feet for ten hours. Detail in audience-night-shift.
+
+promise: When your shift ends, the window's open.
+promise_reason: >-
+  The closing time was moved to 3am so the nurses from the hospital up the
+  street get there before it shuts. The hours are the product.
+
+differentiators:
+  - name: Open when you're off
+    detail: 9pm to 3am, set by when shifts actually end, not when bars close.
+  - name: Short menu
+    detail: Three slices. Nothing to decide at 2am.
+  - name: One person, one oven
+    detail: Tavo makes every slice. That's why there's no phone and no delivery.
+  - name: Made by a line cook
+    detail: Eleven years on the line; he knows what you want after a shift.
+
+facts:
+  note: >-
+    All fictional. Posts may use only these facts plus what a brief supplies.
+    No street address, no delivery apps, no awards, no "best in Columbus".
+  where: A walk-up window in Columbus, Ohio. No street address is given; don't invent one.
+  hours: Wednesday to Sunday, 9pm to 3am. Closed Monday and Tuesday.
+  menu:
+    cheese: $4
+    pepperoni: $5
+    slice_of_the_night: $6, changes nightly, written on the board. Don't name a flavor unless the brief does.
+  payment: Cash and card
+  owner: Tavo Ruiz, a former line cook (eleven years)
+  ordering: Walk up only. No tables, no delivery, no phone orders.
+  the_wall_line: >-
+    "Hot slice. 2:47am. Window's open." A regular, a nurse, texted it to a
+    friend; Tavo painted it on the wall. 2:47 is just the time it was.
+  the_sign: The pink neon SLICE sign came with the space; Tavo fixed its transformer.

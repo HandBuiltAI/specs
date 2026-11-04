@@ -1,0 +1,33 @@
+/* Generated from visual-system.json by spike/build-tokens.ts. Do not edit by hand. */
+:root {
+  --color-paper: #F4F1EC; /* Studio white */
+  --color-charcoal: #2B2A28; /* Kiln charcoal */
+  --color-stone: #6F6A63; /* Stone gray */
+  --color-clay: #B5734B; /* Raw clay */
+  --font-wordmark: "Cormorant Garamond", system-ui, sans-serif;
+  --weight-wordmark: 400;
+  --tracking-wordmark: 0.01em;
+  --wordmark-line2-tracking: 0.42em;
+  --wordmark-line2-scale: 0.42;
+  --font-heading: "Cormorant Garamond", system-ui, sans-serif;
+  --weight-heading: 400;
+  --tracking-heading: -0.01em;
+  --min-size-heading: 56px;
+  --font-body: "Inter", system-ui, sans-serif;
+  --weight-body: 400;
+  --leading-body: 1.45;
+  --min-size-body: 30px;
+  --font-hand: "Inter", system-ui, sans-serif;
+  --weight-hand: 500;
+  --min-size-hand: 40px;
+  --radius: 0px;
+  --stamp-rotation: 0deg;
+  --safe-margin: 96px;
+  --unit: 8px;
+  --role-background: var(--color-paper);
+  --role-text: var(--color-charcoal);
+  --role-heading: var(--color-charcoal);
+  --role-accent: var(--color-clay);
+  --role-wordmark: var(--color-charcoal);
+  --role-label: var(--color-paper);
+}
