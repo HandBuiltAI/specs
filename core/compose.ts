@@ -112,6 +112,7 @@ export function checkComposition(c: Pick<Composition, "html" | "css">, slots: Pa
     if (!TAGS.has(t.name)) { errors.push(`<${t.name}> isn't allowed.`); continue; }
     if (t.closing) continue;
     for (const [k, v] of Object.entries(t.attrs)) {
+      if (k === "alt") continue; // harmless on the photo; code replaces it with the photo's own alt text
       if (!ATTR_OK.test(k)) errors.push(`Attribute "${k}" isn't allowed (only class, data-slot, aria-hidden; no inline styles).`);
       if (k === "class" && !/^[-\w\s]*$/.test(v)) errors.push(`Class "${v}" has odd characters.`);
     }
@@ -124,7 +125,7 @@ export function checkComposition(c: Pick<Composition, "html" | "css">, slots: Pa
     } else if (t.name === "img") errors.push("An <img> without data-slot=\"photo\" isn't allowed.");
   }
   // Slot elements must be empty: code fills them.
-  for (const m of c.html.matchAll(/<([a-zA-Z0-9]+)[^>]*data-slot=["']?([\w-]+)["']?[^>]*>([\s\S]*?)<\/\1>/g))
+  for (const m of c.html.matchAll(/<([a-zA-Z0-9]+)(?=[\s>\/])[^>]*data-slot=["']?([\w-]+)["']?[^>]*>([\s\S]*?)<\/\1>/g))
     if (m[3]!.trim()) errors.push(`The ${m[2]} slot element must be empty; code fills it.`);
   for (const s of TEXT_SLOTS) {
     const want = slots[s] ? 1 : 0;
@@ -167,13 +168,14 @@ export function buildComposedPage(opts: {
     return withClass;
   };
   let html = opts.composition.html;
-  html = html.replace(/<([a-zA-Z0-9]+)([^>]*data-slot=["']?([\w-]+)["']?[^>]*)>\s*<\/\1>/g, (_m, tag: string, attrs: string, slot: string) => {
+  html = html.replace(/<([a-zA-Z0-9]+)(?=[\s>\/])([^>]*data-slot=["']?([\w-]+)["']?[^>]*)>\s*<\/\1>/g, (_m, tag: string, attrs: string, slot: string) => {
     const open = fillTag(`<${tag}${attrs}>`, slot);
     if (slot === "wordmark") return `${open}${opts.wordmarkLines.map((l) => `<span>${escapeHtml(l)}</span>`).join("")}</${tag}>`;
     const text = opts.slots[slot as TextSlot];
     return `${open}${escapeHtml(text ?? "")}</${tag}>`;
   });
-  html = html.replace(/<img([^>]*data-slot=["']?photo["']?[^>]*?)\/?>/g, (_m, attrs: string) => {
+  html = html.replace(/<img([^>]*data-slot=["']?photo["']?[^>]*?)\/?>/g, (_m, raw: string) => {
+    const attrs = raw.replace(/\salt=("[^"]*"|'[^']*'|[^\s>]*)/g, "");
     const open = fillTag(`<img${attrs}>`, "photo").replace(/>$/, "");
     return opts.photo ? `${open} src="${escapeHtml(opts.photo.src)}" alt="${escapeHtml(opts.photo.alt)}">` : "";
   });

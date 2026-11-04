@@ -46,3 +46,10 @@ test("code fills the copy, escaped, with the classes the pins look for", () => {
   assert.match(page, /<footer class="wordmark" data-slot="wordmark"><span>THIRD SHIFT<\/span><span>SLICE<\/span><\/footer>/);
   assert.match(page, /<main class="post post--1x1 composed">/);
 });
+
+test("an alt on the photo is allowed and replaced by code", () => {
+  const withPhoto = { ...good, html: '<img data-slot="photo" alt="pizza">' + good.html };
+  assert.deepEqual(checkComposition(withPhoto, slots, true).errors, []);
+  const page = buildComposedPage({ composition: withPhoto, slots, aspect: "4:5", tokensCss: "", wordmarkLines: ["X"], photo: { src: "p.jpg", alt: "The window at night" } });
+  assert.match(page, /<img class="photo" data-slot="photo" src="p.jpg" alt="The window at night">/);
+});
