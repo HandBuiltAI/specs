@@ -38,8 +38,8 @@ export function parseProfile(files: KitFiles, task: Task): Profile {
 // Which load-if-relevant chunks apply to a post intent. Mirrors the "when" notes in
 // _retrieval-rules.yaml; kept in code so the selection is visible and testable.
 const RELEVANT_BY_INTENT: Record<string, string[]> = {
-  announcement: ["positioning-core", "voice-examples", "audience-renters"],
-  promo: ["positioning-core", "voice-examples", "audience-renters", "guardrails"],
+  announcement: ["positioning-core", "voice-examples", "audience-renters", "audience"],
+  promo: ["positioning-core", "voice-examples", "audience-renters", "audience", "guardrails"],
   tip: ["voice-examples"],
   event: ["voice-examples", "positioning-core"],
   testimonial: ["voice-examples", "guardrails"],
@@ -57,10 +57,11 @@ export function selectChunks(files: KitFiles, task: Task, intent: string) {
   for (const r of profile.if_relevant ?? []) if (task === "post_critique" || relevant.has(r.chunk)) wanted.push(r.chunk);
 
   const picked: Chunk[] = [];
-  for (const id of wanted) {
+  for (const [i, id] of wanted.entries()) {
     const c = chunks.get(id);
-    if (!c) throw new Error(`Profile ${task} names chunk "${id}" but the kit has no such chunk`);
-    picked.push(c);
+    // A drafted kit may lack an optional chunk (no upload covered it); a required one is a broken kit.
+    if (!c && i < profile.always.length) throw new Error(`Profile ${task} names chunk "${id}" but the kit has no such chunk`);
+    if (c) picked.push(c);
   }
   return { chunks: picked, budget: profile.budget, tokens: picked.reduce((n, c) => n + approxTokens(chunkForModel(c)), 0) };
 }

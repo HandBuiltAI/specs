@@ -8,7 +8,7 @@ How to choose:
 - Pick the component that makes the answer quickest for the owner:
   - `SourceCard`: confirm or correct one fact, showing where it came from. Best for conflicts and doubtful facts. Put the version with more support in `fact`, the other side in `conflict`, and set `chunk` to the kit chunk the fact belongs in.
   - `ChoiceChips`: a short closed question (who the customer is, what kind of business). Two to six options drawn from the uploads, never invented facts.
-  - `SwatchPicker`: two or three candidate palettes. Use only hex values from the gap details or the sampled colors list.
+  - `SwatchPicker`: two or three candidate palettes. Use only hex values from the gap details or the sampled colors list. List each palette's colors in this order: background, body text, accent, then any others.
   - `FontPairCard`: candidate font pairs. Prefer fonts named in the uploads; otherwise suggest from the curated list.
   - `ToneSlider`: when the voice is unclear. Write a sample line for each end, and optionally a middle line, all about the business's real product, using only facts from the kit.
   - `LineCompare`: two sample lines, one closer to each reading of the voice. Quote the uploads when you can.
