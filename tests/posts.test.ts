@@ -50,7 +50,7 @@ test("pack-demo turns a spike run into demo posts, skipping failed versions", ()
     const packed = DemoPostsSchema.parse(JSON.parse(readFileSync(brandFile, "utf8")));
     assert.equal(packed.posts.length, 2);
     const [announce, promo] = packed.posts;
-    assert.equal(announce!.kit.notes.length, 6, "plan notes then draft notes");
+    assert.equal(announce!.kit.notes.length, 6, "plan layout and photo notes, then draft notes");
     assert.equal(announce!.kit.critique?.verdict, "pass");
     assert.ok(announce!.nokit);
     assert.equal(promo!.nokit, null, "the failed no-kit post is left out");

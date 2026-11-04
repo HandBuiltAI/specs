@@ -18,7 +18,7 @@ const VersionSchema = z.object({
   /** Photo path relative to the brand folder, e.g. uploads/photo-01.jpg, or null. */
   photo: z.string().nullable(),
   slots: SlotsSchema,
-  /** The plan's notes, then the final draft's. */
+  /** The plan's layout and photo notes, then the final draft's. */
   notes: z.array(NoteSchema),
 });
 

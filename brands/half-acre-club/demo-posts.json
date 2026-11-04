@@ -1,0 +1,862 @@
+{
+  "brand": "half-acre-club",
+  "sourceRun": "2026-11-03T20-06-44",
+  "packedAt": "2026-11-04T18:31:35.391Z",
+  "costUsd": 0.62,
+  "posts": [
+    {
+      "briefId": "announce-box-01",
+      "intent": "announcement",
+      "goal": "Announce that Box 01 is pea shoots and that it's shipping.",
+      "details": "Box 01 is pea shoots. Ready to cut in about ten days.",
+      "kit": {
+        "template": "photo-led",
+        "photo": "uploads/photo-02-day-six-sill.jpg",
+        "slots": {
+          "headline": "Pea shoots. One windowsill.",
+          "subhead": "Ready to cut in about ten days. Box 01 ships the first week of the month.",
+          "cta": null,
+          "badge": "Box 01",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Half Acre Club's Box 01 is pea shoots. About ten days from soil to first cut, in a takeout tub on one sill. If they lean toward the glass, turn the tub. You've got this. Link in bio. #peashoots #windowsillgarden"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "photo-led (4:5)",
+            "reason": "The kit's first choice for an announcement is photo-led, because a new box is best shown rather than described. The brief gives no reason to depart from that. The 4:5 frame also keeps the copy off the photo.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-02-day-six-sill.jpg",
+            "reason": "The shoots are clearly pea shoots in a reused takeout tub on one windowsill, which shows the project, the small footprint and the ten-day timeline. The kit calls this shot the test of the direction. Audiences are won by a real photo of something growing in a space like theirs.",
+            "cites": [
+              "art-direction",
+              "audience-renters",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "photo (rejected)",
+            "choice": "Not photo-01-box-opened.jpg",
+            "reason": "The card in the photo reads \"BOX No. 014\", which contradicts the brief and the kit's numbering (Box 01), and it would put a wrong number in an announcement of Box 01. Photo 3 is a good payoff shot but shows the harvest, not the announcement's setup, so it's the runner-up.",
+            "cites": [
+              "positioning-core",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "Pea shoots. One windowsill.",
+            "reason": "Leads with the concrete plant and the space, in short fragments like the reference line. It is 27 characters and 4 words, inside the 40-character, 6-word limit. It states the small space as the setup, with no apology.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Ready to cut in about ten days. Box 01 ships the first week of the month.",
+            "reason": "Gives the ten-day figure from the brief, worded as \"about\" to match it. It also carries the shipping fact the announcement needs, from the kit's facts. It adds no prices, dates or claims, and at 73 characters it fits the 90 limit.",
+            "cites": [
+              "positioning-core",
+              "voice-examples",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "Box 01",
+            "reason": "The badge is the post's one red element, and a box number is what the kit says it is for. Keeping the number there leaves the headline free for the plant and the space.",
+            "cites": [
+              "social-rules",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Five short sentences, under 400 characters. It names the full club name once, gives one useful detail (turn the tub if the shoots lean), then closes with a single \"You've got this.\", \"link in bio\" and two project-specific hashtags.",
+            "reason": "Follows the caption pattern: the concrete thing first, one detail, then one calm line of reassurance at the end. The tub tip fits the day-six photo. There is no hype, no exclamation marks and no banned words.",
+            "cites": [
+              "voice-examples",
+              "voice-core",
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "omitted slots",
+            "choice": "CTA, quote, attribution, date and details left null",
+            "reason": "The photo-led template has no slots for them. The action, \"link in bio\", goes in the caption as the kit directs.",
+            "cites": [
+              "social-rules"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the kit closely: the facts match positioning-core (about ten days, takeout tub, ships the first week of the month), the headline echoes the reference line, slot lengths are within limits, and the render is clean with one red accent (the Box 01 badge). Two small items are worth a look but don't break a written rule."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "photo-led",
+        "photo": "uploads/photo-03-first-cut.jpg",
+        "slots": {
+          "headline": "Box 01 is pea shoots",
+          "subhead": "It's shipping now. You could be cutting your own greens in about ten days.",
+          "cta": null,
+          "badge": "Box 01",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Box 01 is pea shoots, and it's on its way. No garden needed. Ready to cut in about ten days. Link in bio."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "photo-led",
+            "reason": "There is no brand kit, so I went by the template list. Photo-led is the first template listed for announcements, and nothing in the brief argues against it. The 4:5 photo gives the news room, and the optional badge can carry the box number.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-03-first-cut.jpg",
+            "reason": "It shows the payoff, a hand snipping fresh pea shoots, and it has no text that could clash with the brief. It also matches the ten-days-to-cut detail.",
+            "cites": []
+          },
+          {
+            "decision": "photo rejected: photo-01",
+            "choice": "Not used",
+            "reason": "The card in the box reads 'BOX No. 014', which contradicts the brief's Box 01. Using it would announce the wrong box number.",
+            "cites": []
+          },
+          {
+            "decision": "photo rejected: photo-02",
+            "choice": "Not used",
+            "reason": "The tape label reads 'Day 6 (3/14)'. That puts an unexplained date on the post and shows a timeline that doesn't match 'ready in about ten days'. The brief gives no date, so the label could mislead.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "Box 01 is pea shoots",
+            "reason": "States the news plainly in 20 characters, well under the 40 limit. The brief's main fact leads, as the angle asks.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "It's shipping now. You could be cutting your own greens in about ten days.",
+            "reason": "Adds the shipping news and the quick payoff from the brief ('ready to cut in about ten days') without inventing any details. It is 74 characters, under the 90 limit. 'Greens' is a light paraphrase of pea shoots.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "Box 01",
+            "reason": "The template suggests a date or box number. No ship date was supplied, so the box number is the only safe option. It is 6 characters, under the 12 limit.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Short caption repeating the news, noting no garden is needed, with the ten-day timing and 'Link in bio.'",
+            "reason": "The caption carries the call to action, which the image doesn't. It stays within the brief's facts and the business description, with no prices, dates or invented specifics. No hashtags were added because none were supplied and there is no kit guidance.",
+            "cites": []
+          },
+          {
+            "decision": "omitted slots",
+            "choice": "Left cta, quote, attribution, date and details null",
+            "reason": "The photo-led template has none of these slots, so only headline, subhead, badge and caption are filled.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "promo-join",
+      "intent": "promo",
+      "goal": "Get new people to join. Lead with the price and that they can cancel anytime.",
+      "details": "Nothing beyond the standard offer. No discount.",
+      "kit": {
+        "template": "offer-badge",
+        "photo": "uploads/photo-02-day-six-sill.jpg",
+        "slots": {
+          "headline": "One windowsill. One project a month.",
+          "subhead": "$24 a month, everything in the box, cancel anytime.",
+          "cta": "Join the club",
+          "badge": "$24/month",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Half Acre Club sends one small growing project a month for $24. Box 01 is pea shoots in a takeout tub, ready to cut in about ten days. The box holds seeds, a soil puck and a printed card; you save the tub. Cancel anytime. Link in bio. You've got this.\n\n#peashoots #windowsillgarden"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "offer-badge (4:5)",
+            "reason": "The kit names the offer badge as the first choice for promos because price and 'cancel anytime' are the facts that move people. The brief asks for exactly those two, and nothing in it argues against the default.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-02-day-six-sill.jpg",
+            "reason": "It shows the pea shoots, the reused takeout tub and how little room it takes, which answers the 'I don't have the space' barrier. The kit calls this shot the test of the direction, and it has no yard or styled harvest. The cream area below the photo keeps room for the red badge as the only red element.",
+            "cites": [
+              "art-direction",
+              "audience-renters",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "photo rejected: photo 1",
+            "choice": "Not used",
+            "reason": "The card reads 'BOX No. 014', but pea shoots is Box 01 and the club is new, so the number contradicts the kit and implies a long history. The red box label and red circled step would also compete with the offer badge, and the kit allows one red element per post.",
+            "cites": [
+              "positioning-core",
+              "guardrails",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "photo rejected: photo 3",
+            "choice": "Not used",
+            "reason": "The first cut is a good payoff shot, but the red-striped towel adds red next to the badge. It also shows the result rather than the small-space setup, and the promo is about joining and the price.",
+            "cites": [
+              "guardrails",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "One windowsill. One project a month.",
+            "reason": "The promo sample headline fits this brief exactly. It is 36 characters and 6 words, within the kit's limit, and it names the concrete setup in short fragments. The price and exit go in the badge and subhead.",
+            "cites": [
+              "voice-examples",
+              "social-rules",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "$24/month",
+            "reason": "The badge is the post's one red element and carries the price, the first fact the brief asked to lead with. It is 9 characters, under the 12 limit.",
+            "cites": [
+              "social-rules",
+              "visual-system",
+              "positioning-core"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "$24 a month, everything in the box, cancel anytime.",
+            "reason": "It states the price and the exit in plain words, as the brief asked. It adds no discount, since none exists, and no invented detail. It is 51 characters, under the 90 limit.",
+            "cites": [
+              "positioning-core",
+              "voice-examples",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "cta",
+            "choice": "Join the club",
+            "reason": "A plain three-word verb for the next step, with no exclamation mark and no urgency. 'Link in bio' stays in the caption, not on the image.",
+            "cites": [
+              "social-rules",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Concrete offer, Box 01 detail, what's in the box, cancel anytime, link in bio, one quiet closing line, two project hashtags.",
+            "reason": "It leads with the concrete thing and uses only kit facts: $24, pea shoots, about ten days, and the seeds, soil puck and card. 'Save the tub' follows the takeout-tub habit. The single 'You've got this.' closes it, with no health claims, history or exclamation marks. It is well under 400 characters.",
+            "cites": [
+              "voice-core",
+              "voice-examples",
+              "positioning-core",
+              "terminology",
+              "social-rules",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "omitted slots",
+            "choice": "quote, attribution, date and details left null",
+            "reason": "The offer-badge template doesn't have these slots. The shipping window is left out of the image text because the brief only asked for price and cancel anytime.",
+            "cites": [
+              "guardrails"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post stays within the supplied facts ($24/month, cancel anytime, Box 01 pea shoots in a takeout tub, about ten days), uses plain calm voice with one closing 'You've got this.', and renders cleanly with legible type and one red accent. Two small notes: the headline doesn't carry the price the brief asked to lead with, and the badge covers part of the handwritten label in the photo."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "offer-badge",
+        "photo": "uploads/photo-01-box-opened.jpg",
+        "slots": {
+          "headline": "Grow something small. Cancel anytime.",
+          "subhead": "A monthly box with one small growing project, made for people without a garden.",
+          "cta": "Join Half Acre Club",
+          "badge": "No lock-in",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "No garden? No problem. Every month, Half Acre Club sends one small growing project in a box. Cancel anytime, so it's easy to try. See the monthly price and join via the link in bio. #HalfAcreClub #growyourown"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "offer-badge",
+            "reason": "The intent is promo, and offer-badge is the only template built for promo. Its stamp can carry the price, which is what the brief says to lead with. There is no kit, so this rests on the template's best_for list.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "uploads/photo-01-box-opened.jpg",
+            "reason": "The post sells the box, and this photo shows what a member receives: the soil puck, seed packet and planting card. Photo 2 carries a dated tape label (3/14) that would age the post. Photo 3 shows the payoff but not the product. The printed 'BOX No. 014' is incidental, so copy should not treat it as the price or offer.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "Grow something small. Cancel anytime.",
+            "reason": "The brief asks to lead with price and cancel-anytime, but no price was supplied and I can't invent one. The headline leads with the low commitment and the small, doable project instead. It is 37 characters, inside the 40 limit.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "No lock-in",
+            "reason": "\"Cancel anytime\" is 14 characters and the badge allows 12, so I used a shorter phrase with the same meaning. The headline carries the exact wording. A price badge should replace this once the client confirms the monthly price.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "A monthly box with one small growing project, made for people without a garden.",
+            "reason": "It says what arrives and who it's for, using only facts from the business description. It is 79 characters.",
+            "cites": []
+          },
+          {
+            "decision": "cta",
+            "choice": "Join Half Acre Club",
+            "reason": "The goal is new members, so this is a direct, plain invitation to join. It is 19 characters.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Short caption repeating cancel anytime, pointing to the link in bio for the monthly price, with two light hashtags.",
+            "reason": "It sends readers to the link in bio for the price rather than stating a number I don't have. I left out any mention of a discount because the client said there isn't one.",
+            "cites": []
+          },
+          {
+            "decision": "omission",
+            "choice": "No price anywhere in the copy",
+            "reason": "The art director's plan flagged that the price is missing. Adding a made-up figure would be a false claim, so the client needs to supply it and can add it to the badge or headline before posting.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "tip-watering",
+      "intent": "tip",
+      "goal": "Teach how wet the soil should be for pea shoots.",
+      "details": "Water until the soil feels like a wrung-out sponge: not dripping, not dry. If water pools on top, wait a day.",
+      "kit": {
+        "template": "type-led",
+        "photo": null,
+        "slots": {
+          "headline": "Soil like a wrung-out sponge.",
+          "subhead": "Not dripping, not dry. If water pools on top, wait a day.",
+          "cta": null,
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "Pea shoots like soil that feels like a wrung-out sponge. Not dripping, not dry. If water pools on top, wait a day. You've got this. Link in bio for Half Acre Club. #peashoots #windowsillgarden"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "type-led (1:1)",
+            "reason": "The kit names type-led as the first choice for tips because the instruction is the content and legibility wins. The brief gives no concrete reason to switch to split, so the template follows the kit.",
+            "cites": [
+              "social-rules",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Type-led takes no photo. Photo 1 shows the card with the sponge step circled, but it would add a second red element (the box number and circle) on a post that can only have one. The box number on that card also doesn't match the kit's 'Box 01' style, and the brief gives no box number. Photos 2 and 3 show growing and cutting, not soil wetness.",
+            "cites": [
+              "visual-system",
+              "art-direction",
+              "terminology"
+            ]
+          },
+          {
+            "decision": "copy and layout",
+            "choice": "Soil-brown body on cream, pea-green headline at 56px or larger, small stacked wordmark in a corner, and one calm closing line such as 'You've got this.' in the caption only. No exclamation marks.",
+            "reason": "Cream should cover about two thirds of the post and body copy has to be soil brown for contrast. Reassurance comes once, at the end, and any mention of a failed batch stays light. The caption also uses 'sprout' and 'pea shoots', not jargon.",
+            "cites": [
+              "visual-system",
+              "voice-core",
+              "terminology",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "Soil like a wrung-out sponge.",
+            "reason": "It leads with the concrete feel from the brief, in a short fragment (29 characters, 5 words) that stays inside the kit's 40-character, 6-word limit. It follows the rhythm of the kit's sample tip line without copying it.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Not dripping, not dry. If water pools on top, wait a day.",
+            "reason": "These are the two checks from the brief, in plain words. At 57 characters it fits the 90-character limit. It adds no facts, so the reader can check at the sill right away.",
+            "cites": [
+              "social-rules",
+              "voice-core",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "Left empty",
+            "reason": "The badge is optional and the post is stronger without it. Any handwritten note would repeat the subhead, and the template's one accent element isn't needed here.",
+            "cites": [
+              "social-rules",
+              "visual-system"
+            ]
+          },
+          {
+            "decision": "cta",
+            "choice": "No CTA slot on this template; 'Link in bio' goes in the caption",
+            "reason": "Type-led has no CTA slot. The kit says 'link in bio' belongs in the caption, not on the image.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Short caption repeating the sponge test, one quiet 'You've got this.' close, link in bio, and two project hashtags",
+            "reason": "It is 5 short sentences and under 400 characters. It uses 'pea shoots' and 'Half Acre Club' per the terminology. Reassurance comes once, at the end. It uses two specific hashtags and no exclamation marks or emoji. It adds no invented facts.",
+            "cites": [
+              "social-rules",
+              "voice-core",
+              "terminology",
+              "voice-examples"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the kit: it teaches the brief's watering rule in plain, concrete words, uses no invented facts, and stays inside the type-led template's limits. The only observations are minor typographic and phrasing notes."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "type-led",
+        "photo": null,
+        "slots": {
+          "headline": "Soil like a wrung-out sponge",
+          "subhead": "Not dripping, not dry. If water pools on top, wait a day.",
+          "cta": null,
+          "badge": "pea shoots",
+          "quote": null,
+          "attribution": null,
+          "date": null,
+          "details": null,
+          "caption": "How wet should the soil be for pea shoots? Think of a wrung-out sponge. Water until the soil feels damp all the way through, but not dripping and not dry. If water pools on top, leave it a day before you water again. Link in bio to see what's in this month's box."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "type-led",
+            "reason": "The intent is a tip, and the instruction itself is the content. Type-led is built for that: a large headline and one or two plain sentences. Nothing in the brief gives a concrete reason to prefer split over it.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Type-led takes no photo, and none of the three shows what the tip is about. Photo 2 shows the soil only through the tub's side and its tape label adds an unrelated date (3/14, Day 6). Photo 3 is about harvesting, and photo 1 is a box unboxing. Photo 1's card does show the circled 'wrung-out sponge' step, but it would only repeat the headline in small print.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "Soil like a wrung-out sponge (28 characters)",
+            "reason": "The sponge comparison is the most useful part of the brief. It gives a beginner a feel they already know, and it fits the 40-character limit.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Not dripping, not dry. If water pools on top, wait a day. (57 characters)",
+            "reason": "This covers both ends of the range and the fix for overwatering, using only the client's details. It stays under the 90-character limit.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "pea shoots (10 characters)",
+            "reason": "The handwritten accent names the plant so the tip is clear at a glance. It fits the 12-character limit. The badge is optional, but it helps because there is no photo.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Restates the sponge test, adds that the soil should feel damp all the way through, and ends with a link-in-bio line.",
+            "reason": "The caption carries the tip in full for people who skip the image, and the link in bio is the call to action. I left out hashtags, prices and any numbers because the brief supplies none. With no kit, the tone is plain and friendly.",
+            "cites": []
+          },
+          {
+            "decision": "omitted slots",
+            "choice": "cta, quote, attribution, date and details are null",
+            "reason": "The type-led template doesn't have these slots, so I filled only headline, subhead, badge and caption.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "event-first-cut-live",
+      "intent": "event",
+      "goal": "Invite people to a live stream where the founder cuts her first tray of the month and answers questions.",
+      "details": "Event name: First Cut, Live. Date: Thursday, Nov 20. Time and place: 7pm ET on Instagram Live. Host: Dana Reyes, the founder.",
+      "kit": {
+        "template": "event-card",
+        "photo": null,
+        "slots": {
+          "headline": "First Cut, Live",
+          "subhead": "Dana Reyes cuts her first tray of the month. Bring your questions.",
+          "cta": null,
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": "Thursday, Nov 20",
+          "details": "7pm ET on Instagram Live",
+          "caption": "First Cut, Live. Thursday, Nov 20, 7pm ET on Instagram Live. Dana Reyes, the founder of Half Acre Club, cuts her first tray of the month and answers your questions. Bring one, and watch how it's done at the counter. You've got this. #windowsillgarden"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "event-card",
+            "reason": "The kit names the event card as the first choice for events because date and place must read at a glance. Nothing in the brief gives a reason to depart from it.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The event card takes no photo. Photo 3 (the first cut) fits the theme, but photo 1 shows 'Box No. 014' when the kit says the club's first box is Box 01 and it is new. Photo 2's tape reads '3/14', which would clash with a Nov 20 date. Neither could sit on this card without confusing the date or the box number.",
+            "cites": [
+              "positioning-core",
+              "art-direction"
+            ]
+          },
+          {
+            "decision": "headline",
+            "choice": "First Cut, Live",
+            "reason": "The event name from the brief, used exactly. It is 15 characters, well inside the 36-character limit. \"First cut\" is also the brand's own term for the payoff moment.",
+            "cites": [
+              "terminology",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "date and details",
+            "choice": "Date: \"Thursday, Nov 20\". Details: \"7pm ET on Instagram Live\".",
+            "reason": "The template says to give both exactly as the brief does, so I added nothing and rephrased nothing. Both fit their limits (24 and 60 characters).",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "subhead",
+            "choice": "Dana Reyes cuts her first tray of the month. Bring your questions.",
+            "reason": "One concrete detail in two short sentences, at 66 characters against the 90 limit. It names the host and the action and invites questions, in plain words and without hype. It does not name a plant, because the brief doesn't say which one.",
+            "cites": [
+              "voice-core",
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "cta",
+            "choice": "Left null",
+            "reason": "The CTA is optional. The brief has no link or sign-up step, so any action line would be invented, and the card reads cleaner with the when and where. The reassurance line goes at the end of the caption instead, where the voice puts it.",
+            "cites": [
+              "social-rules",
+              "voice-core"
+            ]
+          },
+          {
+            "decision": "caption",
+            "choice": "Five short sentences repeating the when and where, naming Dana as the founder, then a quiet \"You've got this.\" and one project-specific hashtag.",
+            "reason": "The caption is under 400 characters and uses the full name Half Acre Club on first mention. Reassurance comes once, at the end, and there are no exclamation marks. I used one hashtag, #windowsillgarden, and skipped #peashoots because the brief doesn't say what is being cut. I left out \"link in bio\" because there's no link to point to.",
+            "cites": [
+              "voice-core",
+              "terminology",
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "unused slots",
+            "choice": "badge, quote and attribution left null",
+            "reason": "The event-card template doesn't have these slots. The handwritten date is the post's one red element.",
+            "cites": [
+              "visual-system"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "pass",
+          "summary": "The post follows the event card template and the brief's facts for date, time, place, host and the live-stream purpose, with one red handwritten accent and clean, legible layout. Two small caption phrasings could be tighter, but nothing breaks a written rule."
+        },
+        "drafts": 1
+      },
+      "nokit": {
+        "template": "event-card",
+        "photo": null,
+        "slots": {
+          "headline": "First Cut, Live",
+          "subhead": "Dana Reyes cuts her first tray of the month and answers your questions.",
+          "cta": null,
+          "badge": null,
+          "quote": null,
+          "attribution": null,
+          "date": "Thursday, Nov 20",
+          "details": "7pm ET on Instagram Live",
+          "caption": "Join us for First Cut, Live. Our founder, Dana Reyes, cuts her first tray of the month on camera and answers your questions as she goes. Bring your own, whether you're about to start your first tray or just curious how it works. Thursday, Nov 20 at 7pm ET on Instagram Live. Link in bio."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "event-card",
+            "reason": "The brief's intent is event, and event-card is the template built for it, with the name, a large handwritten date, and the time and place in a clear hierarchy. Nothing in the brief gives a reason to use another template.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "Event-card takes no photo, so none is chosen. Photo 3 (the cut) would have been the best fit for the topic, but photo 2 and photo 1 are tied to a specific box (Pea Shoots, Box No. 014, a 3/14 label), which could contradict a Nov 20 event. Skipping photos avoids that clash.",
+            "cites": []
+          },
+          {
+            "decision": "headline",
+            "choice": "First Cut, Live",
+            "reason": "The event name is the headline, as the template notes say, and it matches the brief exactly.",
+            "cites": []
+          },
+          {
+            "decision": "date and details",
+            "choice": "Date: 'Thursday, Nov 20'. Details: '7pm ET on Instagram Live'.",
+            "reason": "The template requires these exactly as given in the brief. Both fit their limits (24 and 60 characters), so the when and where read at a glance.",
+            "cites": []
+          },
+          {
+            "decision": "subhead",
+            "choice": "Dana Reyes cuts her first tray of the month and answers your questions.",
+            "reason": "It says who is hosting and what happens in 71 characters, within the 90 limit. It uses only brief facts and invites questions without adding anything new.",
+            "cites": []
+          },
+          {
+            "decision": "cta",
+            "choice": "Left null",
+            "reason": "The slot is optional. Instagram Live has no sign-up on the image, and the card already carries everything needed. 'Link in bio' goes in the caption, where it can actually be followed.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Short invitation repeating the date and time, with a prompt to bring questions and 'Link in bio'.",
+            "reason": "The caption is under the 400-character limit and repeats the key details for anyone who skips the image. It speaks to beginners in line with the plan's angle, with no invented facts. I left out hashtags because no brand kit gave any.",
+            "cites": []
+          },
+          {
+            "decision": "unused slots",
+            "choice": "badge, quote and attribution left null",
+            "reason": "The event-card template has no such slots.",
+            "cites": []
+          }
+        ]
+      }
+    },
+    {
+      "briefId": "testimonial-maya",
+      "intent": "testimonial",
+      "goal": "Share a member's words about their first box.",
+      "details": "Member quote (use exactly): \"I've killed two basil plants. These ended up on my eggs.\" Member: Maya, Box 01 member. Fictional, written for the demo.",
+      "kit": {
+        "template": "quote-card",
+        "photo": null,
+        "slots": {
+          "headline": null,
+          "subhead": null,
+          "cta": null,
+          "badge": null,
+          "quote": "I've killed two basil plants. These ended up on my eggs.",
+          "attribution": "Maya, Box 01 member",
+          "date": null,
+          "details": null,
+          "caption": "Maya, a Box 01 member, has killed two basil plants. Her pea shoots ended up on her eggs. Dead plants happen. Link in bio to join Half Acre Club. You've got this. #peashoots #windowsillgarden"
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "quote-card",
+            "reason": "The kit names the quote card as the first choice for testimonials, so the member's words can stand alone. The brief gives no reason to depart from it. The template also omits the wordmark, which matches the kit's instruction to leave it off quote cards where it would compete.",
+            "cites": [
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The quote card takes no photo, and the quote carries the post. Photo 1 would also have been a poor fit: its card reads 'BOX No. 014' while Maya is a Box 01 member, which would contradict the brief and the kit's 'Pea shoots is Box 01' fact.",
+            "cites": [
+              "guardrails",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "quote",
+            "choice": "Maya's words exactly as supplied, with no edits",
+            "reason": "The brief says to use the quote exactly, and the template requires the exact words. It is 56 characters, well under the 120 limit.",
+            "cites": [
+              "guardrails",
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "attribution",
+            "choice": "Maya, Box 01 member",
+            "reason": "This is the name and label from the brief, and it fits the 40-character limit. No last name or other detail was added.",
+            "cites": [
+              "voice-examples",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "caption (revised)",
+            "choice": "Removed the claim that the basil came before Box 01 and added no timeline. The caption states only what the brief supports: Maya killed two basil plants, and her pea shoots ended up on her eggs.",
+            "reason": "The critique flagged the sequence as an invented detail attached to a real member's testimonial. The critique's suggested fix also implies timing ('before she tried growing anything from a box'), so I left timing out entirely. Dead plants get one light line ('Dead plants happen.') with no guilt. I kept the calm single 'You've got this.' at the end, 'link in bio' in the caption, and the full name Half Acre Club on first mention.",
+            "cites": [
+              "guardrails",
+              "voice-core",
+              "terminology",
+              "social-rules",
+              "voice-examples"
+            ]
+          },
+          {
+            "decision": "hashtags",
+            "choice": "#peashoots #windowsillgarden",
+            "reason": "Two project-specific tags at the end of the caption stay within the zero-to-three rule.",
+            "cites": [
+              "social-rules"
+            ]
+          },
+          {
+            "decision": "badge",
+            "choice": "Left empty",
+            "reason": "The badge is optional, and the quote is stronger with nothing else competing. Leaving it out also avoids adding a red element or a fact the brief didn't supply.",
+            "cites": [
+              "visual-system",
+              "guardrails"
+            ]
+          },
+          {
+            "decision": "headline, subhead, CTA, date, details",
+            "choice": "Null",
+            "reason": "The quote card has no slots for these, and the kit says 'Link in bio' belongs in the caption, not on the image.",
+            "cites": [
+              "social-rules"
+            ]
+          }
+        ],
+        "critique": {
+          "verdict": "revise",
+          "summary": "The quote card follows the template and brief: the quote is exact, the attribution is correct, there is no wordmark, and the render is clean and legible. The caption adds a specific detail about Maya's harvest that the brief does not supply."
+        },
+        "drafts": 2
+      },
+      "nokit": {
+        "template": "quote-card",
+        "photo": null,
+        "slots": {
+          "headline": null,
+          "subhead": null,
+          "cta": null,
+          "badge": null,
+          "quote": "I've killed two basil plants. These ended up on my eggs.",
+          "attribution": "Maya, Box 01 member",
+          "date": null,
+          "details": null,
+          "caption": "Maya has killed two basil plants before. Then came her first Half Acre Club box, and this is where she ended up. No garden needed, just one small growing project a month. Link in bio."
+        },
+        "notes": [
+          {
+            "decision": "template",
+            "choice": "quote-card",
+            "reason": "The job is a testimonial, and the quote card is the template built for it. It puts the member's words large with attribution and has no wordmark, so nothing competes with the quote. There is no brand kit, so this follows the template's best_for match.",
+            "cites": []
+          },
+          {
+            "decision": "photo",
+            "choice": "none",
+            "reason": "The quote card takes no photo. Photo 1 shows Box No. 014 pea shoots, which would contradict Maya being a Box 01 member. Photos 2 and 3 show pea shoots, but nothing says Box 01 contained them, so they could misstate her box. Leaving photos out avoids implying facts the brief doesn't give.",
+            "cites": []
+          },
+          {
+            "decision": "quote",
+            "choice": "Maya's words exactly as supplied, 56 characters",
+            "reason": "The brief says to use the quote exactly, and it fits the 120-character limit with room to spare, so it can be set large.",
+            "cites": []
+          },
+          {
+            "decision": "attribution",
+            "choice": "Maya, Box 01 member",
+            "reason": "This is the attribution the client supplied. It is 19 characters, inside the 40 limit, and adds no facts beyond the brief.",
+            "cites": []
+          },
+          {
+            "decision": "badge",
+            "choice": "Left empty",
+            "reason": "The badge is optional, and the quote already has a funny payoff. An extra handwritten accent would compete with it, and no brief fact needs one.",
+            "cites": []
+          },
+          {
+            "decision": "caption",
+            "choice": "Short retelling of Maya's story, a line on what the box is, and 'Link in bio.' with no hashtags",
+            "reason": "The caption carries the context the image leaves out, using only the business description and the brief. It follows the plan by not naming what was in Box 01, since the brief doesn't say. I left out hashtags and any offer or price because none were supplied. It is well under the 400-character limit.",
+            "cites": []
+          },
+          {
+            "decision": "unused slots",
+            "choice": "headline, subhead, cta, date and details left null",
+            "reason": "The quote-card template doesn't have these slots, so only the template's own slots are filled.",
+            "cites": []
+          }
+        ]
+      }
+    }
+  ]
+}

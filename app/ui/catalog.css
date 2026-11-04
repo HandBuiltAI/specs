@@ -152,7 +152,7 @@
 .c-pins { position: absolute; inset: 0; pointer-events: none; }
 .c-pin-box { position: absolute; border: 1.5px dashed rgba(255, 255, 255, 0.9); outline: 1.5px dashed rgba(14, 14, 15, 0.55); outline-offset: 0; border-radius: 4px; transition: background 0.2s; }
 .c-pin-box[data-hot="true"] { background: rgba(255, 255, 255, 0.18); border-style: solid; }
-.c-pin-tags { position: absolute; top: -11px; left: -11px; display: flex; gap: 3px; pointer-events: auto; }
+.c-pin-tags { position: absolute; top: -4px; right: calc(100% + 4px); display: flex; flex-direction: column; gap: 3px; pointer-events: auto; }
 .c-pin {
   display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--r-pill);
   background: #0e0e0f; color: #fff; font: 600 11px/1 var(--f-mono); box-shadow: 0 0 0 2px #fff; cursor: default;

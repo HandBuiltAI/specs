@@ -40,7 +40,7 @@ export function buildPostPage(opts: {
 export function pinTarget(decision: string): string | null {
   const d = decision.toLowerCase();
   const rules: [RegExp, string][] = [
-    [/caption|hashtag/, ""],
+    [/caption|hashtag|reject|not used|left out|omit|avoid/, ""],
     [/head ?line|title/, ".headline"],
     [/sub ?head|supporting|second line|subline/, ".subhead"],
     [/call to action|\bcta\b|button/, ".cta"],
