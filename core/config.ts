@@ -8,6 +8,8 @@ export const STEPS = {
   // timeout, so reading runs at low effort and assembling drafts one chunk per call.
   read: { model: "claude-sonnet-5-5", max_tokens: 6000, effort: "low" },
   assemble: { model: "claude-sonnet-5-5", max_tokens: 6000, effort: "medium" },
+  // Intake (phase 5): one short turn per question, choosing a gap and one catalog component.
+  intake: { model: "claude-haiku-5-5", max_tokens: 3000, effort: "low" },
 } as const;
 
 export type StepName = keyof typeof STEPS;

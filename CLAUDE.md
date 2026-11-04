@@ -8,7 +8,11 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 **Phase 5: A2UI intake (in progress, started Nov 4, 2026).** Phases 1–4 passed on Nov 3, 2026.
 
-The app's look is agreed with Scott ("Quiet room. Loud brand."): gray canvas, white cards, Geist and Geist Mono, no color of its own except one signal red meaning "needs your call"; light and dark, following the system, with a switch in the top bar. Tokens are in `app/globals.css`, component styles in `app/ui/catalog.css`. The ten catalog components live in `app/ui/catalog/` (plain React); their props and answers are zod schemas in `core/catalog.ts`, and `app/ui/render.tsx` renders one validated component call. `/catalog` shows them all. Next: the intake agent conversation that chooses components from the kit's gaps.
+The app's look is agreed with Scott ("Quiet room. Loud brand."): gray canvas, white cards, Geist and Geist Mono, no color of its own except one signal red meaning "needs your call"; light and dark, following the system, with a switch in the top bar. Tokens are in `app/globals.css`, component styles in `app/ui/catalog.css`. The ten catalog components live in `app/ui/catalog/` (plain React); their props and answers are zod schemas in `core/catalog.ts`, and `app/ui/render.tsx` renders one validated component call. `/catalog` shows them all.
+
+Fill the gaps (`/build`, after the reveal): `POST /api/intake` writes the owner's reply into the kit (no model call), runs the completeness check in code (`core/intake.ts`: required items per chunk, no needs-review items, every conflict answered or skipped), and if gaps remain asks Haiku (`prompts/intake.md`) for one gap, one component, one sentence. Capped at 12 questions per session.
+
+- Phase 5 gate check: `npm run spike -- spike/intake.ts output/extract-<run-id>` (uses the phase 4 gate's drafted kit; transcript in `output/intake-<run-id>/`).
 
 Phase 4 (for reference):
 
@@ -88,5 +92,5 @@ Models: Sonnet 5.5 for extraction (read, assemble), plan and write; Haiku 5.5 fo
 - Scope: Instagram 1:1 and 4:5 only. Post intents: promo, announcement, event, testimonial, tip.
 - Three fictional demo brands (warm and handmade, bold and loud, minimal and premium), labeled as fictional.
 - URL extraction (later phase): Claude web fetch tool, homepage plus one or two pages, capped; paste box fallback.
-- A2UI renderer (later phase): CopilotKit; catalog components stay plain React.
+- A2UI renderer: our own small loop, not CopilotKit (Scott, 2026-11-04): one guarded Haiku call per turn, validated against `core/catalog.ts`; catalog components stay plain React so CopilotKit or `@a2ui/react` can slot in later.
 - License: MIT for code. Fictional brands, prompts, and design assets are all rights reserved, stated in the README.

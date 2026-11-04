@@ -40,8 +40,8 @@ export type ChunkRecord =
   | { target: Exclude<AssembleTarget, "conflicts">; draft: ChunkDraft & { items: (ChunkDraft["items"][number] & { edited?: boolean })[] }; warnings: string[] }
   | { target: "conflicts"; conflicts: Conflicts["conflicts"]; warnings: string[] };
 
-const evidenceKey = (sid: string, uploadId: string) => `extract/${sid}/evidence/${uploadId}`;
-const chunkKey = (sid: string, target: string) => `extract/${sid}/chunk/${target}`;
+export const evidenceKey = (sid: string, uploadId: string) => `extract/${sid}/evidence/${uploadId}`;
+export const chunkKey = (sid: string, target: string) => `extract/${sid}/chunk/${target}`;
 
 const KIND: Record<UploadRecord["kind"], UploadKind> = { image: "photo", logo: "logo", pdf: "pdf", url: "url", pasted: "pasted", note: "note" };
 const emptyExtraction = (): ExtractionState => ({ locked: false, reads: {}, targets: {} });

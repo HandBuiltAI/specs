@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Build a brand kit · Specs" };
 
 export default function BuildPage() {
   return (
-    <main>
+    <main className="build">
       <h1>Build a brand kit</h1>
       <p className="muted">
         Upload your logo, photos, a PDF and your website. Claude reads each one, then drafts your brand kit piece by piece,

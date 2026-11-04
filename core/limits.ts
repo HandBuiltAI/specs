@@ -27,6 +27,9 @@ export const LIMITS = {
   /** Tries per extraction call (one upload read, or one chunk drafted). A failed try that cost money counts. */
   extractAttempts: 2,
 
+  /** Model turns in the intake conversation. Haiku, so about a cent each; the owner can still edit the kit by hand after. */
+  intakeTurns: 12,
+
   postsPerSession: 4,
   regenerationsPerSession: 1,
   sessionHours: 24,
