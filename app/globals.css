@@ -1,61 +1,166 @@
+/* Specs app design system: "Quiet room. Loud brand." (agreed with Scott 2026-11-04).
+   White objects on a light gray table, a tight Swiss grotesk, and no color of our own, so the
+   brand being built is the only color on screen. One signal red means "this needs your call".
+   Light and dark both; the default follows the system and the top-bar switch overrides it
+   (data-theme on <html>). Component styles live in app/ui/catalog.css. */
+
 :root {
-  --ink: #1b1b1b;
-  --paper: #fbfaf7;
-  --muted: #6b6b6b;
-  --line: #e2dfd8;
-  --accent: #1b1b1b;
-  --error: #a3271b;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: var(--ink);
-  background: var(--paper);
+  --canvas: #ececea;
+  --surface: #ffffff;
+  --sunken: #f4f4f2;
+  --ink: #0e0e0f;
+  --ink-2: #8c8c8f;
+  --line: #e1e1de;
+  --signal: #ff3b1f;
+  --on-ink: #ffffff;
+  --ok: #1f9d55;
+  --shadow: 0 1px 0 rgba(0, 0, 0, 0.03), 0 22px 44px -26px rgba(20, 20, 20, 0.28);
+  --shadow-lift: 0 0 0 2px var(--ink), 0 30px 50px -24px rgba(0, 0, 0, 0.45);
+
+  --f-ui: var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --f-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --r-card: 28px;
+  --r-inner: 16px;
+  --r-pill: 999px;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: light;
 }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas: #0d0d0e; --surface: #1a1a1c; --sunken: #232326; --ink: #f3f3f1; --ink-2: #8e8e93;
+    --line: #2c2c30; --signal: #ff5236; --on-ink: #0d0d0e; --ok: #3cc27a;
+    --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 22px 44px -26px rgba(0, 0, 0, 0.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --canvas: #0d0d0e; --surface: #1a1a1c; --sunken: #232326; --ink: #f3f3f1; --ink-2: #8e8e93;
+  --line: #2c2c30; --signal: #ff5236; --on-ink: #0d0d0e; --ok: #3cc27a;
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.03), 0 22px 44px -26px rgba(0, 0, 0, 0.8);
+  color-scheme: dark;
+}
+
 * { box-sizing: border-box; }
-body { margin: 0; line-height: 1.5; }
-main { max-width: 44rem; margin: 0 auto; padding: 3rem 1rem 5rem; }
-h1 { font-size: 2.25rem; line-height: 1.1; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
-h2 { font-size: 1.15rem; margin: 2.5rem 0 0.75rem; }
-p { margin: 0 0 1rem; }
-.muted { color: var(--muted); }
-.card { border: 1px solid var(--line); border-radius: 10px; padding: 1.25rem; background: #fff; margin-bottom: 1rem; }
-label { display: block; font-weight: 600; margin: 1rem 0 0.35rem; }
-input, select, textarea { width: 100%; font: inherit; padding: 0.55rem 0.65rem; border: 1px solid var(--line); border-radius: 6px; background: #fff; }
+html { background: var(--canvas); }
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--f-ui);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+::selection { background: var(--ink); color: var(--on-ink); }
+a { color: inherit; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+img { max-width: 100%; }
+
+/* Top bar */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s4);
+  max-width: 1180px; margin: 0 auto; padding-block: var(--s5);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wordmark { white-space: nowrap; font-weight: 700; font-size: 22px; letter-spacing: -0.04em; text-decoration: none; }
+.wordmark i { display: inline-block; width: 0.22em; height: 0.22em; background: var(--signal); border-radius: 50%; margin-left: 0.04em; }
+.topbar nav { display: flex; align-items: center; gap: var(--s2); }
+.topbar nav a { white-space: nowrap; text-decoration: none; font-size: 14px; font-weight: 500; padding: 8px 14px; border-radius: var(--r-pill); }
+.topbar nav a:hover { background: var(--surface); }
+
+/* Page shell for the simple pages (home, /build, /live) */
+main {
+  max-width: 46rem; margin: 0 auto; padding-block: var(--s6) var(--s8);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main.wide { max-width: 1180px; }
+h1 { font-size: clamp(40px, 6vw, 64px); line-height: 0.95; margin: 0 0 var(--s4); letter-spacing: -0.05em; font-weight: 600; text-wrap: balance; }
+h1 span, h2 span { color: var(--ink-2); }
+h2 { font-size: 26px; letter-spacing: -0.03em; font-weight: 600; margin: var(--s7) 0 var(--s4); line-height: 1.1; }
+h3 { font-size: 16px; letter-spacing: -0.015em; font-weight: 600; margin: 0; }
+p { margin: 0 0 var(--s4); }
+.muted { color: var(--ink-2); }
+.small { font-size: 13px; }
+.mono, code { font-family: var(--f-mono); font-size: 0.85em; letter-spacing: 0.01em; }
+.eyebrow { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+
+.card {
+  background: var(--surface); border-radius: var(--r-card); padding: var(--s5);
+  box-shadow: var(--shadow); margin-bottom: var(--s4);
+}
+
+/* Forms */
+label { display: block; font-weight: 500; font-size: 14px; margin: var(--s4) 0 6px; }
+input, select, textarea {
+  width: 100%; font: inherit; color: var(--ink); padding: 11px 14px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--surface);
+  transition: border-color 0.2s;
+}
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--ink); }
+input[type="file"] { padding: 9px; background: var(--sunken); border-style: dashed; }
 textarea { min-height: 6rem; resize: vertical; }
-button { font: inherit; font-weight: 600; padding: 0.6rem 1.1rem; border-radius: 6px; border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer; margin-top: 1rem; }
-button:disabled { opacity: 0.45; cursor: not-allowed; }
-.error { color: var(--error); }
-.counter { font-size: 0.85rem; color: var(--muted); text-align: right; }
-dl { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; margin: 0; }
-dt { font-weight: 600; }
+::placeholder { color: var(--ink-2); }
+
+/* Buttons: ink pill is the one primary action; .quiet is the gray pill */
+button {
+  font: inherit; font-weight: 500; font-size: 14px; padding: 10px 18px; border-radius: var(--r-pill);
+  border: 0; background: var(--ink); color: var(--on-ink); cursor: pointer; margin-top: var(--s4);
+  transition: transform 0.15s var(--ease), opacity 0.2s;
+}
+button:active:not(:disabled) { transform: scale(0.97); }
+button:disabled { opacity: 0.35; cursor: not-allowed; }
+button.quiet { background: var(--sunken); color: var(--ink); padding: 6px 12px; font-size: 13px; }
+
+.error { color: var(--signal); }
+.counter { font-family: var(--f-mono); font-size: 11px; color: var(--ink-2); text-align: right; margin-top: 4px; }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px var(--s4); margin: 0; }
+dt { font-weight: 500; color: var(--ink-2); }
 dd { margin: 0; }
 ul.rationale { padding-left: 1.1rem; }
-ul.rationale li { margin-bottom: 0.5rem; }
-code { font-size: 0.9em; }
+ul.rationale li { margin-bottom: var(--s2); }
 
-/* Build a kit (phase 4): plain on purpose; the app's look comes with the component catalog in phase 5. */
-.small { font-size: 0.85rem; }
-.row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.row button { margin-top: 0.5rem; }
-button.quiet { background: transparent; color: var(--ink); border-color: var(--line); font-weight: 500; padding: 0.3rem 0.7rem; font-size: 0.85rem; }
-h3 { font-size: 1rem; margin: 0; }
-.uploads { display: grid; gap: 0.5rem; }
-.upload-row { display: flex; justify-content: space-between; gap: 1rem; border: 1px solid var(--line); border-radius: 8px; padding: 0.75rem 1rem; background: #fff; }
-.upload-row p { margin: 0.35rem 0 0; }
-.status { font-size: 0.8rem; white-space: nowrap; color: var(--muted); }
+/* Build a kit (phase 4 screens, now in the house style) */
+.row { display: flex; gap: var(--s2); flex-wrap: wrap; }
+.row button { margin-top: var(--s2); }
+.uploads { display: grid; gap: var(--s2); }
+.upload-row { display: flex; justify-content: space-between; gap: var(--s4); border-radius: var(--r-inner); padding: var(--s3) var(--s4); background: var(--sunken); }
+.upload-row p { margin: 4px 0 0; }
+.status { font-family: var(--f-mono); font-size: 11px; white-space: nowrap; color: var(--ink-2); }
 .status.running { color: var(--ink); }
-.status.done { color: #2f6b3a; }
-.status.failed { color: var(--error); }
-.swatches { display: flex; gap: 4px; margin-top: 0.4rem; }
-.swatch { display: inline-block; width: 1.1rem; height: 1.1rem; border-radius: 4px; border: 1px solid rgba(0, 0, 0, 0.15); vertical-align: -0.2rem; margin-right: 0.35rem; }
-.chunk { transition: border-color 0.4s; }
-.chunk.landed { border-color: #cfc9bd; }
-.chunk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 0.5rem; }
-.confidence { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; border-radius: 999px; padding: 0.05rem 0.5rem; margin-left: 0.5rem; background: #eef3ec; color: #2f6b3a; }
-.confidence.medium { background: #f6f0e1; color: #7a5a12; }
-.confidence.needs-review { background: #f8e9e6; color: var(--error); }
-ul.items { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.9rem; }
-.item { border-top: 1px solid var(--line); padding-top: 0.8rem; }
-.item-label { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
-.item-value { margin: 0.15rem 0; }
-.sources { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
-.source { font-size: 0.75rem; background: #f1efe9; border-radius: 4px; padding: 0.05rem 0.4rem; color: #4a4a4a; }
-@media (max-width: 480px) { .upload-row { flex-direction: column; } }
+.status.done { color: var(--ok); }
+.status.failed { color: var(--signal); }
+.swatches { display: flex; gap: 4px; margin-top: 6px; }
+.swatch { display: inline-block; width: 18px; height: 18px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.25); vertical-align: -4px; margin-right: 6px; }
+.chunk { transition: box-shadow 0.4s; }
+.chunk.landed { box-shadow: var(--shadow), 0 0 0 1px var(--line); }
+.chunk-head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s4); margin-bottom: var(--s2); }
+.confidence {
+  font-family: var(--f-mono); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.06em;
+  border-radius: var(--r-pill); padding: 3px 8px; margin-left: var(--s2); border: 1px solid var(--line); color: var(--ink-2);
+}
+.confidence.high { color: var(--ink); }
+.confidence.needs-review { color: var(--signal); border-color: var(--signal); }
+ul.items { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s3); }
+.item { border-top: 1px solid var(--line); padding-top: var(--s3); }
+.item-label { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.04em; color: var(--ink-2); }
+.item-value { margin: 2px 0; }
+.sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.source { font-family: var(--f-mono); font-size: 11px; border: 1px solid var(--line); border-radius: var(--r-pill); padding: 3px 9px; color: var(--ink-2); }
+@media (max-width: 480px) {
+  .upload-row { flex-direction: column; }
+  .topbar nav { gap: 0; }
+  .topbar nav a { padding: 8px 10px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* /catalog showcase */
+.seg { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; margin: var(--s6) 0 var(--s5); }
+.seg button { margin: 0; background: var(--surface); color: var(--ink); padding: 8px 16px; }
+.seg button[aria-checked="true"] { background: var(--ink); color: var(--on-ink); }
+.seg .small { margin-left: var(--s3); }
+.showcase { columns: 3 340px; column-gap: var(--s5); }
+.showcase-item { break-inside: avoid; margin-bottom: var(--s5); display: grid; gap: var(--s2); }
+.answer { font-family: var(--f-mono); font-size: 11px; color: var(--ink-2); margin: 0 var(--s3); overflow-wrap: anywhere; }
+.answer span { color: var(--signal); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; }
