@@ -3,7 +3,7 @@
   "sourceRun": "2026-11-04T18-51-06",
   "packedAt": "2026-11-04T19:17:36.553Z",
   "costUsd": 0.66,
-  "composeCostUsd": 0.2,
+  "composeCostUsd": 0.27,
   "posts": [
     {
       "briefId": "announce-batch-07",
@@ -358,6 +358,115 @@
             ]
           }
         ],
+        "composed": {
+          "html": "<div class=\"rule\"></div><figure class=\"frame\"><img data-slot=\"photo\" alt=\"\"></figure><div class=\"copy\"><h1 data-slot=\"headline\"></h1><p class=\"sub\" data-slot=\"subhead\"></p><p class=\"cta\" data-slot=\"cta\"></p></div><div class=\"mark\" data-slot=\"wordmark\"></div>",
+          "css": ".post{background:var(--role-background);position:relative;overflow:hidden}.frame{position:absolute;left:504px;top:96px;width:480px;height:600px;margin:0}.frame img{width:100%;height:100%;object-fit:cover;object-position:60% 50%;display:block}.rule{position:absolute;left:96px;top:384px;width:120px;height:2px;background:var(--role-accent)}.copy{position:absolute;left:96px;top:424px;width:360px;display:flex;flex-direction:column;gap:24px}h1{margin:0;font-family:var(--font-heading);font-weight:var(--weight-heading);letter-spacing:var(--tracking-heading);font-size:76px;line-height:1;color:var(--role-heading)}.sub{margin:0;font-family:var(--font-body);font-weight:var(--weight-body);font-size:30px;line-height:var(--leading-body);color:var(--color-stone)}.cta{margin:8px 0 0;font-family:var(--font-body);font-weight:var(--weight-hand);font-size:30px;line-height:1.3;color:var(--role-text)}.mark{position:absolute;right:96px;bottom:96px;text-align:right;font-family:var(--font-wordmark);font-weight:var(--weight-wordmark);letter-spacing:var(--tracking-wordmark);color:var(--role-wordmark);font-size:44px;line-height:1.05;display:flex;flex-direction:column;align-items:flex-end}.mark span:nth-child(2){font-size:calc(1em * var(--wordmark-line2-scale));letter-spacing:var(--wordmark-line2-tracking);margin-right:-0.42em;margin-top:6px}",
+          "rationale": [
+            {
+              "decision": "layout",
+              "choice": "Split: framed photo upper right, copy hanging from the left edge in the lower half, empty paper top-left",
+              "reason": "Promo intent calls for photo and facts side by side; asymmetric grid with type low on one edge and over a third of the canvas left empty.",
+              "cites": [
+                "layout-system",
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "photo crop",
+              "choice": "Photo in a 480×600 frame with paper on all sides, square edges, cover crop at 60% horizontal to keep cup and tag",
+              "reason": "The tag with price is the focal point; frame device keeps it like a print on a mat, no text on the photo.",
+              "cites": [
+                "layout-system",
+                "art-direction"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "76px light serif, three short lines, charcoal",
+              "reason": "Within 64–110px range, short lines, sentence case, fits the narrow column without filling the width.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "device",
+              "choice": "One 120px 2px clay hairline above the headline; no other clay",
+              "reason": "One device per post and one clay element only.",
+              "cites": [
+                "layout-system",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "cta and subhead",
+              "choice": "Subhead in stone 30px, CTA in charcoal medium Inter, no badge",
+              "reason": "Quiet facts with the time stated plainly; nothing reads as a sale.",
+              "cites": [
+                "social-rules",
+                "visual-system"
+              ]
+            },
+            {
+              "decision": "wordmark",
+              "choice": "Small stacked lockup bottom right in charcoal",
+              "reason": "Logo goes in a bottom corner, small.",
+              "cites": [
+                "social-rules"
+              ]
+            },
+            {
+              "decision": "headline",
+              "choice": "Fill it every morning.",
+              "reason": "It frames the cup as daily use rather than display, which is the brief's goal. It is a short declarative with a full stop, 22 characters and 4 words, inside the 5-word and 32-character kit limit. It avoids the one-of-a-kind and urgency wording.",
+              "cites": [
+                "voice-core",
+                "social-rules",
+                "terminology"
+              ]
+            },
+            {
+              "decision": "subhead",
+              "choice": "Stoneware, oat speckle glaze. Dishwasher safe. $38.",
+              "reason": "It names the material, glaze and use, and gives the price from the kit as the one concrete detail. The split template has no badge, so the price sits here. It is 51 characters, under the 80-character kit limit. The headline carries the use idea and the subhead carries the facts, so the two don't repeat each other.",
+              "cites": [
+                "positioning-core",
+                "voice-examples",
+                "social-rules",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "cta",
+              "choice": "Online Sunday, 9am",
+              "reason": "The kit says to state the time, not use a shop-now line. It is 3 words and has no urgency. The template makes the CTA optional, but it gives the reader the next step.",
+              "cites": [
+                "social-rules",
+                "voice-core"
+              ]
+            },
+            {
+              "decision": "caption",
+              "choice": "Batch 07 cups, the studio's wash-it line, release time, link in bio and no restocks.",
+              "reason": "It follows the caption pattern: the batch, one use detail, then the release fact. It uses the studio's own line about washing the cup. It states only the supplied facts: 14 cups, oat speckle, dishwasher and microwave safe, Sunday 9am Eastern. It stays under 350 characters with no exclamation marks and no hashtag block.",
+              "cites": [
+                "voice-examples",
+                "positioning-core",
+                "social-rules",
+                "guardrails"
+              ]
+            },
+            {
+              "decision": "omitted slots",
+              "choice": "Left badge, quote, attribution, date and details null.",
+              "reason": "The split template only has headline, subhead, CTA and caption. I did not add any discount or other detail because the brief supplies none.",
+              "cites": [
+                "guardrails"
+              ]
+            }
+          ],
+          "sourceRun": "2026-11-04T19-50-21"
+        },
         "critique": {
           "verdict": "pass",
           "summary": "The post stays within the kit's facts (14 cups, oat speckle stoneware, dishwasher and microwave safe, $38, Sunday 9am Eastern, no restocks), uses no banned words or exclamation marks, and follows the split template and 1:1 canvas. The one weakness is the photo's price tag, which is cropped mid-text at the panel edge."
