@@ -208,17 +208,29 @@ export const LAYOUT_PROBE = `(() => {
   const PR = photo ? photo.getBoundingClientRect() : null;
   const hit = (a, b) => Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
   const texts = [...document.querySelectorAll('[data-slot]')].filter((e) => e.dataset.slot !== 'photo');
+  // For overlap, use the text's width but the element's line boxes, so tall glyphs in tight
+  // leading (stacked poster capitals) don't count as touching the next line.
+  const lineBox = (el) => {
+    const range = document.createRange(); range.selectNodeContents(el);
+    const r = range.getBoundingClientRect(), e = el.getBoundingClientRect();
+    const top = Math.max(r.top, e.top), bottom = Math.min(r.bottom, e.bottom);
+    return { left: r.left, right: r.right, top, bottom, width: r.width, height: Math.max(1, bottom - top) };
+  };
+  // The nearest rotated or scaled box around a slot (or the slot itself). Two slots inside the
+  // same tilted sign are compared unrotated, because a rotated bounding box is wider than the text.
+  const TF = ['transform', 'rotate', 'scale', 'translate'];
+  const frame = (el) => { for (let n = el; n && n !== post; n = n.parentElement) { const c = getComputedStyle(n); if (TF.some((p) => c[p] && c[p] !== 'none')) return n; } return null; };
   const boxes = [];
   for (const el of texts) {
     const slot = el.dataset.slot;
     const range = document.createRange(); range.selectNodeContents(el);
     const r = range.getBoundingClientRect();
     if (!r.width || !r.height) { issues.push({ slot, problem: 'not visible' }); continue; }
-    // For overlap, use the text's width but the element's line boxes, so tall glyphs in tight
-    // leading (stacked poster capitals) don't count as touching the next line.
-    const e = el.getBoundingClientRect();
-    boxes.push({ slot, r: { left: r.left, right: r.right, top: Math.max(r.top, e.top), bottom: Math.min(r.bottom, e.bottom), width: r.width, height: Math.max(1, Math.min(r.bottom, e.bottom) - Math.max(r.top, e.top)) } });
-    if (r.left < P.left - 1 || r.top < P.top - 1 || r.right > P.right + 1 || r.bottom > P.bottom + 1) issues.push({ slot, problem: 'runs off the canvas' });
+    const lb = lineBox(el);
+    boxes.push({ slot, el, r: lb });
+    // Vertically, judge by the line boxes: a display face's font box sits well above its capitals.
+    const off = [['left', P.left - r.left], ['top', P.top - lb.top], ['right', r.right - P.right], ['bottom', lb.bottom - P.bottom]].filter(([, d]) => d > 1);
+    if (off.length) issues.push({ slot, problem: 'runs off the canvas (' + off.map(([s, d]) => Math.round(d) + 'px past the ' + s).join(', ') + ')' });
     const cs = getComputedStyle(el);
     if (el.scrollWidth > el.clientWidth + 2 && cs.overflowX !== 'visible') issues.push({ slot, problem: 'clipped horizontally' });
     if (el.scrollHeight > el.clientHeight + 2 && cs.overflowY !== 'visible') issues.push({ slot, problem: 'clipped vertically' });
@@ -228,11 +240,18 @@ export const LAYOUT_PROBE = `(() => {
     let bg = null, bgEl = el;
     for (let n = el; n; n = n.parentElement) { const c = parse(getComputedStyle(n).backgroundColor); if (c && c.a >= 0.85) { bg = c; bgEl = n; break; } if (n === post) break; }
     const fg = parse(cs.color);
-    if (PR && hit(r, PR) > 0.2 * r.width * r.height && (bgEl === post || !bg)) issues.push({ slot, problem: 'sits straight on the photo; put it on a panel or move it' });
+    if (PR && [...range.getClientRects()].some((l) => hit(l, PR) > 0.04 * l.width * l.height) && (bgEl === post || !bg)) issues.push({ slot, problem: 'sits straight on the photo; put it on a panel or move it' });
     else if (fg && bg) { const cr = ratio(fg, bg); const large = size >= 40 || (size >= 30 && parseInt(cs.fontWeight) >= 700); if (cr < (large ? 3 : 4.5)) issues.push({ slot, problem: 'contrast ' + cr.toFixed(1) + ':1 is too low' }); }
   }
+  const frames = [...new Set(boxes.map((b) => frame(b.el)).filter(Boolean))];
+  const saved = frames.map((f) => f.getAttribute('style'));
+  frames.forEach((f) => TF.forEach((p) => f.style.setProperty(p, 'none', 'important')));
+  for (const b of boxes) b.flat = lineBox(b.el);
+  frames.forEach((f, i) => { if (saved[i] === null) f.removeAttribute('style'); else f.setAttribute('style', saved[i]); });
   for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
-    const a = boxes[i], b = boxes[j];
+    let a = boxes[i], b = boxes[j];
+    const fa = frame(a.el);
+    if (fa && fa === frame(b.el)) { a = { slot: a.slot, r: a.flat }; b = { slot: b.slot, r: b.flat }; }
     if (hit(a.r, b.r) > 0.1 * Math.min(a.r.width * a.r.height, b.r.width * b.r.height)) issues.push({ slot: a.slot + '+' + b.slot, problem: 'overlap' });
   }
   if (photo && (!photo.complete || !photo.naturalWidth)) issues.push({ slot: 'photo', problem: 'did not load' });
