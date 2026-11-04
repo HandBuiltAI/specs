@@ -71,3 +71,18 @@ test("posts from the session's own kit wait until the kit is drafted, at no cost
   assert.equal((await body(res)).error?.code, "kit_not_ready");
   assert.equal(sent.length, 0);
 });
+
+test("the without-kit version is written once, with no kit and no angle", async () => {
+  const { baselinePost } = await import("../server/make.ts");
+  const { deps, sent, sessionId, postId } = await written();
+  const res = await run(() => baselinePost(jsonReq("/api/posts/baseline", { sessionId, postId }), deps));
+  const b = await body(res);
+  assert.equal(res.status, 200, JSON.stringify(b));
+  assert.equal(b.template, "offer-badge");
+  const call = sent.filter((x) => x.step === "write").at(-1)!;
+  assert.match(call.user, /No brand kit is available/);
+  assert.doesNotMatch(call.user, /ten-day payoff/);
+  const writes = sent.filter((x) => x.step === "write").length;
+  await run(() => baselinePost(jsonReq("/api/posts/baseline", { sessionId, postId }), deps));
+  assert.equal(sent.filter((x) => x.step === "write").length, writes, "a second request reuses the first");
+});

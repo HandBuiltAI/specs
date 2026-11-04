@@ -21,6 +21,8 @@ export type PostRecord = {
   warnings: string[];
   /** The compose step's layouts for this post: at most two calls, the second fixing the first. */
   compose?: { attempts: number; running: boolean; last?: { html: string; css: string; errors: string[] } };
+  /** The same brief written with no kit, for the with/without toggle. Made once. */
+  baseline?: { status: "running" | "done"; template?: string; photo?: string | null; written?: Written };
 };
 
 export type UploadRecord = {

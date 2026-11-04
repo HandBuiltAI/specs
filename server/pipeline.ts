@@ -82,3 +82,30 @@ export function cleanWritten(template: TemplateSpec, written: Written): { writte
   }
   return { written: { ...written, slots }, warnings };
 }
+
+// ---------- the without-kit version, for live posts ----------
+
+const NO_KIT = "No brand kit is available for this business. Use your own judgment.";
+/** The layout a generic post uses for each intent, so the baseline needs no plan call. */
+export const BASELINE_TEMPLATE: Record<PostIntent, TemplateSpec["id"]> = {
+  promo: "offer-badge",
+  announcement: "photo-led",
+  event: "event-card",
+  testimonial: "quote-card",
+  tip: "type-led",
+};
+
+/** The same brief written with no kit: a fixed layout per intent, the kit post's photo, no angle. */
+export function baselinePrompt(b: KitSource, intent: PostIntent, brief: Brief, photo: string | null) {
+  let template = findTemplate(templates, BASELINE_TEMPLATE[intent]);
+  if (template.photo === "required" && !photo) template = findTemplate(templates, "type-led");
+  const usePhoto = template.photo === "required" ? photo : null;
+  const prompt = fillPrompt("write", CONTENT.prompts.write, {
+    ...common(b, intent, brief),
+    kit: NO_KIT,
+    plan: JSON.stringify({ template: template.id, photo: usePhoto, angle: "Write what the brief asks for." }, null, 2),
+    template: JSON.stringify(template, null, 2),
+    critique: "",
+  });
+  return { prompt, template, photo: usePhoto };
+}
