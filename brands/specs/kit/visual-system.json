@@ -1,0 +1,120 @@
+{
+  "meta": {
+    "chunk_id": "visual-system",
+    "domain": "visual",
+    "depends_on": ["positioning-core"],
+    "token_count": 780,
+    "confidence": "high",
+    "sources": [
+      { "upload": "app/globals.css", "location": ":root tokens (light and dark)" },
+      { "upload": "docs/journal.md", "location": "2026-11-04, phase 5 step 1: the look agreed with Scott" }
+    ],
+    "version": 1,
+    "summary": "Quiet room. Loud brand. A light gray table, white cards, black Geist type, and no color of its own except one signal red that means 'this needs your call'. The brand being built is the only color on screen."
+  },
+  "concept": "Quiet room. Loud brand. Specs is the gallery wall, not the painting: gray table, white cards, black type, so the brand on screen is the loudest thing in the room.",
+  "color": {
+    "canvas": {
+      "hex": "#ECECEA",
+      "name": "Table gray",
+      "role": "Page background: the table the cards sit on.",
+      "rule": "Always the background. It's slightly warm so photos and brand colors don't look clinical on it."
+    },
+    "surface": {
+      "hex": "#FFFFFF",
+      "name": "Card white",
+      "role": "Cards, inputs, anything you can pick up.",
+      "rule": "White means 'an object'. Never use it as a page background."
+    },
+    "ink": {
+      "hex": "#0E0E0F",
+      "name": "Ink",
+      "role": "All primary text, buttons, selected states.",
+      "rule": "16.3:1 on canvas, 19.3:1 on white. Selected things turn ink, not a color."
+    },
+    "gray": {
+      "hex": "#68686C",
+      "name": "Pencil gray",
+      "role": "Secondary text: captions, labels, the second half of a headline.",
+      "rule": "4.7:1 on canvas, 5.6:1 on white, so it's safe for small text. Was #8C8C8F until v1 of this kit found it fell short of 4.5:1 for small text."
+    },
+    "signal": {
+      "hex": "#FF3B1F",
+      "name": "Signal red",
+      "role": "The dot in the wordmark, needs-review marks, focus rings, the intake's one flag.",
+      "rule": "Means only 'this needs your call'. 3.0:1 on canvas and 3.6:1 on white, so it's for marks, rings and type 18px and up; small red text uses Signal ink (#C42812, 4.9:1 on canvas) instead. Never decoration, never a button fill."
+    }
+  },
+  "dark_mode": {
+    "note": "Same rules, inverted room. Follows the system; a switch in the top bar overrides it.",
+    "canvas": "#0D0D0E",
+    "surface": "#1A1A1C",
+    "ink": "#F3F3F1",
+    "gray": "#8E8E93",
+    "signal": "#FF5236"
+  },
+  "pairings": {
+    "allowed": [["ink", "canvas"], ["ink", "surface"], ["gray", "surface"], ["gray", "canvas"], ["surface", "ink"]],
+    "avoid": [
+      { "pair": ["surface", "signal"], "reason": "A red button turns the one alarm color into a call to action." },
+      { "pair": ["signal", "gray"], "reason": "Red text on gray is low contrast and reads as an error everywhere." }
+    ]
+  },
+  "roles": {
+    "note": "Maps the shared post templates' color roles to Specs' colors, so the app can make posts about itself.",
+    "background": "canvas",
+    "text": "ink",
+    "heading": "ink",
+    "accent": "signal",
+    "wordmark": "ink",
+    "label": "surface"
+  },
+  "type": {
+    "wordmark": {
+      "description": "'Specs' in Geist bold, tight, followed by a small signal-red dot.",
+      "stand_in_font": "Geist",
+      "weight": 700,
+      "letter_spacing": "-0.04em",
+      "case": "as written",
+      "lockup": ["Specs"],
+      "rule": "The dot is the only color in the mark. Never a period in another color, never an icon.",
+      "confidence": "high"
+    },
+    "heading": {
+      "stand_in_font": "Geist",
+      "weight": 600,
+      "color": "ink",
+      "min_px_at_1080": 72,
+      "letter_spacing": "-0.05em",
+      "description": "Tight Swiss grotesk, sentence case, big. The second half of a headline often drops to gray: 'Your brand, written down for machines.'",
+      "confidence": "high"
+    },
+    "body": {
+      "description": "Geist regular, plain and readable.",
+      "stand_in_font": "Geist",
+      "weight": 400,
+      "color": "ink",
+      "min_px_at_1080": 30,
+      "line_height": 1.5,
+      "confidence": "high"
+    },
+    "hand": {
+      "description": "Not handwriting: Geist Mono for evidence, like chunk IDs, sources, counts and eyebrows.",
+      "stand_in_font": "Geist Mono",
+      "weight": 400,
+      "color": "gray",
+      "min_px_at_1080": 28,
+      "rule": "Mono means 'this is data you can check'. Use it for sources and IDs, never for headlines.",
+      "confidence": "high"
+    }
+  },
+  "shape": {
+    "radius_px": 28,
+    "stamp_rotation_deg": 0,
+    "rule": "Big soft corners on cards (28px), 16px inside them, pills for buttons. Nothing rotated."
+  },
+  "spacing": {
+    "safe_margin_px_at_1080": 72,
+    "unit_px": 4
+  }
+}

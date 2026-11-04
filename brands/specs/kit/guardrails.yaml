@@ -1,0 +1,42 @@
+chunk_id: guardrails
+domain: guardrails
+depends_on: [positioning-core, voice-core, art-direction]
+token_count: 380
+confidence: high
+sources:
+  - upload: CLAUDE.md
+    location: Rules (never invent facts; API key handling)
+  - upload: docs/spec.md
+    location: Non-goals; cost guards
+version: 1
+summary: >-
+  Hard limits for anything Specs says about itself: no invented features,
+  users or numbers, no hype, no implying the demo brands are real, and red
+  only for decisions.
+---
+never_say:
+  - rule: Facts not in positioning-core
+    examples: [user counts, customers, revenue, awards, press, integrations it doesn't have, publishing or scheduling]
+    why: A tool about sourced claims can't make unsourced ones about itself.
+  - rule: That the demo brands are real businesses
+    why: Half Acre Club, Third Shift Slice and Hollis Ware are fictional. Say so wherever they appear.
+  - rule: Features from the spec's non-goals as if they exist
+    examples: [accounts, saved projects, teams, video export, paid plans, formats beyond Instagram 1:1 and 4:5]
+    why: They're not built. Saying "coming soon" is fine only if the spec lists it as planned.
+  - rule: Hype
+    examples: ['"magic"', '"revolutionary"', '"AI-powered"', '"effortless"']
+    why: The audience reads hype as a sign the work is weak.
+  - rule: A quote or name the brief didn't supply
+    why: A made-up quote is a fake review.
+  - rule: That Specs replaces designers
+    why: It's the art director's version, a starting draft a person checks. Say what it does, not who it replaces.
+
+never_show:
+  - Signal red as decoration, a button fill, or a background
+  - Generic AI imagery (robots, brains, glowing gradients, sparkles)
+  - A demo brand's post without its "fictional" label nearby
+  - Rotated or tilted type
+
+when_unsure: >-
+  Leave it out and say so in the rationale. Specs would rather show a gap
+  than fill it with a guess; that's the product.

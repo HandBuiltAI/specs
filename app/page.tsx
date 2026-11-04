@@ -97,7 +97,7 @@ export default function Home() {
       </Link>
 
       <p className="muted small start-links">
-        Also here: the <Link href="/catalog">components</Link> the intake agent asks with, and the{" "}
+        Also here: <Link href="/kit">Specs&rsquo; own brand kit</Link>, the <Link href="/catalog">components</Link> the intake agent asks with, and the{" "}
         <Link href="/live">live session test page</Link> for the cost guards.
       </p>
     </main>

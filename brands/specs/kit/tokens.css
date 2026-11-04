@@ -1,0 +1,32 @@
+/* Generated from visual-system.json by spike/build-tokens.ts. Do not edit by hand. */
+:root {
+  --color-canvas: #ECECEA; /* Table gray */
+  --color-surface: #FFFFFF; /* Card white */
+  --color-ink: #0E0E0F; /* Ink */
+  --color-gray: #68686C; /* Pencil gray */
+  --color-signal: #FF3B1F; /* Signal red */
+  --font-wordmark: "Geist", system-ui, sans-serif;
+  --weight-wordmark: 700;
+  --tracking-wordmark: -0.04em;
+  --font-heading: "Geist", system-ui, sans-serif;
+  --weight-heading: 600;
+  --tracking-heading: -0.05em;
+  --min-size-heading: 72px;
+  --font-body: "Geist", system-ui, sans-serif;
+  --weight-body: 400;
+  --leading-body: 1.5;
+  --min-size-body: 30px;
+  --font-hand: "Geist Mono", system-ui, sans-serif;
+  --weight-hand: 400;
+  --min-size-hand: 28px;
+  --radius: 28px;
+  --stamp-rotation: 0deg;
+  --safe-margin: 72px;
+  --unit: 4px;
+  --role-background: var(--color-canvas);
+  --role-text: var(--color-ink);
+  --role-heading: var(--color-ink);
+  --role-accent: var(--color-signal);
+  --role-wordmark: var(--color-ink);
+  --role-label: var(--color-surface);
+}

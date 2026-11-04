@@ -1,0 +1,60 @@
+chunk_id: positioning-core
+domain: positioning
+depends_on: []
+token_count: 560
+confidence: high
+sources:
+  - upload: docs/spec.md
+    location: Overview (pitch, positioning, goals, non-goals)
+  - upload: CLAUDE.md
+    location: Decisions already made
+  - upload: core/limits.ts
+    location: session and cost caps
+version: 1
+summary: >-
+  Specs is the art director's version of AI brand tools: it turns messy brand
+  materials into a kit an AI can read and posts that show their reasoning.
+  Free, open source, a portfolio piece by Scott Galetto.
+---
+what_it_is: >-
+  A web app. Upload a logo, website, a PDF and a few photos; watch a brand kit
+  assemble with every item tagged to the upload it came from; answer a few
+  questions about what's missing; get Instagram posts that each explain why
+  they look the way they do. Take the kit with you as a folder of small files.
+why_it_exists: >-
+  AI tools already make on-brand posts from a URL, but they don't show their
+  work. Specs makes the brand understanding visible, editable and traceable to
+  its sources, and puts the reasoning on every post.
+
+who_its_for: >-
+  Designers and creative leads judging what AI can do for brand work, and
+  small business owners who want a kit they can reuse in any AI tool. Detail
+  in audience-designers.
+
+promise: Your brand, written down for machines.
+promise_reason: >-
+  A brand kit used to be a PDF for people. Agents need small, sourced files
+  they can load one at a time. Specs writes those, and shows them working.
+
+differentiators:
+  - name: Shows its work
+    detail: Every post has a "Why this works" layer that pins each choice to the kit rule behind it.
+  - name: Traceable
+    detail: Every item in the kit names the upload it came from. Conflicts between uploads are asked about, not guessed.
+  - name: Portable
+    detail: The kit downloads as a zip of plain Markdown, YAML and JSON. It works in any AI tool.
+  - name: With and without
+    detail: Each post can flip to the same brief made with no kit, so the difference is visible.
+
+facts:
+  note: Copy may use only these facts. They're true as of version 1.
+  name: Specs
+  url: specs.humanbuiltai.work
+  maker: Scott Galetto
+  license: Code is MIT. The fictional brands, prompts and design assets are all rights reserved.
+  price: Free. No accounts.
+  formats: Instagram 1:1 and 4:5
+  post_intents: [promo, announcement, event, testimonial, tip]
+  demo_brands: Three fictional brands (Half Acre Club, Third Shift Slice, Hollis Ware), free to explore with no API calls
+  models: Claude Sonnet reads uploads and writes posts; Claude Haiku critiques posts and asks the intake questions
+  limits: A live session makes up to 4 posts and asks at most 12 intake questions, under a hard daily cost cap

@@ -1,0 +1,45 @@
+chunk_id: audience-designers
+domain: audience
+depends_on: [positioning-core]
+token_count: 360
+confidence: medium
+sources:
+  - upload: docs/spec.md
+    location: Goals ("posts a working designer would be comfortable showing a client"; "a clear case study of AI experience design")
+  - upload: docs/journal.md
+    location: phase 2 gate (blind pick by designer friends)
+version: 1
+summary: >-
+  The core audience: designers, art directors and creative leads deciding
+  whether AI can be trusted with brand work. They judge craft first and are
+  allergic to hype. Small business owners are a second audience.
+---
+segment: Designers and creative leads judging AI for brand work
+includes: [brand and visual designers, art directors, design managers, people hiring for AI design roles]
+
+situation:
+  - Have seen a lot of AI output that is on-trend and off-brand
+  - Judge a tool by its worst post, not its best
+  - Read type, spacing and color before they read the copy
+  - Will look at the repo and the prompts if the work is good
+
+wants:
+  - Output they'd show a client without apologizing
+  - To see why the AI made each choice, so they can argue with it
+  - Control over the inputs, not a slot machine
+  - A method they can reuse in their own work
+
+barriers:
+  - Hype words ("magic", "revolutionary") read as a tell that the work is weak
+  - Generic AI look (gradients, glow, purple) reads as a template
+  - Black-box output with no source for its claims
+
+what_wins_them:
+  - The with / without kit toggle on a real brief
+  - A "Why this works" note that cites a rule they agree with
+  - Small, careful UI that stays out of the brand's way
+
+second_audience:
+  segment: Small business owners
+  wants: A kit they can paste into any AI tool so the output sounds like them
+  note: Same voice; explain terms like "brand kit" in one plain line.

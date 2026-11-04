@@ -1,0 +1,46 @@
+chunk_id: terminology
+domain: voice
+depends_on: [voice-core, positioning-core]
+token_count: 380
+confidence: high
+sources:
+  - upload: docs/spec.md
+    location: Brand kit format; user flow names
+  - upload: core/catalog.ts
+    location: component names
+version: 1
+summary: >-
+  Words Specs uses (brand kit, chunk, source, why this works, needs your call)
+  and words it avoids (magic, AI-powered, assets, content, seamless).
+---
+use:
+  - term: Specs
+    note: Always capitalized, never "SPECS" or "Specs AI".
+  - term: brand kit
+    instead_of: [brand book, style guide, brand assets]
+    why: It's a working set of files, not a document to read once.
+    note: For owners, explain it once as "a folder of small files an AI can read".
+  - term: chunk
+    note: Fine with designers and in the repo; say "file" or "part of the kit" to owners.
+  - term: source
+    why: Every claim has one. Say "from your About page", not "detected".
+  - term: Why this works
+    note: The name of the reasoning layer on posts. Title case only as a button label.
+  - term: with kit / without kit
+    why: The comparison is the argument. Keep the words exactly.
+  - term: needs your call
+    note: The only thing signal red ever means.
+  - term: post
+    instead_of: [content, creative, asset]
+    why: It's an Instagram post. Say so.
+
+avoid:
+  - term: magic
+    why: The point is that nothing is magic; every choice has a reason.
+  - term: AI-powered
+    why: Everyone is. Say what it does.
+  - term: seamless, effortless, unleash, supercharge
+    why: Hype words read as a tell to designers.
+  - term: generate (in user-facing copy)
+    instead_of_use: make, write, draft
+    why: "Make posts" sounds like a person at work; "generate content" sounds like a machine.
