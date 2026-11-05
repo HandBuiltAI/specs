@@ -225,14 +225,16 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
       if (pasted.trim()) await attempt(() => send({ kind: "pasted", text: pasted }));
       if (url.trim()) await attempt(() => send({ kind: "url", url: url.trim() }));
       if (pdf) await attempt(() => send({ kind: "pdf", file: pdf }));
-      if (logo) {
-        setBusy(`Preparing and uploading ${logo.name}…`);
+      // A logo dropped in with the photos ("tss-logo.png") is still the logo, when the logo slot is empty.
+      const logoFile = logo ?? photos.find((p) => /logo/i.test(p.name)) ?? null;
+      if (logoFile) {
+        setBusy(`Preparing and uploading ${logoFile.name}…`);
         await attempt(async () => {
-          const { file, colors } = await prepareImage(logo, "logo");
+          const { file, colors } = await prepareImage(logoFile, "logo");
           await send({ kind: "logo", file, colors: JSON.stringify(colors) }, file);
         });
       }
-      for (const p of photos) {
+      for (const p of photos.filter((p) => p !== logoFile)) {
         setBusy(`Shrinking and uploading ${p.name}…`);
         await attempt(async () => {
           const { file, colors } = await prepareImage(p, "image");

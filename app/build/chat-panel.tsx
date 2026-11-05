@@ -34,13 +34,15 @@ export function ChatPanel(props: {
   suggestions: string[];
   changesLeft: number;
   needLogo: boolean;
+  /** The kit has a logo now, so a "no logo" turn can say it's done. */
+  hasLogo: boolean;
   draft: string;
   onDraft: (s: string) => void;
   onAsk: (text: string) => void;
   onAddLogo: (f: File | null) => void;
   renderCard: (t: Turn) => ReactNode;
 }) {
-  const { open, onOpen, chats, pending, sent, busy, error, suggestions, changesLeft, needLogo, draft, onDraft, onAsk, onAddLogo, renderCard } = props;
+  const { open, onOpen, chats, pending, sent, busy, error, suggestions, changesLeft, needLogo, hasLogo, draft, onDraft, onAsk, onAddLogo, renderCard } = props;
   const scroller = useRef<HTMLDivElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const out = changesLeft === 0;
@@ -100,6 +102,7 @@ export function ChatPanel(props: {
               )}
             </div>
             {pending?.id === t.id && renderCard(t)}
+            {t.call == null && t.about === "Add a logo" && hasLogo && <p className="chat-done">✓ Logo added. Every post signs with it now.</p>}
             {t.call != null && pending?.id !== t.id && <p className="chat-done">{t.skipped ? "Left as it was" : `✓ ${t.answer ?? ""}`}</p>}
           </div>
         ))}

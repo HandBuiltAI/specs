@@ -8,7 +8,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { LIMITS, POST_INTENTS, charCount, type PostIntent } from "../../core/limits.ts";
 import { buildComposedPage, LAYOUT_PROBE, TEXT_SLOTS, type Composition, type ProbeIssue, type TextSlot } from "../../core/compose.ts";
-import { buildPostPage, type PostLook } from "../../core/post-html.ts";
+import { buildPostPage, wordmarkHtml, type PostLook } from "../../core/post-html.ts";
 import { escapeHtml, findTemplate, parseTemplates, type TemplateId } from "../../core/templates.ts";
 import type { PropsOf } from "../../core/catalog.ts";
 import { call, callAgainIfDropped, isDropped, type ApiError } from "../lib/api.ts";
@@ -43,7 +43,7 @@ type Post = {
   preview?: PropsOf<"PostPreview">;
   layoutNote?: string;
   /** The kit look the post was drawn with, so a kit change can restyle it in place. */
-  look?: { tokensCss: string; fontsHref?: string };
+  look?: Look;
   restyled?: number;
 };
 
@@ -52,9 +52,15 @@ const LAYOUT_NOTE = /template|layout|composition|photo|image|crop/i;
 const RETRY_NOTE = /^(fix|fixes|fix from|previous|retry)/i;
 const messageOf = (e: unknown) => (isDropped(e) ? "The connection dropped before this post came back. Try making it again." : e instanceof Error ? e.message : "Something went wrong.");
 
-/** Swaps a post's kit colors and fonts for new ones. Layout and copy stay; no model call. */
-function restyle(html: string, from: NonNullable<Post["look"]>, to: NonNullable<Post["look"]>): string {
+/** What a post borrows from the kit as it's drawn: colors and fonts, and the sign-off (logo or name). */
+type Look = { tokensCss: string; fontsHref?: string; wordmarkLines: string[]; logoSrc: string | null };
+const sameLook = (a: Look, b: Look) => a.tokensCss === b.tokensCss && a.fontsHref === b.fontsHref && a.logoSrc === b.logoSrc && a.wordmarkLines.join("\n") === b.wordmarkLines.join("\n");
+
+/** Swaps a post's kit colors, fonts and sign-off for new ones. Layout and copy stay; no model call. */
+function restyle(html: string, from: Look, to: Look): string {
   let out = html.replace(`<style>${from.tokensCss}</style>`, () => `<style>${to.tokensCss}</style>`);
+  const [oldSign, newSign] = [wordmarkHtml(from.wordmarkLines, from.logoSrc), wordmarkHtml(to.wordmarkLines, to.logoSrc)];
+  if (oldSign !== newSign) out = out.split(oldSign).join(newSign);
   const link = (h?: string) => (h ? `<link rel="stylesheet" href="${escapeHtml(h)}">` : "");
   if (from.fontsHref !== to.fontsHref && from.fontsHref && to.fontsHref) out = out.replace(link(from.fontsHref), () => link(to.fontsHref));
   return out;
@@ -111,15 +117,15 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
   }, [kitVersion, seenVersion, loadKit]);
   useEffect(() => {
     if (!kit) return;
-    const to = { tokensCss: kit.tokensCss, fontsHref: kit.fontsHref };
+    const to: Look = { tokensCss: kit.tokensCss, fontsHref: kit.fontsHref, wordmarkLines: kit.wordmarkLines, logoSrc: logo };
     setPosts((ps) =>
       ps.map((p) => {
-        if (!p.look || !p.preview || p.stage || (p.look.tokensCss === to.tokensCss && p.look.fontsHref === to.fontsHref)) return p;
+        if (!p.look || !p.preview || p.stage || sameLook(p.look, to)) return p;
         const html = restyle(p.preview.html, p.look, to);
-        return { ...p, look: to, restyled: (p.restyled ?? 0) + 1, layoutNote: "Restyled with your kit's new look.", preview: { ...p.preview, html } };
+        return { ...p, look: to, restyled: (p.restyled ?? 0) + 1, layoutNote: p.look.tokensCss === to.tokensCss && to.logoSrc && p.look.logoSrc !== to.logoSrc ? "Now signed with your logo." : "Restyled with your kit's new look.", preview: { ...p.preview, html } };
       }),
     );
-  }, [kit]);
+  }, [kit, logo]);
 
   useEffect(() => {
     if (!follow) return;
@@ -193,7 +199,7 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
         caption: written.slots.caption?.slice(0, 2200) || undefined,
         fileName,
       };
-      patch(id, { stage: "Designing the layout from your kit…", preview: base, look: { tokensCss: kit.tokensCss, fontsHref: kit.fontsHref } });
+      patch(id, { stage: "Designing the layout from your kit…", preview: base, look: { tokensCss: kit.tokensCss, fontsHref: kit.fontsHref, wordmarkLines: kit.wordmarkLines, logoSrc: logo } });
 
       // The without-kit version, in parallel; the toggle appears when it lands.
       void call<{ template: TemplateId | null; photo: string | null; slots: Slots | null; rationale: Note[] }>("/api/posts/baseline", { sessionId, postId: id })

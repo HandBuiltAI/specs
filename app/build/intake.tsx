@@ -379,6 +379,7 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
         suggestions={suggestionsFor(chunks, kit)}
         changesLeft={view.changesLeft ?? 1}
         needLogo={!!view.needLogo && !kit?.logoUploadId}
+        hasLogo={!!kit?.logoUploadId}
         draft={asked}
         onDraft={setAsked}
         onAsk={ask}
