@@ -150,6 +150,7 @@ html,body{margin:0;padding:0;background:#888}
 .post img[data-slot="photo"]{display:block}
 .post .wordmark span{display:block}
 .post .wordmark img.logo{display:block;height:var(--logo-height,3.2em);width:auto;max-width:100%}
+.post .wordmark.auto-sign{position:absolute;right:64px;bottom:56px;z-index:5;font-family:var(--font-wordmark);font-weight:var(--weight-wordmark);color:var(--role-wordmark);font-size:34px;line-height:.92;text-align:right}
 `;
 
 /** Fills a checked composition with the written copy and builds the full page. */
@@ -178,6 +179,10 @@ export function buildComposedPage(opts: {
     const text = opts.slots[slot as TextSlot];
     return `${open}${escapeHtml(text ?? "")}</${tag}>`;
   });
+  // Every post is signed. A layout that left the wordmark out gets one in the bottom corner.
+  if (!/data-slot=["']?wordmark\b/.test(opts.composition.html)) {
+    html += `<div class="wordmark auto-sign" data-slot="wordmark">${wordmarkHtml(opts.wordmarkLines, opts.logoSrc)}</div>`;
+  }
   html = html.replace(/<img([^>]*data-slot=["']?photo["']?[^>]*?)\/?>/g, (_m, raw: string) => {
     const attrs = raw.replace(/\salt=("[^"]*"|'[^']*'|[^\s>]*)/g, "");
     const open = fillTag(`<img${attrs}>`, "photo").replace(/>$/, "");

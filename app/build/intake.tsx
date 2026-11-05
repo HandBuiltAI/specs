@@ -12,6 +12,7 @@ import type { ComponentName } from "../../core/catalog.ts";
 import { boardFrom, previewSlots } from "../../core/preview.ts";
 import { buildPostPage } from "../../core/post-html.ts";
 import { call } from "../lib/api.ts";
+import { logoDataUrl } from "../lib/logo.ts";
 import { RenderCall } from "../ui/render.tsx";
 import { Skeleton, ToastProvider, useToast } from "../ui/primitives.tsx";
 
@@ -20,7 +21,7 @@ type Turn = { id: string; about: string; say: string; call: Call; answer?: strin
 type Settled = { gap: string; mode: "conflict" | "kept"; about: string; text: string; why: string };
 type View = { done: boolean; gapsLeft: number; callsLeft: number; turnsLeft: number; capped?: boolean; settled: Settled[]; turns: Turn[]; pending: string | null };
 type Reply = { answer: unknown } | { text: string } | { skip: true };
-type KitFiles = { tokensCss: string; wordmarkLines: string[]; fontsHref: string; templates: Record<string, string>; baseCss: string; photos: { file: string; uploadId?: string }[] };
+type KitFiles = { tokensCss: string; wordmarkLines: string[]; fontsHref: string; templates: Record<string, string>; baseCss: string; photos: { file: string; uploadId?: string }[]; logoUploadId: string | null };
 
 const messageOf = (e: unknown) => (e as Error).message ?? "Something went wrong.";
 
@@ -74,6 +75,10 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
       if (!p.uploadId || requested.current.has(p.uploadId)) continue;
       requested.current.add(p.uploadId);
       void fetchImage(sessionId, p.uploadId).then((d) => d && setPhotoUrls((x) => ({ ...x, [`file:${p.file}`]: d.data, [`upload:${p.uploadId}`]: d.blob })));
+    }
+    if (k.logoUploadId && !requested.current.has(k.logoUploadId)) {
+      requested.current.add(k.logoUploadId);
+      void logoDataUrl(sessionId, k.logoUploadId).then((d) => d && setPhotoUrls((x) => ({ ...x, logo: d })));
     }
   }, [sessionId]);
 
@@ -319,7 +324,7 @@ function LivePost({ chunks, kit, photoUrls }: { chunks: IntakeChunks; kit: KitFi
     kit && slots && kit.templates["photo-led"]
       ? buildPostPage({
           templateHtml: kit.templates["photo-led"],
-          look: { tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, fontsHref: kit.fontsHref, base: { css: kit.baseCss } },
+          look: { tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, logoSrc: photoUrls.logo ?? null, fontsHref: kit.fontsHref, base: { css: kit.baseCss } },
           slots: { headline: slots.headline, subhead: slots.subhead, badge: slots.badge },
           photoSrc,
         })

@@ -29,6 +29,7 @@ export function boardFrom(chunks: IntakeChunks): Board {
         { role: "Text", hex: kit.colors.text },
         { role: "Headings", hex: kit.colors.heading },
         { role: "Accent", hex: kit.colors.accent },
+        ...(kit.colors.accent2 ? [{ role: "Accent 2", hex: kit.colors.accent2 }] : []),
       ].filter((c, i, all) => all.findIndex((x) => x.hex === c.hex) === i)
     : null;
   const voiceCore = items(chunks, "voice-core");

@@ -14,7 +14,8 @@ export type SessionKit = {
   files: Record<string, string>;
   tokensCss: string;
   wordmarkLines: string[];
-  colors: { background: string; text: string; heading: string; accent: string; label: string };
+  /** accent2: a second brand color the others left out (a neon next to a sign yellow), or null. */
+  colors: { background: string; text: string; heading: string; accent: string; label: string; accent2: string | null };
   fonts: { heading: string; body: string; wordmark: string; hand: string };
   /** Plain notes on what code decided (font stand-ins, contrast fixes), shown in the readme. */
   notes: string[];
@@ -36,6 +37,17 @@ export function contrast(a: string, b: string): number {
 const saturation = (hex: string) => {
   const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255) as [number, number, number];
   return Math.max(r, g, b) - Math.min(r, g, b);
+};
+const hue = (hex: string) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255) as [number, number, number];
+  const max = Math.max(r, g, b), d = max - Math.min(r, g, b);
+  if (!d) return 0;
+  const h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return (h * 60 + 360) % 360;
+};
+const hueGap = (a: string, b: string) => {
+  const d = Math.abs(hue(a) - hue(b));
+  return Math.min(d, 360 - d);
 };
 const INK = "#141414";
 const WHITE = "#FFFFFF";
@@ -69,10 +81,19 @@ function pickColors(items: IntakeItem[], notes: string[]) {
   if (heading !== heading0) notes.push(`Heading color ${heading0} is too faint on ${background}, so headings use the body text color.`);
   const accent = accent0;
   const label = contrast(background, accent) >= contrast(text, accent) ? background : text;
-  return { background, text, heading, accent, label };
+  // Keep a second strong color when the brand has one the roles didn't use, so a layout can reach
+  // it: a colorful hue clearly different from the heading and accent, readable on the background.
+  const used = [background, text, heading, accent];
+  const accent2 =
+    [...pool]
+      .filter((h) => !used.includes(h) && saturation(h) >= 0.35 && used.filter((u) => saturation(u) >= 0.35).every((u) => hueGap(h, u) >= 40) && contrast(h, background) >= 3)
+      .sort((a, b) => saturation(b) - saturation(a))[0] ?? null;
+  return { background, text, heading, accent, label, accent2 };
 }
 
 // ---------- fonts ----------
+
+const SCRIPT_FONTS = new Set<string>(["Caveat"]);
 
 type Curated = (typeof CURATED_FONTS)[number];
 const STYLE_STAND_INS: [RegExp, Curated][] = [
@@ -97,7 +118,12 @@ export function curatedFont(raw: string | undefined, fallback: Curated): { font:
 function pickFonts(items: IntakeItem[], notes: string[]) {
   const pair = lastItem(items, "fonts")?.value.match(/Fonts:\s*(.+?) for headings, (.+?) for body/i);
   const heading = curatedFont(pair?.[1] ?? lastItem(items, "type: heading")?.value, "Fraunces");
-  const body = curatedFont(pair?.[2] ?? lastItem(items, "type: body")?.value, "Inter");
+  let body = curatedFont(pair?.[2] ?? lastItem(items, "type: body")?.value, "Inter");
+  // A handwriting face is for a word or two, never for sentences people must read on a phone.
+  if (SCRIPT_FONTS.has(body.font)) {
+    notes.push(`Body text: ${body.font} is a handwriting face, so posts set body text in Inter and keep ${body.font} for hand-written notes.`);
+    body = { font: "Inter", standIn: false };
+  }
   const wordmark = curatedFont(lastItem(items, "type: wordmark")?.value, heading.font);
   const handItem = items.find((i) => /script|hand|marker/i.test(`${i.label} ${i.value}`) && i.label.toLowerCase().startsWith("type"));
   const hand = handItem ? curatedFont(handItem.value, "Caveat").font : body.font;
@@ -109,7 +135,6 @@ function pickFonts(items: IntakeItem[], notes: string[]) {
 
 // ---------- files ----------
 
-const SCRIPT_FONTS = new Set<string>(["Caveat"]);
 const DISPLAY_FONTS = new Set<string>(["Archivo Black", "DM Serif Display", "Playfair Display", "Instrument Serif", "Syne"]);
 
 export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["fonts"]): string {
@@ -121,6 +146,7 @@ export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["
     `  --color-heading: ${colors.heading};`,
     `  --color-accent: ${colors.accent};`,
     `  --color-label: ${colors.label};`,
+    ...(colors.accent2 ? [`  --color-accent-2: ${colors.accent2};`] : []),
     `  --font-wordmark: ${font(fonts.wordmark)};`,
     `  --weight-wordmark: ${DISPLAY_FONTS.has(fonts.wordmark) || SCRIPT_FONTS.has(fonts.wordmark) ? 400 : 700};`,
     `  --tracking-wordmark: 0;`,
@@ -147,6 +173,7 @@ export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["
     `  --role-accent: var(--color-accent);`,
     `  --role-wordmark: var(--color-heading);`,
     `  --role-label: var(--color-label);`,
+    ...(colors.accent2 ? [`  --role-accent-2: var(--color-accent-2);`] : []),
   ];
   return `/* Built by Specs from this kit's visual-system chunk. */\n:root {\n${lines.join("\n")}\n}\n`;
 }
@@ -216,7 +243,7 @@ export function kitFromChunks(chunks: IntakeChunks, business: { name: string }):
     "",
     "## Colors and fonts in posts",
     "",
-    `Background ${colors.background}, body text ${colors.text}, headings ${colors.heading}, accent ${colors.accent}. Headings in ${fonts.heading}, body in ${fonts.body}.`,
+    `Background ${colors.background}, body text ${colors.text}, headings ${colors.heading}, accent ${colors.accent}${colors.accent2 ? `, second accent ${colors.accent2}` : ""}. Headings in ${fonts.heading}, body in ${fonts.body}.`,
     ...(notes.length ? ["", ...notes.map((n) => `- ${n}`)] : []),
     "",
   ].join("\n");
