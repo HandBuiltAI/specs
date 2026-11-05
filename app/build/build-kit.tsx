@@ -16,6 +16,7 @@ import { BrandBoard } from "./brand-board.tsx";
 import type { IntakeChunks } from "../../core/intake.ts";
 import { businessNameOf } from "../../core/session-kit.ts";
 import MakePosts from "./make-posts.tsx";
+import { ReadingFinds } from "./reading-finds.tsx";
 
 type UploadKindApi = "image" | "logo" | "pdf" | "url" | "pasted" | "note";
 type Upload = { id: string; kind: UploadKindApi; label: string; colors?: Swatch[]; pages?: number };
@@ -43,6 +44,8 @@ const STATE_TEXT: Record<string, string> = {
   unreachable: "Couldn't check: the server didn't answer.",
 };
 
+/** Reads running at once. Each is one Claude call on one upload, so they don't wait on each other. */
+const READ_AT_ONCE = 6;
 const messageOf = (e: unknown) => (e as Error).message ?? "Something went wrong.";
 
 export default function BuildKit({ siteKey }: { siteKey: string }) {
@@ -67,6 +70,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
   const [reads, setReads] = useState<Record<string, CallState>>({});
   const [targets, setTargets] = useState<Record<string, CallState>>({});
   const [evidence, setEvidence] = useState<Record<string, Evidence>>({});
+  const [thumbs, setThumbs] = useState<Record<string, string>>({});
   const [chunks, setChunks] = useState<Record<string, ChunkRecord>>({});
   const [failures, setFailures] = useState<Record<string, string>>({});
 
@@ -157,7 +161,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     // The first call writes the evidence into the prompt cache; the rest read it at a tenth of the price.
     const [first, ...rest] = todo;
     await draftOne(sid, first!);
-    await pool(rest, 3, (t) => draftOne(sid, t));
+    await pool(rest, 4, (t) => draftOne(sid, t));
   }
 
   async function buildKit() {
@@ -166,11 +170,34 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     const sid = sessionId;
     const added: Upload[] = [];
     const problems: string[] = [];
+    const tried = new Set<string>();
+    setWorking(true);
     setBusy("Uploading…");
-    const send = async (fields: Record<string, string | Blob>) => {
+    // Each upload is read the moment it lands, a few at a time, while the rest are still going up.
+    const reading: Promise<void>[] = [];
+    let slots = READ_AT_ONCE;
+    const waiting: (() => void)[] = [];
+    const readSoon = (u: Upload) => {
+      tried.add(u.id);
+      reading.push(
+        (async () => {
+          if (slots === 0) await new Promise<void>((go) => waiting.push(go));
+          slots--;
+          try {
+            await readOne(sid, u);
+          } finally {
+            slots++;
+            waiting.shift()?.();
+          }
+        })(),
+      );
+    };
+    const send = async (fields: Record<string, string | Blob>, thumb?: Blob) => {
       const d = await sendForm<{ upload: Upload }>("/api/uploads", { sessionId: sid, ...fields });
       added.push(d.upload);
+      if (thumb) setThumbs((t) => ({ ...t, [d.upload.id]: URL.createObjectURL(thumb) }));
       setUploads((u) => [...u, d.upload]);
+      readSoon(d.upload);
     };
     // One file that won't go up (an odd format, a refused size) never stops the rest.
     const attempt = async (step: () => Promise<void>) => {
@@ -180,49 +207,54 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
         problems.push(messageOf(e));
       }
     };
-    for (const p of photos) {
-      setBusy(`Shrinking and uploading ${p.name}…`);
-      await attempt(async () => {
-        const { file, colors } = await prepareImage(p, "image");
-        await send({ kind: "image", file, colors: JSON.stringify(colors) });
-      });
+    try {
+      // Words first: they go up instantly, so reading starts while photos are still being shrunk.
+      if (note.trim()) await attempt(() => send({ kind: "note", text: note }));
+      if (pasted.trim()) await attempt(() => send({ kind: "pasted", text: pasted }));
+      if (url.trim()) await attempt(() => send({ kind: "url", url: url.trim() }));
+      if (pdf) await attempt(() => send({ kind: "pdf", file: pdf }));
+      if (logo) {
+        setBusy(`Preparing and uploading ${logo.name}…`);
+        await attempt(async () => {
+          const { file, colors } = await prepareImage(logo, "logo");
+          await send({ kind: "logo", file, colors: JSON.stringify(colors) }, file);
+        });
+      }
+      for (const p of photos) {
+        setBusy(`Shrinking and uploading ${p.name}…`);
+        await attempt(async () => {
+          const { file, colors } = await prepareImage(p, "image");
+          await send({ kind: "image", file, colors: JSON.stringify(colors) }, file);
+        });
+      }
+      setBusy(null);
+      if (problems.length) setError(`${problems.join(" ")}${added.length ? " Building from the rest." : ""}`);
+      await Promise.all(reading);
+      if (added.length) await readAndDraftSteps(sid, [...uploads, ...added], tried);
+    } finally {
+      setBusy(null);
+      setWorking(false);
     }
-    if (logo) {
-      setBusy(`Preparing and uploading ${logo.name}…`);
-      await attempt(async () => {
-        const { file, colors } = await prepareImage(logo, "logo");
-        await send({ kind: "logo", file, colors: JSON.stringify(colors) });
-      });
-    }
-    setBusy("Uploading…");
-    if (pdf) await attempt(() => send({ kind: "pdf", file: pdf }));
-    if (url.trim()) await attempt(() => send({ kind: "url", url: url.trim() }));
-    if (pasted.trim()) await attempt(() => send({ kind: "pasted", text: pasted }));
-    if (note.trim()) await attempt(() => send({ kind: "note", text: note }));
-    setBusy(null);
-    if (problems.length) setError(`${problems.join(" ")}${added.length ? " Building from the rest." : ""}`);
-    if (!added.length) return;
-    await readAndDraft(sid, [...uploads, ...added]);
   }
 
   async function readAndDraft(sid: string, list: Upload[]) {
     setWorking(true);
     try {
-      await readAndDraftSteps(sid, list);
+      await readAndDraftSteps(sid, list, new Set());
     } finally {
       setWorking(false);
     }
   }
 
-  async function readAndDraftSteps(sid: string, list: Upload[]) {
-    const unread = list.filter((u) => reads[u.id]?.status !== "done");
-    await pool(unread, 3, (u) => readOne(sid, u));
+  async function readAndDraftSteps(sid: string, list: Upload[], tried: Set<string>) {
+    const unread = list.filter((u) => !tried.has(u.id) && reads[u.id]?.status !== "done");
+    await pool(unread, READ_AT_ONCE, (u) => readOne(sid, u));
     // One more try for any read that failed (a slow page, a timeout), then draft from what was read.
     let kit = await call<Kit>("/api/kit", { sessionId: sid }).catch(() => null);
     if (!kit) return;
     const retry = list.filter((u) => kit!.extraction.reads[u.id]?.status === "failed" && kit!.extraction.reads[u.id]!.attempts < LIMITS.extractAttempts);
     if (retry.length) {
-      await pool(retry, 3, (u) => readOne(sid, u));
+      await pool(retry, READ_AT_ONCE, (u) => readOne(sid, u));
       kit = await call<Kit>("/api/kit", { sessionId: sid }).catch(() => null);
       if (!kit) return;
     }
@@ -421,6 +453,16 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
           <h2 className="reveal-title">
             {name ? `Here's ${name},` : "Here's your brand,"} <span>as your files describe it.</span>
           </h2>
+          {!draftingDone && (
+            <ReadingFinds
+              uploads={uploads}
+              reads={reads}
+              evidence={evidence}
+              thumbs={thumbs}
+              drafting={targetIds.filter((t) => targets[t]?.status === "done").length}
+              draftTotal={targetIds.length}
+            />
+          )}
           <div className="reveal">
           <aside className="card reveal-files">
           <p className="eyebrow">Your materials</p>

@@ -21,6 +21,8 @@ export function PostPreview(props: Props) {
   const v: Version = variant === "baseline" && baseline ? baseline : props;
   const [why, setWhy] = useState(false);
   const [hot, setHot] = useState<number | null>(null);
+  const [flash, setFlash] = useState<{ i: number; at: number } | null>(null);
+  const notes = useRef<HTMLOListElement>(null);
   const [pins, setPins] = useState<Pin[]>([]);
   const [busy, setBusy] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -86,6 +88,16 @@ export function PostPreview(props: Props) {
     }
   }, [fileName, variant, h]);
 
+  // A pin and its note point at each other: tap one and the page glides to the other.
+  const jump = useCallback((i: number, to: "note" | "post") => {
+    const target = to === "note" ? notes.current?.children[i] : box.current;
+    if (!(target instanceof HTMLElement)) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: to === "note" ? "center" : "start" });
+    setHot(i);
+    setFlash({ i, at: Date.now() });
+  }, []);
+
   // Number pins in note order; notes on the same element share its outline.
   const outlines = new Map<string, { box: Box; n: number[] }>();
   pins.forEach((p, i) => {
@@ -119,23 +131,41 @@ export function PostPreview(props: Props) {
           tabIndex={-1}
         />
         {why && (
-          <div className="c-pins" aria-hidden="true">
+          <div className="c-pins">
             {[...outlines.values()].map(({ box: b, n }) => (
               <div
                 key={n[0]}
                 className="c-pin-box"
                 data-hot={n.includes(hot ?? -1)}
                 style={{ left: b.x * scale, top: b.y * scale, width: b.w * scale, height: b.h * scale }}
-              >
-                <span className="c-pin-tags">
+              />
+            ))}
+            {[...outlines.values()].map(({ box: b, n }, k) => {
+              // The numbers sit on the outline's top-left corner, kept inside the post so none is cut off.
+              const w = n.length * 25;
+              const left = Math.min(Math.max(b.x * scale - 11, 4), 1080 * scale - w - 4);
+              const top = Math.min(Math.max(b.y * scale - 11, 4), h * scale - 26);
+              return (
+                <span key={n[0]} className="c-pin-tags" style={{ left, top, ["--k" as string]: k }}>
                   {n.map((i) => (
-                    <b key={i} className="c-pin" onMouseEnter={() => setHot(i)} onMouseLeave={() => setHot(null)}>
+                    <button
+                      type="button"
+                      key={i}
+                      className="c-pin"
+                      aria-label={`Note ${i + 1}: ${v.rationale[i]?.decision ?? ""}`}
+                      data-hot={hot === i}
+                      onMouseEnter={() => setHot(i)}
+                      onMouseLeave={() => setHot(null)}
+                      onFocus={() => setHot(i)}
+                      onBlur={() => setHot(null)}
+                      onClick={() => jump(i, "note")}
+                    >
                       {i + 1}
-                    </b>
+                    </button>
                   ))}
                 </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
@@ -153,10 +183,23 @@ export function PostPreview(props: Props) {
         </span>
       </div>
       {why && (
-        <ol className="c-why-list">
+        <ol className="c-why-list" ref={notes}>
           {v.rationale.map((r, i) => (
-            <li key={i} data-hot={hot === i} data-pinned={!!pins[i]} onMouseEnter={() => setHot(i)} onMouseLeave={() => setHot(null)}>
-              <b className="c-pin">{i + 1}</b>
+            <li
+              key={flash?.i === i ? `${i}-${flash.at}` : i}
+              data-hot={hot === i}
+              data-flash={flash?.i === i}
+              data-pinned={!!pins[i]}
+              onMouseEnter={() => setHot(i)}
+              onMouseLeave={() => setHot(null)}
+            >
+              {pins[i] ? (
+                <button type="button" className="c-pin" aria-label={`Show note ${i + 1} on the post`} onClick={() => jump(i, "post")}>
+                  {i + 1}
+                </button>
+              ) : (
+                <b className="c-pin">{i + 1}</b>
+              )}
               <div>
                 <span className="c-why-k">{r.decision}</span>
                 {r.choice && <p className="c-why-choice">{r.choice}</p>}

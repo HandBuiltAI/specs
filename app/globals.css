@@ -319,3 +319,26 @@ main.kitpage .kitpage-lede { max-width: 42rem; }
   .board .card { grid-column: span 2; }
 }
 @media (prefers-reduced-motion: reduce) { .board-card, .live-post.flash, .changed { transition: none; animation: none; } }
+
+/* Reading finds (Nov 5): the uploads on a light table, and what Specs finds in them as it reads. */
+.finds { display: grid; gap: var(--s3); margin-bottom: var(--s4); overflow: hidden; }
+.finds-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--s3); }
+.finds-head .eyebrow { margin: 0; }
+.finds-stage { font-size: 11px; color: var(--ink-2); }
+.finds-files { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.finds-file { position: relative; width: 56px; height: 56px; border-radius: 10px; overflow: hidden; background: var(--sunken); display: grid; place-items: center; }
+.finds-file img { width: 100%; height: 100%; object-fit: cover; }
+.finds-glyph { font-size: 10px; letter-spacing: 0.06em; color: var(--ink-2); }
+.finds-scan { position: absolute; inset: 0; opacity: 0; pointer-events: none; }
+.finds-check { position: absolute; right: 4px; bottom: 4px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); color: var(--on-ink); font-size: 10px; display: grid; place-items: center; opacity: 0; transform: scale(0.4); }
+.finds-file[data-status="done"] .finds-check { opacity: 1; transform: none; }
+.finds-file[data-status="failed"] { box-shadow: inset 0 0 0 1.5px var(--signal); }
+.finds-table { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; min-height: 64px; }
+.find { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 4px; max-width: 260px; font-size: 14px; line-height: 1.3; box-shadow: 0 10px 24px -18px rgba(0, 0, 0, 0.5); rotate: var(--tilt, 0deg); }
+.find q { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; quotes: "\201C" "\201D"; }
+.find-color { grid-template-columns: 28px auto; align-items: center; column-gap: 8px; }
+.find-color .find-from { grid-column: 1 / -1; }
+.find-chip { width: 28px; height: 28px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.3); }
+.find-topic { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); }
+.find-from { font-size: 10px; color: var(--ink-2); }
+.find-empty { border-style: dashed; box-shadow: none; rotate: 0deg; }
