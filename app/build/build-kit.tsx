@@ -8,7 +8,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { LIMITS, charCount } from "../../core/limits.ts";
 import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type Evidence } from "../../core/extract.ts";
 import type { Swatch } from "../../core/colors.ts";
-import { call, pool, sendForm, type ApiError } from "../lib/api.ts";
+import { call, callPatiently, pool, sendForm, type ApiError } from "../lib/api.ts";
 import { LOGO_ACCEPT, isSvg, logoProblem, prepareImage } from "../lib/images.ts";
 import { Turnstile } from "../lib/turnstile.tsx";
 import Intake from "./intake.tsx";
@@ -142,7 +142,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     markRead(u.id, "running");
     setFailures((f) => ({ ...f, [u.id]: "" }));
     try {
-      const d = await call<{ evidence: Evidence }>("/api/extract/read", { sessionId: sid, uploadId: u.id });
+      const d = await callPatiently<{ evidence: Evidence }>("/api/extract/read", { sessionId: sid, uploadId: u.id });
       setEvidence((e) => ({ ...e, [u.id]: d.evidence }));
       markRead(u.id, "done");
     } catch (e) {
@@ -155,7 +155,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     markTarget(target, "running");
     setFailures((f) => ({ ...f, [target]: "" }));
     try {
-      const rec = await call<ChunkRecord>("/api/extract/assemble", { sessionId: sid, target });
+      const rec = await callPatiently<ChunkRecord>("/api/extract/assemble", { sessionId: sid, target });
       setChunks((c) => ({ ...c, [target]: rec }));
       markTarget(target, "done");
     } catch (e) {
@@ -453,6 +453,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
       {stalled && sessionId && (
         <div className="card resume">
           <p>Your uploads are here, but the kit stopped before it was finished.</p>
+          {Object.values(failures).find(Boolean) && <p className="muted small">Why: {Object.values(failures).find(Boolean)}</p>}
           <button onClick={() => readAndDraft(sessionId, uploads)}>Keep building</button>
         </div>
       )}

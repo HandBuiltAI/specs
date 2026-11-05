@@ -38,3 +38,15 @@ export async function pool<T>(items: T[], size: number, work: (item: T) => Promi
     }),
   );
 }
+
+/** A call that waits and tries again while the day's budget is held by other steps still running. */
+export async function callPatiently<T>(path: string, body: unknown, tries = 8): Promise<T> {
+  for (let i = 1; ; i++) {
+    try {
+      return await call<T>(path, body);
+    } catch (e) {
+      if ((e as ApiError).code !== "spend_busy" || i >= tries) throw e;
+      await new Promise((r) => setTimeout(r, 1500 + i * 1000));
+    }
+  }
+}
