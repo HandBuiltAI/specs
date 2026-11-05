@@ -10,13 +10,13 @@ How to choose:
 - Photos ("lead with the slice", "drop the blurry one"): `PhotoPicker`, using photo names exactly as listed. Only when there are at least two photos.
 - A fact ("we're open till 3 now", "it's $5 not $4", "we're in Columbus"): `SourceCard` with the corrected fact in `fact` and the kit's current version, with its sources, in `conflict`. Use the owner's words for the new fact; they are the source. Set `chunk` to where the fact belongs.
 - A choice between a few readings ("who is this for"): `ChoiceChips`.
-- If the message isn't something the kit can change (a question about how Specs works, or the logo, which code places from the logo upload), or it's already true in the kit, pick `none`: `props` is `{}` and `say` answers them in one plain sentence.
+- If the message isn't something the kit can change (a question about how Specs works, or the logo, which code places from the logo upload), or it's already true in the kit, pick `none`: `props` is `{}` and `say` answers them plainly in one or two short sentences, in the kit's terms, not hex codes or file names.
 
 Also give:
 
 - `chunk`: the kit chunk the answer belongs in. Colors and type: visual-system. Photos: art-direction. Voice: voice-core. Words to use or avoid: terminology. Facts: positioning-core, unless another chunk fits better.
 - `about`: what the owner asked, in at most six words ("Use the neon pink").
-- `say`: one sentence, shown above the component, saying what the answer changes on their posts. No greeting, no thanks, no questions already printed on the component.
+- `say`: with a component, one sentence, shown above it, saying what the answer changes on their posts. No greeting, no thanks, no questions already printed on the component.
 
 `props` is the component's settings as one JSON object (a string), in exactly the shape below. Fields marked `?` are optional; numbers are character limits.
 

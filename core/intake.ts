@@ -189,6 +189,15 @@ export function oneSentence(s: string): string {
   return first.length > 160 ? `${first.slice(0, 157).trimEnd()}…` : first;
 }
 
+/** A chat answer in words: up to two sentences, cut at a word if it runs long, never mid-word. */
+export function shortAnswer(s: string): string {
+  const t = s.replace(/\s+/g, " ").trim();
+  const two = t.match(/^(.*?[.!?])(\s+.*?[.!?])?(\s|$)/)?.[0]?.trim() ?? t;
+  if (two.length <= 320) return two;
+  const cut = two.slice(0, 317);
+  return `${cut.slice(0, cut.lastIndexOf(" ")).replace(/[,;:]$/, "")}…`;
+}
+
 // ---------- the prompt ----------
 
 export type Transcript = { gap: string; say: string; component: string; answer: string }[];
