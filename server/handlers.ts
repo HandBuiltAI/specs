@@ -235,7 +235,8 @@ export async function upload(req: Request, deps: Deps) {
   const now = deps.now();
   await loadSession(deps.kv, sessionId, now);
   const session = await updateSession(deps.kv, sessionId, (s) => {
-    if (s.extraction?.locked) throw new Refusal(409, "extraction_started", "The kit is already being built from these uploads. Start a new session to add more.");
+    // A logo can still be added after drafting: nothing reads it, it just signs the posts.
+    if (s.extraction?.locked && record.kind !== "logo") throw new Refusal(409, "extraction_started", "The kit is already being built from these uploads. Start a new session to add more.");
     const have = s.uploads.filter((u) => u.kind === record.kind).length;
     const cap = UPLOAD_CAPS[record.kind];
     if (have >= cap) {

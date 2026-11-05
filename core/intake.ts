@@ -133,6 +133,44 @@ export const IntakeTurnSchema = z.object({
 });
 export type IntakeTurnOutput = z.infer<typeof IntakeTurnSchema>;
 
+/** A change the owner asked for in their own words: one component (or none, with a one-sentence answer), and where the answer goes. */
+export const ChangeTurnSchema = z.object({
+  say: z.string().describe("One short sentence to the owner: what the answer changes on their posts, or the answer itself when component is none."),
+  component: z.enum([...INTAKE_COMPONENTS, "none"]).describe("Exactly one component from the catalog, or none."),
+  props: z.string().describe("The component's props as one JSON object; {} for none."),
+  chunk: z.enum(EXTRACT_CHUNKS.map((c) => c.id) as [ExtractChunkId, ...ExtractChunkId[]]).describe("The kit chunk the answer is written into."),
+  about: z.string().describe("What the owner asked for, in at most six words."),
+});
+export type ChangeTurnOutput = z.infer<typeof ChangeTurnSchema>;
+
+/** The gap a change request stands for, so its answer is written like any other. */
+export function requestGap(id: string, chunk: ExtractChunkId, about: string, component: string | null): Gap {
+  const slot = component === "SwatchPicker" ? "color" : component === "FontPairCard" ? "type" : component === "PhotoPicker" && chunk === "art-direction" ? "photos" : `owner: ${about.toLowerCase().replace(/[^a-z0-9 ]+/g, "").trim().slice(0, 40)}`;
+  return { id, kind: "missing", chunk, about, detail: "", slot };
+}
+
+export function changePrompt(
+  promptText: string,
+  input: { chunks: IntakeChunks; transcript: Transcript; photos: string[]; sampled: { upload: string; colors: string[] }[]; fonts: readonly string[]; message: string },
+) {
+  const d = asData;
+  const summaries = EXTRACT_CHUNKS.map(({ id }) => {
+    const c = input.chunks[id]?.draft;
+    return c ? `- ${id} (${c.confidence}): ${d(c.summary)}` : `- ${id}: not drafted`;
+  }).join("\n");
+  const visual = (input.chunks["visual-system"]?.draft.items ?? []).map((i) => `- ${d(i.label)}: ${d(i.value)}`).join("\n") || "- not drafted";
+  const transcript = input.transcript.length ? input.transcript.slice(-6).map((t) => `- ${d(t.say)} → owner: ${d(t.answer)}`).join("\n") : "- nothing asked yet";
+  return fillPrompt("change", promptText, {
+    summaries,
+    visual,
+    transcript,
+    photos: input.photos.map((p) => `- ${d(p)}`).join("\n") || "- none uploaded",
+    colors: input.sampled.map((s) => `- ${d(s.upload)}: ${s.colors.join(", ")}`).join("\n") || "- no photos",
+    fonts: input.fonts.join(", "),
+    owner_message: d(input.message),
+  });
+}
+
 /** The model's component call as plain data, ready for parseCall. Bad JSON comes back as an error. */
 export function rawCall(out: IntakeTurnOutput): { ok: true; call: { component: string; props: unknown } } | { ok: false; error: string } {
   try {

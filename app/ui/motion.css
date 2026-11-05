@@ -153,3 +153,23 @@ main > .start-lede-2 { animation-delay: 170ms; }
 .find { animation: m-toss 620ms var(--m-spring) both; }
 @keyframes m-toss { from { opacity: 0; transform: translateY(-18px) scale(0.92); rotate: calc(var(--tilt, 0deg) * -2); } }
 .find-color .find-chip { animation: m-pin 480ms var(--m-spring) 120ms both; }
+
+/* ---------- the Specs chat ---------- */
+
+.chat-panel { animation: m-chat-in var(--m-move) var(--m-native) both; }
+@keyframes m-chat-in { from { translate: 100% 0; } }
+@media (max-width: 1099px) { .chat-panel { animation-name: m-sheet-in; } }
+@keyframes m-sheet-in { from { translate: 0 100%; } }
+body main, body .topbar { transition: margin-right var(--m-move) var(--m-native); }
+.chat-tab { animation: m-pop 420ms var(--m-spring) both; }
+.chat-me { animation: m-bubble 360ms var(--m-spring) both; transform-origin: bottom right; }
+@keyframes m-bubble { from { opacity: 0; transform: translateY(8px) scale(0.92); } }
+.chat-specs, .chat-turn > .call-card, .chat-done { animation: m-rise 420ms var(--m-out) 80ms both; }
+.chat-typing i { animation: m-typing 1.1s ease-in-out infinite; }
+.chat-typing i:nth-child(2) { animation-delay: 0.15s; }
+.chat-typing i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes m-typing { 0%, 60%, 100% { opacity: 0.3; transform: none; } 30% { opacity: 1; transform: translateY(-3px); } }
+.chat-suggest button { animation: m-rise 380ms var(--m-out) both; }
+.chat-suggest button:nth-of-type(2) { animation-delay: 50ms; }
+.chat-suggest button:nth-of-type(3) { animation-delay: 100ms; }
+.chat-suggest button:nth-of-type(4) { animation-delay: 150ms; }
