@@ -322,6 +322,14 @@ export async function writePost(req: Request, deps: Deps) {
   await assertGenerationOpen(deps.kv, deps.settings, now);
   const session0 = await loadSession(deps.kv, body.sessionId, now);
 
+  // Already written (the browser lost the answer on the way back): send it again, no second model call.
+  const done = session0.posts[body.postId];
+  if (done?.written) {
+    const kit = await kitFor(deps, session0, done.brand);
+    const { template, photo } = resolvePlan(kit, done.plan!);
+    return json({ postId: done.id, template: template.id, photo, slots: done.written.slots, rationale: done.written.rationale, warnings: done.warnings });
+  }
+
   // Each plan gets written once; claiming "writing" stops a second, parallel write.
   let post!: PostRecord;
   await updateSession(deps.kv, body.sessionId, (s) => {

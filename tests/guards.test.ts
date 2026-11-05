@@ -136,7 +136,7 @@ test("session cap: 4 posts and 1 regeneration", async () => {
   await expectRefusal(await post(deps, "not-a-session"), 401, "no_session");
 });
 
-test("each plan is written once", async () => {
+test("each plan is written once; asking again returns the same copy", async () => {
   const { deps } = makeDeps();
   const sid = await session(deps);
   const postId = (await body(await post(deps, sid))).postId as string;
@@ -144,7 +144,12 @@ test("each plan is written once", async () => {
   const first = await write();
   assert.equal(first.status, 200);
   assert.equal(((await body(first)).slots as { headline: string }).headline, "Pea shoots. Ten days.");
-  await expectRefusal(await write(), 409, "not_ready");
+  // A browser that lost the answer asks again and gets the stored copy, with no second model call.
+  const spent = await todaysSpend(deps.kv, deps.now());
+  const again = await write();
+  assert.equal(again.status, 200);
+  assert.equal(((await body(again)).slots as { headline: string }).headline, "Pea shoots. Ten days.");
+  assert.deepEqual(await todaysSpend(deps.kv, deps.now()), spent);
 });
 
 test("sessions expire after 24 hours", async () => {
