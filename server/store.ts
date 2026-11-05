@@ -106,17 +106,21 @@ export function memoryKV(): KV {
   };
 }
 
-let shared: KV | undefined;
+let memory: KV | undefined;
 
 /**
  * Blobs whenever the code runs on Netlify. The memory store is only for `next dev` and tests,
  * opted into with SPECS_STORE=memory, and is ignored on Netlify: per-instance memory would
  * let each function instance keep its own spend total.
+ *
+ * The Blobs store is made fresh on every call, never kept between requests: it captures the
+ * access token Netlify hands each request, and a warm function instance that reused an old
+ * store failed with "Token expired".
  */
 export function liveKV(): KV {
   const onNetlify = Boolean(process.env.NETLIFY || process.env.AWS_LAMBDA_FUNCTION_NAME);
-  shared ??= !onNetlify && process.env.SPECS_STORE === "memory" ? memoryKV() : blobsKV();
-  return shared;
+  if (!onNetlify && process.env.SPECS_STORE === "memory") return (memory ??= memoryKV());
+  return blobsKV();
 }
 
 /**
