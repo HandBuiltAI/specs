@@ -32,7 +32,7 @@ function DemoCard({ id }: { id: DemoBrandId }) {
   } as React.CSSProperties;
 
   return (
-    <Link href={`/posts/${id}`} className="demo-card card" transitionTypes={["nav-forward"]}>
+    <Link href={`/posts/${id}`} className="demo-card card">
       <div className="demo-plate" style={plate}>
         {photo && <img src={`/generated/${id}/${photo.file}`} alt="" loading="lazy" />}
         {b.logo ? (
@@ -99,7 +99,7 @@ export default function Home() {
       <h2>
         Or start with yours.
       </h2>
-      <Link href="/build" className="card start-own" transitionTypes={["nav-forward"]}>
+      <Link href="/build" className="card start-own">
         <div>
           <h3>Build a brand kit from your own materials</h3>
           <p className="muted small">

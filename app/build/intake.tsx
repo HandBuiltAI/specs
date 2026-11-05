@@ -5,6 +5,7 @@
 // only the calls that change a post are asked, one at a time, each with one catalog component
 // and one sentence. Beside each call is the kit's first post, live: an answer changes it on the
 // spot. Typing is the fallback under each call, not the main way to answer.
+import { Working } from "../ui/working.tsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LIMITS, charCount } from "../../core/limits.ts";
 import type { IntakeChunks } from "../../core/intake.ts";
@@ -308,6 +309,7 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
 
           {!pending && asking && !chatBusy && (
             <div className="card">
+              <Working kind="asking" className="working-over" />
               <Skeleton lines={3} block={80} />
             </div>
           )}

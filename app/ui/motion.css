@@ -5,12 +5,12 @@
 :root {
   --m-out: cubic-bezier(0.2, 0.8, 0.2, 1);
   /* The curve iOS uses for pushes and sheets: quick off the mark, long soft landing. */
-  --m-native: cubic-bezier(0.32, 0.72, 0, 1);
+  --m-native: cubic-bezier(0.25, 0.9, 0.3, 1);
   --m-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
   --m-exit: 200ms;
   --m-enter: 260ms;
-  --m-move: 520ms;
-  --m-push: min(140px, 16vw);
+  --m-move: 560ms;
+  --m-push: min(420px, 36vw);
 }
 
 /* ---------- page changes (React <ViewTransition>, see app/ui/page-motion.tsx) ---------- */
@@ -25,10 +25,10 @@
 
 /* Like a native push: the new page slides in from the right while the old one drifts a little
    left and dims behind it; back runs the same move in reverse. */
-::view-transition-old(.nav-forward) { animation: var(--m-move) var(--m-native) both m-push-under; }
-::view-transition-new(.nav-forward) { animation: var(--m-move) var(--m-native) both m-push-in; }
-::view-transition-old(.nav-back) { animation: var(--m-move) var(--m-native) both m-pop-out; z-index: 2; }
-::view-transition-new(.nav-back) { animation: var(--m-move) var(--m-native) both m-pop-under; }
+::view-transition-old(.page) { animation: var(--m-move) var(--m-native) both m-push-under; }
+::view-transition-new(.page) { animation: var(--m-move) var(--m-native) both m-push-in; }
+html[data-nav="back"]::view-transition-old(.page) { animation-name: m-pop-out; z-index: 2; }
+html[data-nav="back"]::view-transition-new(.page) { animation-name: m-pop-under; }
 @keyframes m-push-in { from { translate: var(--m-push) 0; opacity: 0; } 40% { opacity: 1; } to { translate: 0 0; opacity: 1; } }
 @keyframes m-push-under { to { translate: calc(var(--m-push) * -0.4) 0; opacity: 0; scale: 0.985; } }
 @keyframes m-pop-out { to { translate: var(--m-push) 0; opacity: 0; } }
@@ -173,3 +173,41 @@ body main, body .topbar { transition: margin-right var(--m-move) var(--m-native)
 .chat-suggest button:nth-of-type(2) { animation-delay: 50ms; }
 .chat-suggest button:nth-of-type(3) { animation-delay: 100ms; }
 .chat-suggest button:nth-of-type(4) { animation-delay: 150ms; }
+
+/* ---------- working ---------- */
+
+/* "Specs is working": a pulsing signal dot and words that shimmer, swapping with a small lift. */
+.working { display: flex; align-items: center; gap: 10px; margin: 0; font-size: 14px; color: var(--ink-2); min-height: 22px; }
+.working-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--signal); animation: m-beat 1.2s ease-in-out infinite; }
+@keyframes m-beat { 0%, 100% { transform: scale(0.7); opacity: 0.55; } 50% { transform: scale(1.15); opacity: 1; } }
+.working-text {
+  background: linear-gradient(90deg, var(--ink-2) 0%, var(--ink-2) 40%, var(--ink) 50%, var(--ink-2) 60%, var(--ink-2) 100%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: m-shimmer 2.2s linear infinite, m-swap 420ms var(--m-out) both;
+}
+@keyframes m-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+@keyframes m-swap { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } }
+.working-text { display: inline-block; }
+
+/* A button that's busy shows it: a light sweep runs across it. */
+button[aria-busy="true"], .c-btn[aria-busy="true"] { position: relative; overflow: hidden; }
+button[aria-busy="true"]::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+  background-size: 250% 100%; animation: m-scan 1.4s linear infinite;
+}
+
+/* A post in progress: the rough version sits soft and dim until its designed layout develops in. */
+.posts-item[data-drafting="true"] .c-post iframe { filter: blur(5px) saturate(0.4) brightness(0.85); transition: filter 0.6s var(--m-out); }
+.posts-item[data-drafting="false"] .c-post iframe { animation: m-develop 900ms var(--m-out) both; }
+@keyframes m-develop { from { filter: blur(8px) saturate(0.4) brightness(0.9); opacity: 0.6; } }
+.posts-item[data-drafting="true"] .c-pins, .posts-item[data-drafting="true"] .c-why { visibility: hidden; }
+.posts-item[data-drafting="true"] .c-post::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 35%, color-mix(in srgb, var(--surface) 40%, transparent) 50%, transparent 65%);
+  background-size: 250% 100%; animation: m-scan 1.8s linear infinite;
+}
+.working-over { margin-bottom: 14px; }
+.chat-working { margin-top: 6px; font-size: 13px; }
+.finds .working { margin: 4px 0 12px; }
+.posts-item header .working { font-size: 13px; }

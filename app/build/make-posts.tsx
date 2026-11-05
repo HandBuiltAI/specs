@@ -15,6 +15,7 @@ import { call, type ApiError } from "../lib/api.ts";
 import { PostPreview } from "../ui/catalog/PostPreview.tsx";
 import { logoDataUrl } from "../lib/logo.ts";
 import { KitDownload } from "../ui/KitDownload.tsx";
+import { Working } from "../ui/working.tsx";
 
 type Note = { decision: string; choice: string; reason: string; cites: string[] };
 type Kit = {
@@ -220,7 +221,7 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
               <span className="muted small">
                 {left} of {LIMITS.postsPerSession} posts left this session
               </span>
-              <button type="submit" disabled={busy || !goal.trim() || tooLong || left <= 0}>
+              <button type="submit" aria-busy={busy} disabled={busy || !goal.trim() || tooLong || left <= 0}>
                 {busy ? "Making…" : "Make a post"}
               </button>
             </div>
@@ -228,11 +229,11 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
 
           <div className="posts-grid">
             {posts.map((p) => (
-              <article key={p.id} className="posts-item">
+              <article key={p.id} className="posts-item" data-drafting={p.preview ? String(!!p.stage) : undefined}>
                 <header>
                   <span className="eyebrow">{INTENT_LABEL[p.intent]}</span>
                   <p className="posts-goal">{p.goal}</p>
-                  {p.stage && <p className="muted small">{p.stage}</p>}
+                  {p.stage && <Working kind="making" lead={p.stage} />}
                   {!p.stage && p.layoutNote && <p className="muted small">{p.layoutNote}</p>}
                   {p.error && <p className="error small">{p.error}</p>}
                 </header>
