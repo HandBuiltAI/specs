@@ -9,7 +9,7 @@ import { readUpload, assemble, getKit } from "../server/extract.ts";
 import { intakeTurn } from "../server/intake.ts";
 import { todaysSpend } from "../server/spend.ts";
 import { ASSEMBLE_TARGETS, EXTRACT_CHUNKS } from "../core/extract.ts";
-import { applyAnswer, describeAnswer, findGaps, oneSentence, progress, REQUIRED, type IntakeChunks } from "../core/intake.ts";
+import { applyAnswer, describeAnswer, findGaps, oneSentence, progress, REQUIRED, typedPalette, type IntakeChunks } from "../core/intake.ts";
 import { parseCall } from "../core/catalog.ts";
 import { LIMITS } from "../core/limits.ts";
 import { ASK_CAP } from "../core/triage.ts";
@@ -295,4 +295,14 @@ test("the owner can ask for a change any time: Specs brings the card, the answer
   const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new Array(64).fill(0)]);
   const up = await run(() => upload(formReq({ sessionId: sid, kind: "logo", file: new File([png], "logo.png", { type: "image/png" }) }), deps));
   assert.equal(up.status, 201, JSON.stringify(await body(up.clone())));
+});
+
+test("a hex typed on a palette card replaces the nearest color, keeping role order", () => {
+  const parsed = parseCall({
+    component: "SwatchPicker",
+    props: { title: "Pick a palette", options: [{ id: "a", label: "Neon on black", colors: ["#0B0B0B", "#F2F2F2", "#E85A9B"] }, { id: "b", label: "Warm", colors: ["#F5EFE6", "#222222"] }] },
+  });
+  assert.ok(parsed.ok);
+  assert.equal(typedPalette(parsed.call, "here is the actual hex #FF2E88"), "#0B0B0B, #F2F2F2, #FF2E88");
+  assert.equal(typedPalette(parsed.call, "make it pinker"), null);
 });

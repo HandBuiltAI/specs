@@ -16,6 +16,7 @@ import {
   changePrompt,
   requestGap,
   describeAnswer,
+  typedPalette,
   findGaps,
   intakePrompt,
   oneSentence,
@@ -211,7 +212,9 @@ async function applyReply(deps: Deps, session: Session, reply: NonNullable<z.inf
     confirmed = call.component === "SourceCard" && (answer as { action: string }).action === "confirm";
   } else if ("text" in reply) {
     // Typed answers are stored as the owner's words. They reach a prompt later only through asData.
-    text = `Owner wrote: ${reply.text.trim()}`;
+    // A typed hex on a palette card becomes a palette, so the posts can use it.
+    const palette = typedPalette(call, reply.text);
+    text = palette ? `Palette: ${palette}` : `Owner wrote: ${reply.text.trim()}`;
   }
 
   // Write the answer into the kit (skips and already-closed gaps change nothing).

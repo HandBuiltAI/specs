@@ -239,6 +239,37 @@ export function intakePrompt(
 // ---------- answers ----------
 
 /** The owner's answer as one plain sentence: what the transcript shows and what the kit stores. */
+/**
+ * An owner who types a color instead of picking a palette ("here is the actual hex #FF2E88")
+ * means "this one, in place of the one it's closest to". Their hex replaces the nearest color of
+ * the first palette on the card, so the result is still a whole palette in role order
+ * (background, body text, accent, …). Null when there's no palette card or no hex.
+ */
+export function typedPalette(call: ParsedCall | null, typed: string): string | null {
+  if (call?.component !== "SwatchPicker") return null;
+  const typedHexes = [...new Set((typed.match(/#[0-9a-f]{6}\b|#[0-9a-f]{3}\b/gi) ?? []).map(fullHex))];
+  const base = call.props.options[0]?.colors.map((c) => fullHex(c));
+  if (!typedHexes.length || !base) return null;
+  const colors = [...base];
+  const taken = new Set<number>();
+  for (const h of typedHexes) {
+    let best = -1;
+    for (const [i, c] of colors.entries()) if (!taken.has(i) && (best < 0 || rgbDistance(c, h) < rgbDistance(colors[best]!, h))) best = i;
+    if (best < 0) colors.push(h);
+    else {
+      colors[best] = h;
+      taken.add(best);
+    }
+  }
+  return colors.join(", ");
+}
+const fullHex = (h: string) => (h.length === 4 ? `#${[...h.slice(1)].map((c) => c + c).join("")}` : h).toUpperCase();
+function rgbDistance(a: string, b: string): number {
+  const rgb = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const [x, y] = [rgb(a), rgb(b)];
+  return x.reduce((s, v, i) => s + (v - y[i]!) ** 2, 0);
+}
+
 export function describeAnswer(call: ParsedCall, answer: unknown): string {
   const a = answer as Record<string, unknown>;
   switch (call.component) {

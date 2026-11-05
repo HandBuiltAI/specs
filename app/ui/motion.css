@@ -211,3 +211,8 @@ button[aria-busy="true"]::after {
 .chat-working { margin-top: 6px; font-size: 13px; }
 .finds .working { margin: 4px 0 12px; }
 .posts-item header .working { font-size: 13px; }
+
+/* A post restyled by a kit change develops in again, so the change is seen, not just swapped. */
+.posts-item[data-restyled="1"] .c-post iframe { animation: m-develop 900ms var(--m-out) both; }
+.posts-item[data-restyled="0"] .c-post iframe { animation: m-develop-2 900ms var(--m-out) both; }
+@keyframes m-develop-2 { from { filter: blur(8px) saturate(0.4) brightness(0.9); opacity: 0.6; } }

@@ -82,6 +82,8 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
       .catch(() => setGeneration("unreachable"));
   }, []);
 
+  // Bumped when an answer or a chat change edits the kit, so posts already made pick it up.
+  const [kitVersion, setKitVersion] = useState(0);
   const loadKit = useCallback(async (sid: string) => {
     const kit = await call<Kit>("/api/kit", { sessionId: sid });
     setUploads(kit.uploads);
@@ -520,8 +522,16 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
           ))}
           <p className="muted small">Uploads cited: {Object.values(labelOf).join(", ")}</p>
           </details>
-          {sessionId && draftingDone && <Intake sessionId={sessionId} chunks={intakeChunks} onKitChanged={() => loadKit(sessionId).catch(() => {})} />}
-          {sessionId && draftingDone && <MakePosts sessionId={sessionId} />}
+          {sessionId && draftingDone && (
+            <Intake
+              sessionId={sessionId}
+              chunks={intakeChunks} onKitChanged={() => {
+                setKitVersion((v) => v + 1);
+                return loadKit(sessionId).catch(() => {});
+              }}
+            />
+          )}
+          {sessionId && draftingDone && <MakePosts sessionId={sessionId} kitVersion={kitVersion} />}
         </>
       )}
     </>
