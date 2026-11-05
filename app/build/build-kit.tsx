@@ -60,6 +60,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
   const [pasted, setPasted] = useState("");
   const [note, setNote] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [working, setWorking] = useState(false);
 
   // What the server knows.
   const [uploads, setUploads] = useState<Upload[]>([]);
@@ -164,36 +165,56 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     setError(null);
     const sid = sessionId;
     const added: Upload[] = [];
-    try {
-      setBusy("Uploading…");
-      const send = async (fields: Record<string, string | Blob>) => {
-        const d = await sendForm<{ upload: Upload }>("/api/uploads", { sessionId: sid, ...fields });
-        added.push(d.upload);
-        setUploads((u) => [...u, d.upload]);
-      };
-      for (const p of photos) {
-        setBusy(`Shrinking and uploading ${p.name}…`);
+    const problems: string[] = [];
+    setBusy("Uploading…");
+    const send = async (fields: Record<string, string | Blob>) => {
+      const d = await sendForm<{ upload: Upload }>("/api/uploads", { sessionId: sid, ...fields });
+      added.push(d.upload);
+      setUploads((u) => [...u, d.upload]);
+    };
+    // One file that won't go up (an odd format, a refused size) never stops the rest.
+    const attempt = async (step: () => Promise<void>) => {
+      try {
+        await step();
+      } catch (e) {
+        problems.push(messageOf(e));
+      }
+    };
+    for (const p of photos) {
+      setBusy(`Shrinking and uploading ${p.name}…`);
+      await attempt(async () => {
         const { file, colors } = await prepareImage(p, "image");
         await send({ kind: "image", file, colors: JSON.stringify(colors) });
-      }
-      if (logo) {
+      });
+    }
+    if (logo) {
+      setBusy(`Preparing and uploading ${logo.name}…`);
+      await attempt(async () => {
         const { file, colors } = await prepareImage(logo, "logo");
         await send({ kind: "logo", file, colors: JSON.stringify(colors) });
-      }
-      if (pdf) await send({ kind: "pdf", file: pdf });
-      if (url.trim()) await send({ kind: "url", url: url.trim() });
-      if (pasted.trim()) await send({ kind: "pasted", text: pasted });
-      if (note.trim()) await send({ kind: "note", text: note });
-    } catch (e) {
-      setError(`${messageOf(e)}${added.length ? " The files uploaded before this one are kept." : ""}`);
-      setBusy(null);
-      return;
+      });
     }
+    setBusy("Uploading…");
+    if (pdf) await attempt(() => send({ kind: "pdf", file: pdf }));
+    if (url.trim()) await attempt(() => send({ kind: "url", url: url.trim() }));
+    if (pasted.trim()) await attempt(() => send({ kind: "pasted", text: pasted }));
+    if (note.trim()) await attempt(() => send({ kind: "note", text: note }));
     setBusy(null);
+    if (problems.length) setError(`${problems.join(" ")}${added.length ? " Building from the rest." : ""}`);
+    if (!added.length) return;
     await readAndDraft(sid, [...uploads, ...added]);
   }
 
   async function readAndDraft(sid: string, list: Upload[]) {
+    setWorking(true);
+    try {
+      await readAndDraftSteps(sid, list);
+    } finally {
+      setWorking(false);
+    }
+  }
+
+  async function readAndDraftSteps(sid: string, list: Upload[]) {
     const unread = list.filter((u) => reads[u.id]?.status !== "done");
     await pool(unread, 3, (u) => readOne(sid, u));
     // One more try for any read that failed (a slow page, a timeout), then draft from what was read.
@@ -233,6 +254,9 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
   const draftingDone =
     targetIds.some((t) => targets[t]?.status === "done") &&
     targetIds.every((t) => targets[t]?.status === "done" || (targets[t]?.status === "failed" && targets[t]!.attempts >= LIMITS.extractAttempts));
+  // Uploads that were never read, or drafting that stopped (a reload, a closed tab): offer to carry on.
+  const anyRunning = Object.values(reads).some((r) => r?.status === "running") || Object.values(targets).some((t) => t?.status === "running");
+  const stalled = started && !busy && !working && !anyRunning && !draftingDone && (uploads.some((u) => !reads[u.id]) || Object.values(reads).some((r) => r?.status === "done"));
   const labelOf = useMemo(() => Object.fromEntries(uploads.map((u) => [u.id, u.label])), [uploads]);
   const intakeChunks = useMemo<IntakeChunks>(() => {
     const out: IntakeChunks = {};
@@ -385,6 +409,12 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
 
       {busy && <p className="muted">{busy}</p>}
       {error && <p className="error">{error}</p>}
+      {stalled && sessionId && (
+        <div className="card resume">
+          <p>Your uploads are here, but the kit stopped before it was finished.</p>
+          <button onClick={() => readAndDraft(sessionId, uploads)}>Keep building</button>
+        </div>
+      )}
 
       {started && (
         <>
