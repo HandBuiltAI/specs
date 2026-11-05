@@ -9,7 +9,7 @@ import { readSettings } from "../server/settings.ts";
 import { todaysSpend } from "../server/spend.ts";
 import { asData } from "../server/pipeline.ts";
 import { StepError } from "../core/claude.ts";
-import { makeDeps, jsonReq, formReq, body, brief } from "./helpers.ts";
+import { makeDeps, jsonReq, formReq, body, brief, ENV } from "./helpers.ts";
 
 const run = (fn: () => Promise<Response>) => respond(fn);
 
@@ -249,4 +249,17 @@ test("upload caps: 1 PDF of up to 10 pages, 5 images, 1 URL per session", async 
   await expectRefusal(await up({ kind: "image", file: jpeg(2000) }), 409, "upload_cap");
   assert.equal((await up({ kind: "url", url: "https://halfacre.example/about" })).status, 201);
   await expectRefusal(await up({ kind: "url", url: "https://halfacre.example/" }), 409, "upload_cap");
+});
+
+test("spend: calls still running make the next one wait; only real spend closes the day", async () => {
+  const { reserve, settle } = await import("../server/spend.ts");
+  const { memoryKV } = await import("../server/store.ts");
+  const kv = memoryKV();
+  const settings = readSettings({ ...ENV, DAILY_SPEND_CAP_USD: "1.00" });
+  const now = new Date("2026-11-05T18:00:00Z");
+  const held = await reserve(kv, settings, now, 0.6);
+  await assert.rejects(reserve(kv, settings, now, 0.5), (e: { code?: string }) => e.code === "spend_busy");
+  await settle(kv, held, 0.6);
+  await assert.rejects(reserve(kv, settings, now, 0.5), (e: { code?: string }) => e.code === "daily_cap_reached");
+  await reserve(kv, settings, now, 0.3);
 });

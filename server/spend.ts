@@ -48,7 +48,10 @@ export async function reserve(kv: KV, settings: Settings, now: Date, usd: number
   await assertGenerationOpen(kv, settings, now);
   const day = dayKey(now);
   await update<DaySpend>(kv, spendKey(day), () => empty(day), (s) => {
-    if (s.spentUsd + s.reservedUsd + usd > settings.dailyCapUsd) throw REFUSALS.closed_for_today;
+    // Spent plus this call would pass the cap: closed for today. Only calls still running stand in
+    // the way: that's a moment's wait, not a closed day, so the browser tries again shortly.
+    if (s.spentUsd + usd > settings.dailyCapUsd) throw REFUSALS.closed_for_today;
+    if (s.spentUsd + s.reservedUsd + usd > settings.dailyCapUsd) throw new Refusal(429, "spend_busy", "Other steps are still running. Trying again in a moment.");
     return { ...s, reservedUsd: s.reservedUsd + usd };
   });
   return { day, usd };
