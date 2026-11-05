@@ -10,8 +10,11 @@ import { approxTokens } from "../core/kit.ts";
 import { CURATED_FONTS, parseAnswer, parseCall, type ParsedCall } from "../core/catalog.ts";
 import { EXTRACT_CHUNKS, type ExtractChunkId } from "../core/extract.ts";
 import {
+  ChangeTurnSchema,
   IntakeTurnSchema,
   applyAnswer,
+  changePrompt,
+  requestGap,
   describeAnswer,
   findGaps,
   intakePrompt,
@@ -42,7 +45,11 @@ export type Turn = {
   gap: string;
   about: string;
   say: string;
-  call: ParsedCall;
+  /** Null for a change request Specs answered in words, with nothing to pick. */
+  call: ParsedCall | null;
+  /** A change the owner asked for: their words, and where the answer goes. */
+  asked?: string;
+  request?: { chunk: ExtractChunkId };
   /** Set once the owner replies. */
   answer?: string;
   skipped?: boolean;
@@ -74,7 +81,7 @@ function nextGap(st: IntakeState, gaps: Gap[]): Gap | null {
 
 const pendingOf = (st: IntakeState) => {
   const last = st.turns.at(-1);
-  return last && last.answer === undefined && !last.skipped ? last : null;
+  return last && last.call && last.answer === undefined && !last.skipped ? last : null;
 };
 
 /** What the browser sees: the transcript, the question on screen, and the kit's progress. */
@@ -92,7 +99,8 @@ function view(st: IntakeState, chunks: IntakeChunks, gaps: Gap[]) {
     settled: (st.settled ?? []).map(({ gap, mode, about, text, why }) => ({ gap, mode, about, text, why })),
     turnsLeft: Math.max(0, LIMITS.intakeTurns - st.modelTurns),
     progress: progress(chunks, gaps),
-    turns: st.turns.map(({ id, about, say, call, answer, skipped }) => ({ id, about, say, call, answer, skipped })),
+    turns: st.turns.map(({ id, about, say, call, answer, skipped, asked }) => ({ id, about, say, call, answer, skipped, asked })),
+    changesLeft: Math.max(0, LIMITS.intakeTurns - st.modelTurns),
     pending: pendingOf(st)?.id ?? null,
   };
 }
@@ -105,6 +113,8 @@ const Body = z.strictObject({
   peek: z.boolean().optional(),
   /** Undo a settlement: the gap becomes a call for the owner. */
   undo: z.string().max(200).optional(),
+  /** A change the owner asks for in their own words ("where's the pink?"), any time after drafting. */
+  ask: freeText.refine((t) => t.trim().length > 0, { message: "Empty." }).optional(),
   reply: z
     .union([
       z.strictObject({ turnId: id, answer: z.record(z.string(), z.unknown()) }),
@@ -127,6 +137,7 @@ export async function intakeTurn(req: Request, deps: Deps) {
   await planOnce(deps, session);
   if (body.undo) await undoSettlement(deps, session, body.undo);
   if (body.reply) await applyReply(deps, session, body.reply);
+  if (body.ask) return json(await changeTurn(deps, session, body.ask.trim()));
 
   let st = (await deps.kv.get<IntakeState>(intakeKey(session.id)))?.value ?? empty();
   let chunks = await loadChunks(deps, session);
@@ -174,28 +185,29 @@ async function applyReply(deps: Deps, session: Session, reply: NonNullable<z.inf
   if (!turn || turn.id !== reply.turnId) throw new Refusal(409, "stale_reply", "That question was already answered. Reload to see the next one.");
 
   const chunks = await loadChunks(deps, session);
-  const gap = findGaps(chunks, st.resolutions).find((g) => g.id === turn.gap);
+  const gap = turn.request ? requestGap(turn.gap, turn.request.chunk, turn.about, turn.call?.component ?? null) : findGaps(chunks, st.resolutions).find((g) => g.id === turn.gap);
+  const call = turn.call!;
 
   let text: string | undefined;
   let confirmed = false;
   if ("answer" in reply) {
     let answer: unknown;
     try {
-      answer = parseAnswer(turn.call.component, reply.answer);
+      answer = parseAnswer(call.component, reply.answer);
     } catch {
-      throw new Refusal(400, "bad_answer", `That answer doesn't fit the ${turn.call.component} on screen.`);
+      throw new Refusal(400, "bad_answer", `That answer doesn't fit the ${call.component} on screen.`);
     }
-    text = describeAnswer(turn.call, answer);
+    text = describeAnswer(call, answer);
     // Name picked photos by file too, so posts and the live preview can find them.
-    if (turn.call.component === "PhotoPicker") {
+    if (call.component === "PhotoPicker") {
       const ids = new Set(((answer as { photoIds?: string[] }).photoIds ?? []));
-      const files = turn.call.props.photos
+      const files = call.props.photos
         .filter((p) => ids.has(p.id))
         .map((p) => session.uploads.find((u) => `upload:${u.id}` === p.src)?.label)
         .filter(Boolean);
       if (files.length) text = `${text} (files: ${files.join(", ")})`;
     }
-    confirmed = turn.call.component === "SourceCard" && (answer as { action: string }).action === "confirm";
+    confirmed = call.component === "SourceCard" && (answer as { action: string }).action === "confirm";
   } else if ("text" in reply) {
     // Typed answers are stored as the owner's words. They reach a prompt later only through asData.
     text = `Owner wrote: ${reply.text.trim()}`;
@@ -204,17 +216,18 @@ async function applyReply(deps: Deps, session: Session, reply: NonNullable<z.inf
   // Write the answer into the kit (skips and already-closed gaps change nothing).
   // The same answer also closes the other planned calls in its group (one palette, every color).
   const gaps = findGaps(chunks, st.resolutions);
-  const head = gap ? pullOf(gap, chunks) : null;
+  const head = gap && !turn.request ? pullOf(gap, chunks) : null;
   const covered = head?.group ? gaps.filter((g) => g.id !== head.id && (st.plan?.ask ?? []).includes(g.id) && pullOf(g, chunks).group === head.group) : [];
   if (text && gap) {
     if (gap.kind === "conflict") {
-      const chunk = targetChunk(gap, turn.call, head?.topic);
+      const chunk = targetChunk(gap, call, head?.topic);
       const value = text.replace(/^Confirmed: /, "");
       const { drafts } = writeConflict(chunks, gap.conflict!, chunk, value, "owner");
       for (const [id, d] of Object.entries(drafts)) await writeChunk(deps, session, id as ExtractChunkId, () => d!);
     } else {
-      const chunk = targetChunk(gap, turn.call);
-      await writeChunk(deps, session, chunk, (draft) => applyAnswer(draft, gap, turn.call, text!, confirmed));
+      // A corrected fact from a change request is written under its own label, so it replaces the old reading.
+      const chunk = turn.request && call.component === "SourceCard" ? ((EXTRACT_CHUNKS.find((c) => c.id === call.props.chunk)?.id as ExtractChunkId | undefined) ?? gap.chunk as ExtractChunkId) : targetChunk(gap, call);
+      await writeChunk(deps, session, chunk, (draft) => applyAnswer(draft, gap, call, text!, confirmed));
     }
     // Doubtful items the group answer covers are the owner's now.
     for (const g of covered.filter((x) => x.kind === "needs-review" && x.item)) {
@@ -302,6 +315,80 @@ async function writeChunk(deps: Deps, session: Session, chunk: ExtractChunkId, c
   }
 }
 
+// ---------- a change the owner asks for ----------
+
+const LOGO_WORDS = /\b(logo|wordmark|lockup)\b/i;
+
+/**
+ * The owner typed a change ("there's no logo", "where's the pink?"). A planned call on screen
+ * steps aside (it comes back after), and Specs answers with the one component that makes the
+ * change, or a sentence when there's nothing to pick. One guarded Haiku call, inside the same cap.
+ */
+async function changeTurn(deps: Deps, session: Session, message: string) {
+  const now = deps.now();
+  // No logo uploaded: the browser offers the logo slot, no model call needed.
+  if (LOGO_WORDS.test(message) && !session.uploads.some((u) => u.kind === "logo")) {
+    const st = await update<IntakeState>(deps.kv, intakeKey(session.id), empty, (s) => ({
+      ...s,
+      turns: [...s.turns.filter((t) => t !== pendingOf(s)), { id: crypto.randomUUID(), gap: "request:logo", about: "Add a logo", say: "Your kit has no logo yet, so posts sign with your name in type. Add one here and every post carries it.", call: null, asked: message }],
+    }));
+    const chunks = await loadChunks(deps, session);
+    return { ...view(st, chunks, findGaps(chunks, st.resolutions)), needLogo: true };
+  }
+
+  await assertGenerationOpen(deps.kv, deps.settings, now);
+  const claimed = await update<IntakeState>(deps.kv, intakeKey(session.id), empty, (s) => {
+    if (s.running) throw new Refusal(409, "already_running", "Specs is still answering. One moment.");
+    if (s.modelTurns >= LIMITS.intakeTurns) throw new Refusal(429, "intake_cap", `This session has used its ${LIMITS.intakeTurns} changes. You can still edit anything in the kit below.`);
+    return { ...s, running: true, modelTurns: s.modelTurns + 1 };
+  });
+
+  try {
+    const chunks = await loadChunks(deps, session);
+    const photos = session.uploads.filter((u) => u.kind === "image" && u.label);
+    const transcript: Transcript = claimed.turns
+      .filter((t) => t.answer || t.skipped)
+      .map((t) => ({ gap: t.gap, say: t.say, component: t.call?.component ?? "none", answer: t.answer ?? "skipped" }));
+    const prompt = changePrompt(CONTENT.prompts.change, {
+      chunks,
+      transcript,
+      photos: photos.map((p) => p.label!),
+      sampled: session.uploads.filter((u) => u.colors?.length).map((u) => ({ upload: u.label ?? "photo", colors: u.colors!.slice(0, 5).map((c) => c.hex) })),
+      fonts: CURATED_FONTS,
+      message,
+    });
+    const { data } = await guardedCall(deps, "intake", prompt, ChangeTurnSchema, approxTokens(prompt.system + prompt.user));
+
+    let call: ParsedCall | null = null;
+    if (data.component !== "none") {
+      const out = rawCall({ say: data.say, component: data.component, props: data.props });
+      if (!out.ok) throw new Refusal(502, "model_output", "That answer came back malformed. Try again.");
+      let raw: unknown = out.call;
+      const photoProps = out.call.props as { photos?: unknown };
+      if (out.call.component === "PhotoPicker" && Array.isArray(photoProps.photos)) {
+        const known = (photoProps.photos as { src?: unknown }[]).flatMap((p) => {
+          const u = photos.find((x) => x.label === p.src);
+          return u ? [{ ...p, src: `upload:${u.id}` }] : [];
+        });
+        raw = { ...out.call, props: { ...photoProps, photos: known } };
+      }
+      const parsed = parseCall(raw);
+      if (!parsed.ok) throw new Refusal(502, "model_output", "That answer came back malformed. Try again.");
+      call = parsed.call;
+    }
+    const about = data.about.replace(/\s+/g, " ").trim().slice(0, 60) || "Your change";
+    const turn: Turn = { id: crypto.randomUUID(), gap: `request:${crypto.randomUUID().slice(0, 8)}`, about, say: oneSentence(data.say), call, asked: message, request: { chunk: data.chunk } };
+    // The planned call on screen steps aside; its gap is still open, so it's asked again after.
+    const saved = await update<IntakeState>(deps.kv, intakeKey(session.id), empty, (s) => ({ ...s, running: false, turns: [...s.turns.filter((t) => t !== pendingOf(s)), turn] }));
+    const after = await loadChunks(deps, session);
+    return view(saved, after, findGaps(after, saved.resolutions));
+  } catch (err) {
+    const refund = notBilled(err);
+    await update<IntakeState>(deps.kv, intakeKey(session.id), empty, (s) => ({ ...s, running: false, modelTurns: s.modelTurns - (refund ? 1 : 0) }));
+    throw err;
+  }
+}
+
 // ---------- the next question ----------
 
 async function nextTurn(deps: Deps, session: Session, chunks: IntakeChunks, gap: Gap, open: Gap[], st: IntakeState, ownerMessage?: string): Promise<Turn> {
@@ -312,7 +399,7 @@ async function nextTurn(deps: Deps, session: Session, chunks: IntakeChunks, gap:
   const photos = session.uploads.filter((u) => u.kind === "image" && u.label);
   const transcript: Transcript = st.turns
     .filter((t) => t.answer || t.skipped)
-    .map((t) => ({ gap: t.gap, say: t.say, component: t.call.component, answer: t.answer ?? "skipped" }));
+    .map((t) => ({ gap: t.gap, say: t.say, component: t.call?.component ?? "none", answer: t.answer ?? "skipped" }));
   const prompt = intakePrompt(CONTENT.prompts.intake, {
     chunks,
     gaps,

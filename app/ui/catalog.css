@@ -145,18 +145,23 @@
 .c-count[data-over="true"] { color: var(--signal-ink); }
 
 /* PostPreview */
-.c-post { position: relative; width: 100%; max-width: 100%; border-radius: 14px; overflow: hidden; background: var(--sunken); }
+.c-post { scroll-margin-top: 88px; position: relative; width: 100%; max-width: 100%; border-radius: 14px; overflow: hidden; background: var(--sunken); }
 .c-post iframe { border: 0; transform-origin: 0 0; position: absolute; top: 0; left: 0; pointer-events: none; }
 /* "Why this works": art-director markup on the post, notes below it */
 .c-post[data-why="true"] iframe { filter: saturate(0.6) brightness(0.92); transition: filter 0.3s var(--ease); }
 .c-pins { position: absolute; inset: 0; pointer-events: none; }
 .c-pin-box { position: absolute; border: 1.5px dashed rgba(255, 255, 255, 0.9); outline: 1.5px dashed rgba(14, 14, 15, 0.55); outline-offset: 0; border-radius: 4px; transition: background 0.2s; }
 .c-pin-box[data-hot="true"] { background: rgba(255, 255, 255, 0.18); border-style: solid; }
-.c-pin-tags { position: absolute; top: -4px; right: calc(100% + 4px); display: flex; flex-direction: column; gap: 3px; pointer-events: auto; }
+.c-pin-tags { position: absolute; display: flex; gap: 3px; pointer-events: auto; z-index: 1; }
 .c-pin {
-  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--r-pill);
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; margin: 0; border: 0; border-radius: var(--r-pill);
   background: #0e0e0f; color: #fff; font: 600 11px/1 var(--f-mono); box-shadow: 0 0 0 2px #fff; cursor: default;
 }
+button.c-pin { cursor: pointer; transition: transform 0.18s var(--m-spring, ease), background 0.2s, color 0.2s; }
+button.c-pin:hover, button.c-pin[data-hot="true"] { transform: scale(1.18); background: #fff; color: #0e0e0f; box-shadow: 0 0 0 2px #0e0e0f; }
+button.c-pin:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.c-why-list { scroll-margin: 96px; }
+.c-why-list li { scroll-margin-top: 96px; }
 .c-why-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; counter-reset: why; }
 .c-why-list li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--s3); padding: var(--s3); border-radius: var(--r-inner); transition: background 0.2s; }
 .c-why-list li[data-hot="true"] { background: var(--sunken); }

@@ -14,7 +14,7 @@ import { parseCall } from "../core/catalog.ts";
 import { LIMITS } from "../core/limits.ts";
 import { ASK_CAP } from "../core/triage.ts";
 import { readSettings } from "../server/settings.ts";
-import { makeDeps, jsonReq, formReq, body, CONFLICTS, DRAFT, ENV } from "./helpers.ts";
+import { makeDeps, jsonReq, formReq, body, intakeTurnFor, CONFLICTS, DRAFT, ENV } from "./helpers.ts";
 
 const run = (fn: () => Promise<Response>) => respond(fn);
 
@@ -244,4 +244,55 @@ test("intake turns count against the day's spend and close with the kill switch"
   await expectRefusal(await turn(off, { sessionId: sid, reply: { turnId: q, skip: true } }), 503, "generation_off");
   const after = await view(await turn(off, { sessionId: sid, peek: true }));
   assert.equal(after.turns.at(-1)!.skipped, true);
+});
+
+test("the owner can ask for a change any time: Specs brings the card, the answer goes into the kit, the planned call comes back", async () => {
+  const change = (user: string) =>
+    /<visual_system>/.test(user)
+      ? /why/i.test(user)
+        ? { say: "Those colors come from your photos. A second sentence.", component: "none", props: "{}", chunk: "visual-system", about: "Why these colors" }
+        : {
+            say: "Pick the palette with the pink.",
+            component: "SwatchPicker",
+            props: JSON.stringify({ title: "Which palette", titleMuted: "has the pink?", options: [{ id: "a", label: "Pink", colors: ["#111111", "#F4F1EA", "#FF2E88"], sources: [{ upload: "your message" }] }, { id: "b", label: "Plain", colors: ["#111111", "#F4F1EA"], sources: [{ upload: "rough-notes.pdf" }] }] }),
+            chunk: "visual-system",
+            about: "Bring back the pink",
+          }
+      : intakeTurnFor(user);
+  const { deps, sent } = makeDeps({ intake: change });
+  const { sid } = await draftedSession(deps);
+  const planned = (await view(await turn(deps, { sessionId: sid }))).turns.at(-1)!;
+
+  // A change request: the planned call steps aside, and the change's card is on screen.
+  const asked = await view(await turn(deps, { sessionId: sid, ask: "Where's the pink?" }));
+  assert.match(sent.at(-1)!.user, /<owner_message>\nWhere's the pink\?/);
+  const req = asked.turns.at(-1)! as View["turns"][number] & { asked?: string };
+  assert.equal(req.asked, "Where's the pink?");
+  assert.equal(req.call.component, "SwatchPicker");
+  assert.equal(asked.pending, req.id);
+  assert.ok(!asked.turns.some((t) => t.id === planned.id));
+
+  // Answering writes the palette into visual-system, then the planned call is asked again.
+  const after = await view(await turn(deps, { sessionId: sid, reply: { turnId: req.id, answer: { optionId: "a" } } }));
+  const kit = await body(await run(() => getKit(jsonReq("/api/kit", { sessionId: sid }), deps)));
+  const vs = (kit.chunks as { target: string; draft?: { items: { label: string; value: string }[] } }[]).find((c) => c.target === "visual-system")!;
+  assert.match(vs.draft!.items.at(-1)!.value, /#FF2E88/);
+  assert.equal(vs.draft!.items.at(-1)!.label, "palette");
+  assert.ok(after.pending && after.pending !== req.id);
+
+  // A question gets an answer in words, with nothing to pick.
+  const why = await view(await turn(deps, { sessionId: sid, ask: "Why these colors?" }));
+  const w = why.turns.at(-1)! as unknown as { call: unknown; say: string };
+  assert.equal(w.call, null);
+  assert.equal(w.say, "Those colors come from your photos.");
+  assert.equal(why.pending, null);
+
+  // No logo uploaded: code answers, no model call, and a logo can still go up after drafting.
+  const n = sent.length;
+  const logo = await body(await turn(deps, { sessionId: sid, ask: "there's no logo" }));
+  assert.equal(sent.length, n);
+  assert.equal(logo.needLogo, true);
+  const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new Array(64).fill(0)]);
+  const up = await run(() => upload(formReq({ sessionId: sid, kind: "logo", file: new File([png], "logo.png", { type: "image/png" }) }), deps));
+  assert.equal(up.status, 201, JSON.stringify(await body(up.clone())));
 });

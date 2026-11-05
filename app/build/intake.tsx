@@ -11,16 +11,19 @@ import type { IntakeChunks } from "../../core/intake.ts";
 import type { ComponentName } from "../../core/catalog.ts";
 import { boardFrom, previewSlots } from "../../core/preview.ts";
 import { buildPostPage } from "../../core/post-html.ts";
-import { call } from "../lib/api.ts";
+import { call, sendForm } from "../lib/api.ts";
+import { LOGO_ACCEPT, logoProblem, prepareImage } from "../lib/images.ts";
+import { logoDataUrl } from "../lib/logo.ts";
 import { RenderCall } from "../ui/render.tsx";
+import { ChatPanel, suggestionsFor } from "./chat-panel.tsx";
 import { Skeleton, ToastProvider, useToast } from "../ui/primitives.tsx";
 
 type Call = { component: ComponentName; props: Record<string, unknown> };
-type Turn = { id: string; about: string; say: string; call: Call; answer?: string; skipped?: boolean };
+type Turn = { id: string; about: string; say: string; call: Call | null; answer?: string; skipped?: boolean; asked?: string };
 type Settled = { gap: string; mode: "conflict" | "kept"; about: string; text: string; why: string };
-type View = { done: boolean; gapsLeft: number; callsLeft: number; turnsLeft: number; capped?: boolean; settled: Settled[]; turns: Turn[]; pending: string | null };
+type View = { done: boolean; gapsLeft: number; callsLeft: number; turnsLeft: number; capped?: boolean; settled: Settled[]; turns: Turn[]; pending: string | null; changesLeft?: number; needLogo?: boolean };
 type Reply = { answer: unknown } | { text: string } | { skip: true };
-type KitFiles = { tokensCss: string; wordmarkLines: string[]; fontsHref: string; templates: Record<string, string>; baseCss: string; photos: { file: string; uploadId?: string }[] };
+type KitFiles = { tokensCss: string; wordmarkLines: string[]; fontsHref: string; templates: Record<string, string>; baseCss: string; photos: { file: string; uploadId?: string }[]; logoUploadId: string | null };
 
 const messageOf = (e: unknown) => (e as Error).message ?? "Something went wrong.";
 
@@ -40,6 +43,15 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
   const [typing, setTyping] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({});
   const [kit, setKit] = useState<KitFiles | null>(null);
+  const [asked, setAsked] = useState("");
+  const [sentAsk, setSentAsk] = useState<string | null>(null);
+  const [chatBusy, setChatBusy] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  // Open beside the page on a wide screen; on a phone it waits as a tab until it's asked for.
+  useEffect(() => {
+    if (window.matchMedia("(min-width: 1100px)").matches) setChatOpen(true);
+  }, []);
   const toast = useToast();
   const requested = useRef(new Set<string>());
 
@@ -75,6 +87,10 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
       requested.current.add(p.uploadId);
       void fetchImage(sessionId, p.uploadId).then((d) => d && setPhotoUrls((x) => ({ ...x, [`file:${p.file}`]: d.data, [`upload:${p.uploadId}`]: d.blob })));
     }
+    if (k.logoUploadId && !requested.current.has(k.logoUploadId)) {
+      requested.current.add(k.logoUploadId);
+      void logoDataUrl(sessionId, k.logoUploadId).then((d) => d && setPhotoUrls((x) => ({ ...x, logo: d })));
+    }
   }, [sessionId]);
 
   // Start: triage runs on the first request (free), then the first call is asked if one is needed.
@@ -98,8 +114,8 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
 
   // PhotoPicker names photos by upload; fetch any not loaded yet.
   useEffect(() => {
-    if (pending?.call.component !== "PhotoPicker") return;
-    for (const p of (pending.call.props.photos as { src: string }[]) ?? []) {
+    if (pending?.call?.component !== "PhotoPicker") return;
+    for (const p of (pending.call!.props.photos as { src: string }[]) ?? []) {
       const uploadId = p.src.startsWith("upload:") ? p.src.slice(7) : null;
       if (!uploadId || photoUrls[p.src]) continue;
       void fetchImage(sessionId, uploadId).then((d) => d && setPhotoUrls((u) => ({ ...u, [p.src]: d.blob })));
@@ -120,6 +136,49 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
     await after(await send({ reply: { turnId: pending.id, ...r } }), saved);
   }
 
+  /** The owner asks about the kit, or for a change, in their own words; Specs answers, or brings the card that makes it. */
+  async function ask(text: string) {
+    text = text.trim();
+    if (!text || charCount(text) > LIMITS.messageChars || chatBusy) return;
+    setSentAsk(text);
+    setAsked("");
+    setChatBusy(true);
+    setChatError(null);
+    setTyping(false);
+    try {
+      const v = await call<View>("/api/intake", { sessionId, ask: text });
+      setView(v);
+      // Answered in words: the planned call that stepped aside comes straight back.
+      if (!v.pending && !v.done && !v.capped) void send({});
+    } catch (e) {
+      setChatError(messageOf(e));
+      setAsked(text);
+    } finally {
+      setSentAsk(null);
+      setChatBusy(false);
+    }
+  }
+
+  async function addLogo(f: File | null) {
+    if (!f) return;
+    const problem = logoProblem(f);
+    if (problem) return setError(problem);
+    setAsking(true);
+    setError(null);
+    try {
+      const { file, colors } = await prepareImage(f, "logo");
+      await sendForm("/api/uploads", { sessionId, kind: "logo", file, colors: JSON.stringify(colors) });
+      toast("Logo added. Every post signs with it now.");
+      await loadKit();
+      await onKitChanged();
+      setView((v) => (v ? { ...v, needLogo: false } : v));
+    } catch (err) {
+      setError(messageOf(err));
+    } finally {
+      setAsking(false);
+    }
+  }
+
   async function undo(s: Settled) {
     await after(await send({ undo: s.gap }), "Moved to your calls");
   }
@@ -135,9 +194,69 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
     );
   }
 
-  const made = view.turns.filter((t) => t.answer !== undefined || t.skipped).length;
+  const planned = view.turns.filter((t) => !t.asked && (t.answer !== undefined || t.skipped));
+  const made = planned.length;
+  const chats = view.turns.filter((t) => t.asked);
+  const isRequest = !!pending?.asked;
+
+  /** One call: a planned one in the main column, or the card a change request brought, in the chat. */
+  function callCard(t: Turn, c: Call, inChat: boolean) {
+    return (
+      <div className={`card call-card${inChat ? " in-chat" : ""}`} key={t.id}>
+        {!inChat && (
+          <div className="call-head">
+            <span className="eyebrow">
+              Call {Math.min(made + 1, total)} of {total}
+            </span>
+            <span className="dots" aria-hidden="true">
+              {Array.from({ length: total }, (_, i) => (
+                <i key={i} className={i < made ? "on" : i === made ? "now" : ""} />
+              ))}
+            </span>
+          </div>
+        )}
+        {!inChat && <p className="intake-say now">{t.say}</p>}
+        <RenderCall key={t.id} call={c} status={asking ? "loading" : error ? "error" : "ready"} errorText={error ?? undefined} onAnswer={(_, answer) => reply({ answer }, "Saved to your kit")} />
+        <div className="call-else">
+          {!typing ? (
+            <div className="row">
+              <button type="button" className="quiet" disabled={asking} onClick={() => setTyping(true)}>
+                Something else…
+              </button>
+              <button type="button" className="quiet" disabled={asking} onClick={() => reply({ skip: true }, inChat ? "Left as it was" : "Skipped")}>
+                {inChat ? "Never mind" : "Skip this one"}
+              </button>
+            </div>
+          ) : (
+            <form
+              className="intake-type"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (typed.trim() && charCount(typed) <= LIMITS.messageChars) reply({ text: typed.trim() }, "Saved to your kit");
+              }}
+            >
+              <div className="intake-type-row">
+                <input aria-label="Answer in your own words" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Tell me in your words" disabled={asking} autoComplete="off" autoFocus />
+                <button type="submit" disabled={asking || !typed.trim() || charCount(typed) > LIMITS.messageChars}>
+                  Use this
+                </button>
+              </div>
+              <div className="intake-type-foot">
+                <button type="button" className="quiet" onClick={() => setTyping(false)}>
+                  Back to the choices
+                </button>
+                <span className="counter">
+                  {charCount(typed)}/{LIMITS.messageChars}
+                </span>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    );
+  }
   const total = made + view.callsLeft;
-  const pendingCall = pending && withPhotos(pending.call, photoUrls);
+  const pendingCall = pending?.call ? withPhotos(pending.call, photoUrls) : null;
 
   return (
     <section className="intake">
@@ -179,65 +298,15 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
 
       <div className="calls-grid">
         <div className="calls-main">
-          {pending && pendingCall && (
-            <div className="card call-card" key={pending.id}>
-              <div className="call-head">
-                <span className="eyebrow">
-                  Call {Math.min(made + 1, total)} of {total}
-                </span>
-                <span className="dots" aria-hidden="true">
-                  {Array.from({ length: total }, (_, i) => (
-                    <i key={i} className={i < made ? "on" : i === made ? "now" : ""} />
-                  ))}
-                </span>
-              </div>
-              <p className="intake-say now">{pending.say}</p>
-              <RenderCall
-                key={pending.id}
-                call={pendingCall}
-                status={asking ? "loading" : error ? "error" : "ready"}
-                errorText={error ?? undefined}
-                onAnswer={(_, answer) => reply({ answer }, "Saved to your kit")}
-              />
-              <div className="call-else">
-                {!typing ? (
-                  <div className="row">
-                    <button type="button" className="quiet" disabled={asking} onClick={() => setTyping(true)}>
-                      Something else…
-                    </button>
-                    <button type="button" className="quiet" disabled={asking} onClick={() => reply({ skip: true }, "Skipped")}>
-                      Skip this one
-                    </button>
-                  </div>
-                ) : (
-                  <form
-                    className="intake-type"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      if (typed.trim() && charCount(typed) <= LIMITS.messageChars) reply({ text: typed.trim() }, "Saved to your kit");
-                    }}
-                  >
-                    <div className="intake-type-row">
-                      <input id="intake-typed" aria-label="Answer in your own words" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Tell me in your words" disabled={asking} autoComplete="off" autoFocus />
-                      <button type="submit" disabled={asking || !typed.trim() || charCount(typed) > LIMITS.messageChars}>
-                        Use this
-                      </button>
-                    </div>
-                    <div className="intake-type-foot">
-                      <button type="button" className="quiet" onClick={() => setTyping(false)}>
-                        Back to the choices
-                      </button>
-                      <span className="counter">
-                        {charCount(typed)}/{LIMITS.messageChars}
-                      </span>
-                    </div>
-                  </form>
-                )}
-              </div>
+          {pending && pendingCall && !isRequest && callCard(pending, pendingCall, false)}
+
+          {(isRequest || chatBusy) && !view.done && (
+            <div className="card call-aside">
+              <p className="muted">Your change is in the chat. Your next call comes back right after.</p>
             </div>
           )}
 
-          {!pending && asking && (
+          {!pending && asking && !chatBusy && (
             <div className="card">
               <Skeleton lines={3} block={80} />
             </div>
@@ -257,14 +326,19 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
             </div>
           )}
 
-          {view.done && (
+          {view.done && !isRequest && (
             <div className="intake-complete">
               <Burst colors={boardFrom(chunks).palette?.map((c) => c.hex) ?? []} />
               <span className="eyebrow">Kit ready</span>
               <p>
-                {made} {made === 1 ? "call" : "calls"} made, {view.settled.length} settled for you, nothing left open. You can still change
-                anything in the kit below, for free.
+                {made} {made === 1 ? "call" : "calls"} made, {view.settled.length} settled for you, nothing left open. Something still off? Tell
+                Specs in the chat.
               </p>
+              {!chatOpen && (
+                <button type="button" className="c-btn" onClick={() => setChatOpen(true)}>
+                  Open the chat
+                </button>
+              )}
             </div>
           )}
 
@@ -275,17 +349,15 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
             </div>
           )}
 
-          {made > 0 && (
+          {planned.length > 0 && (
             <details className="made">
               <summary>Your answers so far</summary>
-              {view.turns
-                .filter((t) => t.id !== view.pending)
-                .map((t) => (
-                  <div key={t.id} className="intake-done">
-                    <p className="intake-say">{t.say}</p>
-                    <p className="intake-answer">{t.skipped ? <span className="muted">Skipped</span> : t.answer}</p>
-                  </div>
-                ))}
+              {planned.map((t) => (
+                <div key={t.id} className="intake-done">
+                  <p className="intake-say">{t.say}</p>
+                  <p className="intake-answer">{t.skipped ? <span className="muted">Skipped</span> : t.answer}</p>
+                </div>
+              ))}
             </details>
           )}
         </div>
@@ -294,6 +366,23 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
           <LivePost chunks={chunks} kit={kit} photoUrls={photoUrls} />
         </aside>
       </div>
+      <ChatPanel
+        open={chatOpen}
+        onOpen={setChatOpen}
+        chats={chats}
+        pending={isRequest ? pending : null}
+        sent={sentAsk}
+        busy={chatBusy}
+        error={chatError}
+        suggestions={suggestionsFor(chunks, kit)}
+        changesLeft={view.changesLeft ?? 1}
+        needLogo={!!view.needLogo && !kit?.logoUploadId}
+        draft={asked}
+        onDraft={setAsked}
+        onAsk={ask}
+        onAddLogo={addLogo}
+        renderCard={(t) => { const turn = t as Turn; return turn.call ? callCard(turn, withPhotos(turn.call, photoUrls), true) : null; }}
+      />
     </section>
   );
 }
@@ -319,7 +408,7 @@ function LivePost({ chunks, kit, photoUrls }: { chunks: IntakeChunks; kit: KitFi
     kit && slots && kit.templates["photo-led"]
       ? buildPostPage({
           templateHtml: kit.templates["photo-led"],
-          look: { tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, fontsHref: kit.fontsHref, base: { css: kit.baseCss } },
+          look: { tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, logoSrc: photoUrls.logo ?? null, fontsHref: kit.fontsHref, base: { css: kit.baseCss } },
           slots: { headline: slots.headline, subhead: slots.subhead, badge: slots.badge },
           photoSrc,
         })

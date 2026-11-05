@@ -13,6 +13,7 @@ import { findTemplate, parseTemplates, type TemplateId } from "../../core/templa
 import type { PropsOf } from "../../core/catalog.ts";
 import { call, type ApiError } from "../lib/api.ts";
 import { PostPreview } from "../ui/catalog/PostPreview.tsx";
+import { logoDataUrl } from "../lib/logo.ts";
 import { KitDownload } from "../ui/KitDownload.tsx";
 
 type Note = { decision: string; choice: string; reason: string; cites: string[] };
@@ -27,6 +28,7 @@ type Kit = {
   baseCss: string;
   neutralTokensCss: string;
   photos: { file: string; uploadId?: string }[];
+  logoUploadId: string | null;
 };
 type Slots = Record<string, string | null>;
 type Post = {
@@ -48,6 +50,7 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
   const [kit, setKit] = useState<Kit | null>(null);
   const [kitError, setKitError] = useState<string | null>(null);
   const [photos, setPhotos] = useState<Record<string, string>>({});
+  const [logo, setLogo] = useState<string | null>(null);
   const [intent, setIntent] = useState<PostIntent>("promo");
   const [goal, setGoal] = useState("");
   const [details, setDetails] = useState("");
@@ -68,6 +71,7 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
         if (res.ok) urls[p.file] = await dataUrl(await res.blob());
       }
       setPhotos(urls);
+      if (k.logoUploadId) setLogo(await logoDataUrl(sessionId, k.logoUploadId));
     } catch (e) {
       setKitError(messageOf(e));
     }
@@ -104,7 +108,7 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
       // The template version first, so there's a post on screen while the layout is designed.
       const templates = parseTemplates(kit.templatesManifest);
       const t = findTemplate(templates, written.template);
-      const look: PostLook = { tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, fontsHref: kit.fontsHref, base: { css: kit.baseCss } };
+      const look: PostLook = { tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, logoSrc: logo, fontsHref: kit.fontsHref, base: { css: kit.baseCss } };
       const photoSrc = written.photo ? (photos[written.photo] ?? null) : null;
       const chunkIds = new Set(Object.keys(kit.files).map((f) => f.replace(/\.(md|ya?ml|json|css)$/, "")));
       const notes = (ns: Note[]) => ns.map((n) => ({ decision: n.decision.slice(0, 160) || "decision", choice: n.choice, reason: n.reason, chunks: n.cites.filter((c) => chunkIds.has(c)).slice(0, 6) }));
@@ -144,6 +148,7 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
         tokensCss: kit.tokensCss,
         fontsHref: kit.fontsHref,
         wordmarkLines: kit.wordmarkLines,
+        logoSrc: logo,
         photo: photoSrc ? { src: photoSrc, alt } : null,
         onStage: (stage) => patch(id, { stage }),
       });
@@ -254,6 +259,7 @@ async function composeWithChecks(
     tokensCss: string;
     fontsHref: string;
     wordmarkLines: string[];
+    logoSrc: string | null;
     photo: { src: string; alt: string } | null;
     onStage: (s: string) => void;
   },
@@ -271,7 +277,7 @@ async function composeWithChecks(
     }
     if (answer.ok && answer.composition) {
       o.onStage("Checking the layout…");
-      const page = buildComposedPage({ composition: answer.composition, slots, aspect: o.aspect, tokensCss: o.tokensCss, fontsHref: o.fontsHref, wordmarkLines: o.wordmarkLines, photo: o.photo });
+      const page = buildComposedPage({ composition: answer.composition, slots, aspect: o.aspect, tokensCss: o.tokensCss, fontsHref: o.fontsHref, wordmarkLines: o.wordmarkLines, logoSrc: o.logoSrc, photo: o.photo });
       const found = await probe(page, o.aspect);
       if (found === null) break; // Couldn't check it, so don't show it.
       issues = found;

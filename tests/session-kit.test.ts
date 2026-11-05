@@ -33,6 +33,19 @@ test("colors come from the roles, and unreadable body text is fixed", () => {
   assert.match(kit.tokensCss, /--role-background: var\(--color-background\)/);
 });
 
+test("a second strong brand color the roles left out is kept as accent 2", () => {
+  const neon: IntakeChunks = {
+    ...chunks,
+    "visual-system": { draft: draft([...chunks["visual-system"]!.draft.items, item("color: heading", "#F5C518 sign yellow"), item("color: neon", "#FF2E88 neon pink, the SLICE sign")]) },
+  };
+  const kit = kitFromChunks(neon, { name: "Night Slice" });
+  assert.equal(kit.colors.accent2, "#FF2E88");
+  assert.match(kit.tokensCss, /--color-accent-2: #FF2E88;/);
+  assert.match(kit.tokensCss, /--role-accent-2: var\(--color-accent-2\);/);
+  // No second hue, no accent 2.
+  assert.equal(kitFromChunks(chunks, { name: "Night Slice" }).colors.accent2, null);
+});
+
 test("fonts: curated names pass through, others get a stand-in by style", () => {
   assert.deepEqual(curatedFont("Inter, 400", "Lora"), { font: "Inter", standIn: false });
   assert.equal(curatedFont("Tall condensed poster capitals", "Inter").font, "Archivo Black");
@@ -40,6 +53,13 @@ test("fonts: curated names pass through, others get a stand-in by style", () => 
   const kit = kitFromChunks(chunks, { name: "Night Slice" });
   assert.equal(kit.fonts.heading, "Archivo Black");
   assert.equal(kit.fonts.body, "Inter");
+});
+
+test("body text never gets a handwriting face", () => {
+  const hand: IntakeChunks = { ...chunks, "visual-system": { draft: draft([...chunks["visual-system"]!.draft.items, item("type: body", "Hand-painted marker lettering, like the menu board")]) } };
+  const kit = kitFromChunks(hand, { name: "Night Slice" });
+  assert.equal(kit.fonts.body, "Inter");
+  assert.match(kit.notes.join(" "), /handwriting face/);
 });
 
 test("an owner's palette answer outranks the draft's roles", () => {

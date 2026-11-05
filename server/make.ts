@@ -31,6 +31,8 @@ export async function kitFiles(req: Request, deps: Deps) {
     baseCss: CONTENT.baseCss,
     neutralTokensCss: CONTENT.neutralTokensCss,
     photos: kit.photos.map((p) => ({ file: p.file, uploadId: p.uploadId })),
+    // The visitor's logo signs their posts in place of the typed name; the browser fetches it.
+    logoUploadId: session.uploads.find((u) => u.kind === "logo")?.id ?? null,
   });
 }
 
