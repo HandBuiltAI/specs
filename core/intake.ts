@@ -4,10 +4,12 @@
 //
 // The check runs in code, not in the model: a kit is complete when every chunk has its required
 // items, nothing is still marked needs-review, and every conflict between uploads has an answer
-// (or the owner chose to skip it). The model only picks which gap to ask about and how.
+// (or was settled from the uploads, or skipped). Which gaps get asked is decided in code too
+// (core/triage.ts); the model only chooses how to ask.
 import { z } from "zod";
 import type { ComponentName, ParsedCall } from "./catalog.ts";
-import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type ExtractChunkId } from "./extract.ts";
+import { EXTRACT_CHUNKS, type ChunkDraft, type ConflictTopic, type Conflicts, type ExtractChunkId } from "./extract.ts";
+import { TOPIC_CHUNK } from "./triage.ts";
 import { asData, fillPrompt } from "./prompts.ts";
 
 // ---------- the kit as intake sees it ----------
@@ -16,7 +18,8 @@ export type IntakeItem = ChunkDraft["items"][number] & { edited?: boolean };
 export type IntakeChunks = Partial<Record<ExtractChunkId, { draft: ChunkDraft & { items: IntakeItem[] } }>> & {
   conflicts?: { conflicts: Conflicts["conflicts"] };
 };
-export type Resolution = { status: "answered" | "skipped"; text?: string };
+/** answered: the owner said. settled: Specs settled it from the uploads (undoable). skipped: left as is. */
+export type Resolution = { status: "answered" | "settled" | "skipped"; text?: string };
 export type Resolutions = Record<string, Resolution>;
 
 /** What each chunk must hold before the kit counts as complete. Labels match by prefix. */
@@ -122,8 +125,8 @@ export const INTAKE_COMPONENTS = ["SourceCard", "ChoiceChips", "SwatchPicker", "
 // The props travel as a JSON string, not as a nested schema: a union of all seven components'
 // props compiles to a structured-output grammar the API rejects as too large (gate run, Nov 4).
 // The prompt lists each component's props, and the server checks them strictly with parseCall.
+// Code picks the gap (core/triage.ts); the model only chooses how to ask about it.
 export const IntakeTurnSchema = z.object({
-  gap: z.string().describe("The id of the gap this turn resolves, copied exactly from the gaps list."),
   say: z.string().describe("At most one short sentence to the owner, shown above the component. Plain words, no greeting."),
   component: z.enum(INTAKE_COMPONENTS).describe("Exactly one component from the catalog."),
   props: z.string().describe("The component's props as one JSON object, following that component's shape in the catalog section."),
@@ -169,10 +172,8 @@ export function intakePrompt(
     const c = input.chunks[id]?.draft;
     return c ? `- ${id} (${c.confidence}): ${d(c.summary)}` : `- ${id}: not drafted`;
   }).join("\n");
-  // The first dozen gaps (conflicts and doubts come first), so the prompt stays near the spec's 1,500-token intake budget.
-  const shown = input.gaps.slice(0, 12);
-  const more = input.gaps.length - shown.length;
-  const gaps = shown.map((g) => `- id: ${g.id}\n  kind: ${g.kind}\n  about: ${d(g.about)}\n  detail: ${d(g.detail)}`).join("\n") + (more > 0 ? `\n- (${more} more after these)` : "");
+  // The gap code picked, then any others the same answer covers (a palette fills every color slot).
+  const gaps = input.gaps.map((g, i) => `- ${i === 0 ? "ask about" : "same answer covers"}: ${d(g.about)}\n  kind: ${g.kind}\n  detail: ${d(g.detail)}`).join("\n");
   const transcript = input.transcript.length
     ? input.transcript.slice(-6).map((t) => `- asked about ${t.gap} with ${t.component}: "${d(t.say)}" → owner: ${d(t.answer)}`).join("\n")
     : "- nothing asked yet";
@@ -241,10 +242,10 @@ function labelFor(gap: Gap, call: ParsedCall | null): string {
 }
 
 /** The chunk a conflict's answer is written to: the one the agent named on its SourceCard, if it's a real chunk. */
-export function targetChunk(gap: Gap, call: ParsedCall | null): ExtractChunkId {
+export function targetChunk(gap: Gap, call: ParsedCall | null, topic?: ConflictTopic): ExtractChunkId {
   if (gap.chunk !== "conflicts") return gap.chunk;
   const named = call?.component === "SourceCard" ? call.props.chunk : null;
-  return (EXTRACT_CHUNKS.find((c) => c.id === named)?.id ?? "positioning-core") as ExtractChunkId;
+  return (EXTRACT_CHUNKS.find((c) => c.id === named)?.id ?? (topic ? TOPIC_CHUNK[topic] : "positioning-core")) as ExtractChunkId;
 }
 
 /**

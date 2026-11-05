@@ -12,6 +12,9 @@ import { call, pool, sendForm, type ApiError } from "../lib/api.ts";
 import { prepareImage } from "../lib/images.ts";
 import { Turnstile } from "../lib/turnstile.tsx";
 import Intake from "./intake.tsx";
+import { BrandBoard } from "./brand-board.tsx";
+import type { IntakeChunks } from "../../core/intake.ts";
+import { businessNameOf } from "../../core/session-kit.ts";
 import MakePosts from "./make-posts.tsx";
 
 type UploadKindApi = "image" | "logo" | "pdf" | "url" | "pasted" | "note";
@@ -56,6 +59,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
   const [url, setUrl] = useState("");
   const [pasted, setPasted] = useState("");
   const [note, setNote] = useState("");
+  const [dragging, setDragging] = useState(false);
 
   // What the server knows.
   const [uploads, setUploads] = useState<Upload[]>([]);
@@ -230,6 +234,26 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     targetIds.some((t) => targets[t]?.status === "done") &&
     targetIds.every((t) => targets[t]?.status === "done" || (targets[t]?.status === "failed" && targets[t]!.attempts >= LIMITS.extractAttempts));
   const labelOf = useMemo(() => Object.fromEntries(uploads.map((u) => [u.id, u.label])), [uploads]);
+  const intakeChunks = useMemo<IntakeChunks>(() => {
+    const out: IntakeChunks = {};
+    for (const rec of Object.values(chunks)) {
+      if (rec.target === "conflicts") out.conflicts = { conflicts: rec.conflicts };
+      else out[rec.target] = { draft: rec.draft };
+    }
+    return out;
+  }, [chunks]);
+  const name = businessNameOf(intakeChunks);
+
+  /** Dropped files go where they belong: images to photos, a PDF to the PDF slot. */
+  function onDrop(files: File[]) {
+    const images = files.filter((f) => /^image\/(jpeg|png|webp|gif)$/.test(f.type));
+    const pdfs = files.filter((f) => f.type === "application/pdf" || /\.pdf$/i.test(f.name));
+    if (images.length) setPhotos((p) => [...p, ...images].slice(0, LIMITS.imageCount));
+    if (pdfs[0]) setPdf(pdfs[0]);
+    const rest = files.length - images.length - pdfs.length;
+    if (rest > 0 || pdfs.length > 1) setError(`Specs takes photos (JPEG, PNG, WebP, GIF) and one PDF. ${rest + Math.max(0, pdfs.length - 1)} ${rest + Math.max(0, pdfs.length - 1) === 1 ? "file was" : "files were"} left out.`);
+    else setError(null);
+  }
 
   return (
     <>
@@ -258,15 +282,58 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
           <h2 style={{ marginTop: 0 }}>Your materials</h2>
           <p className="muted">Whatever you have. Messy is fine: that&rsquo;s the point.</p>
 
-          <label htmlFor="photos">Photos (up to {LIMITS.imageCount})</label>
-          <input id="photos" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={(e) => setPhotos([...(e.target.files ?? [])].slice(0, LIMITS.imageCount))} />
-          <p className="counter">Shrunk in your browser before upload. {photos.length > 0 && `${photos.length} chosen.`}</p>
+          <div
+            className={`dropzone ${dragging ? "over" : ""}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragging(true);
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragging(false);
+              onDrop([...e.dataTransfer.files]);
+            }}
+          >
+            <p className="dropzone-title">Drop photos and a PDF here</p>
+            <p className="muted small">
+              Up to {LIMITS.imageCount} photos and one PDF of up to {LIMITS.pdfPages} pages. Photos are shrunk in your browser before upload.
+            </p>
+            <div className="dropzone-pick">
+              <label htmlFor="photos" className="c-btn ghost">
+                Choose photos
+              </label>
+              <input id="photos" className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={(e) => setPhotos((p) => [...p, ...(e.target.files ?? [])].slice(0, LIMITS.imageCount))} />
+              <label htmlFor="pdf" className="c-btn ghost">
+                Choose a PDF
+              </label>
+              <input id="pdf" className="visually-hidden" type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] ?? null)} />
+            </div>
+            {(photos.length > 0 || pdf) && (
+              <ul className="dropped">
+                {photos.map((p, i) => (
+                  <li key={`${p.name}-${i}`}>
+                    <span>{p.name}</span>
+                    <button type="button" className="quiet" aria-label={`Remove ${p.name}`} onClick={() => setPhotos((ps) => ps.filter((_, j) => j !== i))}>
+                      Remove
+                    </button>
+                  </li>
+                ))}
+                {pdf && (
+                  <li>
+                    <span>{pdf.name}</span>
+                    <button type="button" className="quiet" aria-label={`Remove ${pdf.name}`} onClick={() => setPdf(null)}>
+                      Remove
+                    </button>
+                  </li>
+                )}
+              </ul>
+            )}
+          </div>
 
           <label htmlFor="logo">Logo</label>
           <input id="logo" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setLogo(e.target.files?.[0] ?? null)} />
 
-          <label htmlFor="pdf">One PDF (up to {LIMITS.pdfPages} pages)</label>
-          <input id="pdf" type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] ?? null)} />
 
           <label htmlFor="url">Website</label>
           <input id="url" type="url" placeholder="https://" value={url} onChange={(e) => setUrl(e.target.value)} />
@@ -295,7 +362,12 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
 
       {started && (
         <>
-          <h2>Read from your uploads</h2>
+          <h2 className="reveal-title">
+            {name ? `Here's ${name},` : "Here's your brand,"} <span>as your files describe it.</span>
+          </h2>
+          <div className="reveal">
+          <aside className="card reveal-files">
+          <p className="eyebrow">Your materials</p>
           <div className="uploads">
             {uploads.map((u) => (
               <div className="upload-row" key={u.id}>
@@ -315,8 +387,12 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
               </div>
             ))}
           </div>
-          <h2>Brand DNA</h2>
-          <p className="muted">Each item shows where it came from. Edit or delete anything that&rsquo;s wrong.</p>
+          </aside>
+          <BrandBoard chunks={intakeChunks} targets={targets} />
+          </div>
+          <details className="card kit-details">
+          <summary>See every kit item and where it came from</summary>
+          <p className="muted">Each item shows the upload it came from. Edit or delete anything that&rsquo;s wrong.</p>
           {[...EXTRACT_CHUNKS, { id: "conflicts" as const, title: "Where your uploads disagree" }].map((c) => (
             <ChunkCard
               key={c.id}
@@ -329,7 +405,8 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
             />
           ))}
           <p className="muted small">Uploads cited: {Object.values(labelOf).join(", ")}</p>
-          {sessionId && draftingDone && <Intake sessionId={sessionId} onKitChanged={() => loadKit(sessionId).catch(() => {})} />}
+          </details>
+          {sessionId && draftingDone && <Intake sessionId={sessionId} chunks={intakeChunks} onKitChanged={() => loadKit(sessionId).catch(() => {})} />}
           {sessionId && draftingDone && <MakePosts sessionId={sessionId} />}
         </>
       )}

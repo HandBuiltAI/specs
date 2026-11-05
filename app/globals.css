@@ -244,3 +244,75 @@ main.kitpage .kitpage-lede { max-width: 42rem; }
 .make-brief { display: grid; gap: var(--s2); max-width: 46rem; }
 .make-brief .c-seg { margin-bottom: var(--s2); flex-wrap: wrap; }
 .make-brief label { margin-top: var(--s2); font-weight: 500; }
+
+/* Build a kit, reworked Nov 5: drop zone, the reveal as a mood board, calls with a live post. */
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.dropzone { margin-top: var(--s3); border: 1.5px dashed var(--line); border-radius: var(--r-inner); background: var(--sunken); padding: var(--s5); display: grid; gap: var(--s2); text-align: center; justify-items: center; transition: border-color 0.2s, background 0.2s; }
+.dropzone.over { border-color: var(--ink); background: var(--surface); }
+.dropzone p { margin: 0; }
+.dropzone-title { font-weight: 600; font-size: 17px; letter-spacing: -0.01em; }
+.dropzone-pick { display: flex; gap: var(--s2); flex-wrap: wrap; justify-content: center; margin-top: var(--s2); }
+.dropzone-pick label.c-btn { margin: 0; cursor: pointer; display: inline-block; }
+.dropzone-pick label.c-btn:focus-within { outline: 2px solid var(--signal); outline-offset: 3px; }
+.dropped { list-style: none; padding: 0; margin: var(--s2) 0 0; display: grid; gap: 6px; width: 100%; max-width: 30rem; text-align: left; }
+.dropped li { display: flex; justify-content: space-between; align-items: center; gap: var(--s2); background: var(--surface); border-radius: 12px; padding: 6px 6px 6px 12px; font-size: 14px; min-width: 0; }
+.dropped li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dropped li button { margin: 0; }
+
+.reveal-title, .intake h2 { font-size: clamp(26px, 4vw, 40px); line-height: 1.05; letter-spacing: -0.035em; text-wrap: balance; }
+.reveal-title span, .intake h2 span { color: var(--ink-2); }
+.reveal { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: var(--s4); align-items: start; }
+.reveal-files .upload-row { background: transparent; padding: var(--s2) 0; border-top: 1px solid var(--line); border-radius: 0; }
+.board { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--s4); }
+.board .card { margin: 0; min-width: 0; display: grid; gap: var(--s3); align-content: start; }
+.board .card p { margin: 0; }
+.board-card { opacity: 0.75; transition: opacity 0.5s var(--ease), transform 0.5s var(--ease); }
+.board-card.in { opacity: 1; }
+.board-palette, .board-type { grid-column: span 3; }
+.board-voice, .board-facts, .board-never { grid-column: span 2; }
+.fan { position: relative; height: 140px; margin-left: 8px; }
+.fan-chip { position: absolute; bottom: 0; width: 34%; max-width: 96px; height: 126px; border-radius: 14px; padding: 10px; display: flex; flex-direction: column; justify-content: flex-end; font-family: var(--f-mono); font-size: 10px; box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(127, 127, 127, 0.2); transform-origin: 50% 120%; }
+.fan-chip b { font-family: var(--f-ui); font-size: 12px; font-weight: 600; }
+.typeset { border-radius: var(--r-inner); padding: var(--s4); box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.2); overflow-wrap: anywhere; }
+.voice-line { font-size: 22px; line-height: 1.15; letter-spacing: -0.02em; font-weight: 500; text-wrap: balance; }
+.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s2); }
+.facts li { display: flex; justify-content: space-between; gap: var(--s2); border-bottom: 1px solid var(--line); padding-bottom: var(--s2); font-size: 14px; min-width: 0; overflow-wrap: anywhere; }
+.never { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.never s { text-decoration-color: var(--signal); text-decoration-thickness: 2px; background: var(--sunken); border-radius: var(--r-pill); padding: 4px 10px; font-size: 14px; }
+.kit-details { margin-top: var(--s4); }
+.kit-details summary { cursor: pointer; color: var(--ink-2); }
+.kit-details .card { box-shadow: none; border: 1px solid var(--line); }
+
+.intake .lede { max-width: 40rem; }
+.settled { display: grid; gap: var(--s2); }
+.settle { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s3); align-items: center; background: var(--sunken); border-radius: var(--r-inner); padding: var(--s3) var(--s4); }
+.settle b { font-weight: 600; overflow-wrap: anywhere; }
+.settle p { margin: 2px 0 0; color: var(--ink-2); font-size: 13px; }
+.settle button { margin: 0; }
+.calls-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: var(--s5); align-items: start; margin-top: var(--s4); }
+.calls-main { display: grid; gap: var(--s4); min-width: 0; }
+.call-card { margin: 0; display: grid; gap: var(--s3); }
+.call-head { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); }
+.dots { display: flex; gap: 6px; }
+.dots i { width: 22px; height: 4px; border-radius: 4px; background: var(--line); }
+.dots i.on { background: var(--ink); }
+.dots i.now { background: var(--signal); }
+.call-else .row button { margin-top: 0; }
+.made summary { cursor: pointer; color: var(--ink-2); font-size: 14px; }
+.made .intake-done { margin-top: var(--s2); }
+.live { position: sticky; top: var(--s4); display: grid; gap: var(--s2); }
+.live-head { display: flex; justify-content: space-between; align-items: center; }
+.changed { font-family: var(--f-mono); font-size: 11px; color: var(--signal-ink); opacity: 0; transition: opacity 0.3s; }
+.changed.show { opacity: 1; }
+.live-post { position: relative; width: 100%; overflow: hidden; border-radius: 8px; background: var(--sunken); box-shadow: var(--shadow); }
+.live-post iframe { border: 0; position: absolute; top: 0; left: 0; pointer-events: none; }
+.live-post.flash { animation: live-flash 1.2s var(--ease); }
+.live p { margin: 0; }
+@keyframes live-flash { 0% { box-shadow: 0 0 0 0 var(--signal); } 30% { box-shadow: 0 0 0 3px var(--signal); } 100% { box-shadow: var(--shadow); } }
+@media (max-width: 900px) {
+  .reveal, .calls-grid { grid-template-columns: 1fr; }
+  .live { position: static; max-width: 360px; }
+  .board { grid-template-columns: 1fr 1fr; }
+  .board .card { grid-column: span 2; }
+}
+@media (prefers-reduced-motion: reduce) { .board-card, .live-post.flash, .changed { transition: none; animation: none; } }
