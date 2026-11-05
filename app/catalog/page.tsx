@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Showcase from "./showcase.tsx";
+import { PageMotion } from "../ui/page-motion.tsx";
 
 export const metadata: Metadata = { title: "Components · Specs" };
 
 export default function CatalogPage() {
   return (
+    <PageMotion>
     <main className="wide">
       <p className="eyebrow">The A2UI catalog</p>
       <h1>
@@ -17,5 +19,6 @@ export default function CatalogPage() {
       </p>
       <Showcase />
     </main>
+    </PageMotion>
   );
 }

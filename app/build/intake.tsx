@@ -9,7 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { LIMITS, charCount } from "../../core/limits.ts";
 import type { IntakeChunks } from "../../core/intake.ts";
 import type { ComponentName } from "../../core/catalog.ts";
-import { previewSlots } from "../../core/preview.ts";
+import { boardFrom, previewSlots } from "../../core/preview.ts";
 import { buildPostPage } from "../../core/post-html.ts";
 import { call } from "../lib/api.ts";
 import { RenderCall } from "../ui/render.tsx";
@@ -180,7 +180,7 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
       <div className="calls-grid">
         <div className="calls-main">
           {pending && pendingCall && (
-            <div className="card call-card">
+            <div className="card call-card" key={pending.id}>
               <div className="call-head">
                 <span className="eyebrow">
                   Call {Math.min(made + 1, total)} of {total}
@@ -259,6 +259,7 @@ function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; c
 
           {view.done && (
             <div className="intake-complete">
+              <Burst colors={boardFrom(chunks).palette?.map((c) => c.hex) ?? []} />
               <span className="eyebrow">Kit ready</span>
               <p>
                 {made} {made === 1 ? "call" : "calls"} made, {view.settled.length} settled for you, nothing left open. You can still change
@@ -382,3 +383,28 @@ async function fetchImage(sessionId: string, uploadId: string): Promise<{ blob: 
 
 const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
 const numberWord = (n: number) => WORDS[n] ?? String(n);
+
+/**
+ * A one-time burst of the brand's own colors when the kit is finished: small paint chips flung
+ * out from the card. Positions are fixed (no randomness), so server and browser agree.
+ */
+function Burst({ colors }: { colors: string[] }) {
+  if (!colors.length) return null;
+  const n = 18;
+  return (
+    <span className="burst" aria-hidden="true">
+      {Array.from({ length: n }, (_, i) => {
+        const angle = (i / n) * Math.PI * 2 + (i % 2 ? 0.2 : -0.1);
+        const dist = 120 + ((i * 37) % 90);
+        const style = {
+          "--c": colors[i % colors.length],
+          "--x": `${Math.round(Math.cos(angle) * dist)}px`,
+          "--y": `${Math.round(Math.sin(angle) * dist * 0.7 - 30)}px`,
+          "--r": `${((i * 73) % 360) - 180}deg`,
+          "--d": `${(i % 5) * 30}ms`,
+        } as React.CSSProperties;
+        return <i key={i} style={style} />;
+      })}
+    </span>
+  );
+}

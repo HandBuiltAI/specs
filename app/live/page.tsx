@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import LiveTest from "./live-test";
+import { PageMotion } from "../ui/page-motion.tsx";
 
 export const metadata: Metadata = { title: "Live session test · Specs" };
 
 export default function LivePage() {
   return (
+    <PageMotion>
     <main>
       <h1>Live session test</h1>
       <p className="muted">
@@ -13,5 +15,6 @@ export default function LivePage() {
       </p>
       <LiveTest siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ""} />
     </main>
+    </PageMotion>
   );
 }

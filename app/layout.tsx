@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import "./ui/catalog.css";
+import "./ui/motion.css";
 import { THEME_SCRIPT, ThemeToggle } from "./ui/theme.tsx";
 
 export const metadata: Metadata = {
@@ -28,12 +29,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <header className="topbar">
-          <Link href="/" className="wordmark" aria-label="Specs home">
+          <Link href="/" className="wordmark" aria-label="Specs home" transitionTypes={["nav-back"]}>
             Specs<i aria-hidden="true" />
           </Link>
           <nav>
-            <Link href="/build">Build a kit</Link>
-            <Link href="/catalog">Components</Link>
+            <Link href="/build" transitionTypes={["nav-forward"]}>Build a kit</Link>
+            <Link href="/catalog" transitionTypes={["nav-forward"]}>Components</Link>
             <ThemeToggle />
           </nav>
         </header>
