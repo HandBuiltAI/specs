@@ -186,6 +186,15 @@ async function applyReply(deps: Deps, session: Session, reply: NonNullable<z.inf
       throw new Refusal(400, "bad_answer", `That answer doesn't fit the ${turn.call.component} on screen.`);
     }
     text = describeAnswer(turn.call, answer);
+    // Name picked photos by file too, so posts and the live preview can find them.
+    if (turn.call.component === "PhotoPicker") {
+      const ids = new Set(((answer as { photoIds?: string[] }).photoIds ?? []));
+      const files = turn.call.props.photos
+        .filter((p) => ids.has(p.id))
+        .map((p) => session.uploads.find((u) => `upload:${u.id}` === p.src)?.label)
+        .filter(Boolean);
+      if (files.length) text = `${text} (files: ${files.join(", ")})`;
+    }
     confirmed = turn.call.component === "SourceCard" && (answer as { action: string }).action === "confirm";
   } else if ("text" in reply) {
     // Typed answers are stored as the owner's words. They reach a prompt later only through asData.

@@ -1,26 +1,30 @@
 "use client";
 
-// "Fill the gaps" (spec, user flow step 4). After the kit is drafted, the agent asks about one
-// gap at a time with one catalog component and one sentence. The owner answers with the
-// component, types an answer instead, or skips. The server checks completeness in code and
-// writes every answer into the kit; this screen only shows the conversation.
+// "Fill the gaps" (spec, user flow step 4), reworked Nov 5 after the first live run. Code has
+// already sorted the gaps (core/triage.ts): what the uploads settle is listed with an Undo, and
+// only the calls that change a post are asked, one at a time, each with one catalog component
+// and one sentence. Beside each call is the kit's first post, live: an answer changes it on the
+// spot. Typing is the fallback under each call, not the main way to answer.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LIMITS, charCount } from "../../core/limits.ts";
-import type { ChunkProgress } from "../../core/intake.ts";
+import type { IntakeChunks } from "../../core/intake.ts";
 import type { ComponentName } from "../../core/catalog.ts";
+import { previewSlots } from "../../core/preview.ts";
+import { buildPostPage } from "../../core/post-html.ts";
 import { call } from "../lib/api.ts";
-import { KitProgress } from "../ui/catalog/index.ts";
 import { RenderCall } from "../ui/render.tsx";
 import { Skeleton, ToastProvider, useToast } from "../ui/primitives.tsx";
 
 type Call = { component: ComponentName; props: Record<string, unknown> };
 type Turn = { id: string; about: string; say: string; call: Call; answer?: string; skipped?: boolean };
-type View = { done: boolean; gapsLeft: number; turnsLeft: number; capped?: boolean; progress: ChunkProgress[]; turns: Turn[]; pending: string | null };
+type Settled = { gap: string; mode: "conflict" | "kept"; about: string; text: string; why: string };
+type View = { done: boolean; gapsLeft: number; callsLeft: number; turnsLeft: number; capped?: boolean; settled: Settled[]; turns: Turn[]; pending: string | null };
 type Reply = { answer: unknown } | { text: string } | { skip: true };
+type KitFiles = { tokensCss: string; wordmarkLines: string[]; fontsHref: string; templates: Record<string, string>; baseCss: string; photos: { file: string; uploadId?: string }[] };
 
 const messageOf = (e: unknown) => (e as Error).message ?? "Something went wrong.";
 
-export default function Intake(props: { sessionId: string; onKitChanged: () => void }) {
+export default function Intake(props: { sessionId: string; chunks: IntakeChunks; onKitChanged: () => Promise<void> | void }) {
   return (
     <ToastProvider>
       <IntakeInner {...props} />
@@ -28,14 +32,16 @@ export default function Intake(props: { sessionId: string; onKitChanged: () => v
   );
 }
 
-function IntakeInner({ sessionId, onKitChanged }: { sessionId: string; onKitChanged: () => void }) {
+function IntakeInner({ sessionId, chunks, onKitChanged }: { sessionId: string; chunks: IntakeChunks; onKitChanged: () => Promise<void> | void }) {
   const [view, setView] = useState<View | null>(null);
   const [asking, setAsking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [typed, setTyped] = useState("");
+  const [typing, setTyping] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<Record<string, string>>({});
+  const [kit, setKit] = useState<KitFiles | null>(null);
   const toast = useToast();
-  const bottom = useRef<HTMLDivElement>(null);
+  const requested = useRef(new Set<string>());
 
   const send = useCallback(
     async (body: Record<string, unknown>) => {
@@ -58,90 +64,133 @@ function IntakeInner({ sessionId, onKitChanged }: { sessionId: string; onKitChan
     [sessionId],
   );
 
-  // Start: show where things stand, then ask the first question if one is needed.
+  // The kit's tokens and photos for the live post. Fetched again after each answer, since a
+  // palette or font answer changes the tokens.
+  const loadKit = useCallback(async () => {
+    const k = await call<KitFiles>("/api/kit/files", { sessionId }).catch(() => null);
+    if (!k) return;
+    setKit(k);
+    for (const p of k.photos) {
+      if (!p.uploadId || requested.current.has(p.uploadId)) continue;
+      requested.current.add(p.uploadId);
+      void fetchImage(sessionId, p.uploadId).then((d) => d && setPhotoUrls((x) => ({ ...x, [`file:${p.file}`]: d.data, [`upload:${p.uploadId}`]: d.blob })));
+    }
+  }, [sessionId]);
+
+  // Start: triage runs on the first request (free), then the first call is asked if one is needed.
   useEffect(() => {
     let live = true;
     (async () => {
       const v = await call<View>("/api/intake", { sessionId, peek: true }).catch((e) => (setError(messageOf(e)), null));
       if (!live || !v) return;
       setView(v);
+      await onKitChanged();
+      void loadKit();
       if (!v.done && !v.pending && !v.capped) await send({});
     })();
     return () => {
       live = false;
     };
-  }, [sessionId, send]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId, send, loadKit]);
 
   const pending = view?.turns.find((t) => t.id === view.pending) ?? null;
 
-  // PhotoPicker names photos by upload; fetch them once from this session.
+  // PhotoPicker names photos by upload; fetch any not loaded yet.
   useEffect(() => {
     if (pending?.call.component !== "PhotoPicker") return;
-    const photos = (pending.call.props.photos as { src: string }[]) ?? [];
-    for (const p of photos) {
+    for (const p of (pending.call.props.photos as { src: string }[]) ?? []) {
       const uploadId = p.src.startsWith("upload:") ? p.src.slice(7) : null;
       if (!uploadId || photoUrls[p.src]) continue;
-      fetch("/api/uploads/image", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sessionId, uploadId }) })
-        .then((r) => (r.ok ? r.blob() : null))
-        .then((b) => b && setPhotoUrls((u) => ({ ...u, [p.src]: URL.createObjectURL(b) })))
-        .catch(() => {});
+      void fetchImage(sessionId, uploadId).then((d) => d && setPhotoUrls((u) => ({ ...u, [p.src]: d.blob })));
     }
   }, [pending, sessionId, photoUrls]);
 
-  useEffect(() => {
-    bottom.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }, [view?.turns.length, asking]);
+  async function after(v: View | null, saved: string, undo?: () => void) {
+    if (!v) return;
+    toast(saved, undo);
+    setTyped("");
+    setTyping(false);
+    await onKitChanged();
+    void loadKit();
+  }
 
   async function reply(r: Reply, saved: string) {
     if (!pending) return;
-    const v = await send({ reply: { turnId: pending.id, ...r } });
-    if (v) {
-      toast(saved);
-      setTyped("");
-      onKitChanged();
-    }
+    await after(await send({ reply: { turnId: pending.id, ...r } }), saved);
+  }
+
+  async function undo(s: Settled) {
+    await after(await send({ undo: s.gap }), "Moved to your calls");
   }
 
   if (!view) {
     return (
       <section className="intake">
         <h2>
-          Fill the gaps. <span>A few quick questions.</span>
+          A few calls <span>only you can make.</span>
         </h2>
         {error ? <p className="error">{error}</p> : <Skeleton lines={2} />}
       </section>
     );
   }
 
-  const answered = view.turns.filter((t) => t.id !== view.pending);
+  const made = view.turns.filter((t) => t.answer !== undefined || t.skipped).length;
+  const total = made + view.callsLeft;
   const pendingCall = pending && withPhotos(pending.call, photoUrls);
 
   return (
     <section className="intake">
       <h2>
-        Fill the gaps. <span>{view.done ? "Done." : `${view.gapsLeft} left.`}</span>
+        {view.done ? (
+          <>
+            Your kit is ready. <span>Nothing is waiting on you.</span>
+          </>
+        ) : (
+          <>
+            {numberWord(view.callsLeft)} {view.callsLeft === 1 ? "call" : "calls"} <span>only you can make.</span>
+          </>
+        )}
       </h2>
-      <p className="muted">
-        Claude asks about what&rsquo;s missing or where your uploads disagree, one thing at a time. Every answer goes
-        into your kit, marked as yours.
-      </p>
+      {!view.done && (
+        <p className="muted lede">
+          Each one changes the post beside it. Your files stay exactly as they are: you&rsquo;re telling the kit what&rsquo;s true now.
+        </p>
+      )}
 
-      <div className="intake-grid">
-        <aside className="intake-side">
-          <KitProgress chunks={view.progress} />
-        </aside>
-
-        <div className="intake-thread">
-          {answered.map((t) => (
-            <div key={t.id} className="intake-done">
-              <p className="intake-say">{t.say}</p>
-              <p className="intake-answer">{t.skipped ? <span className="muted">Skipped</span> : t.answer}</p>
-              <span className="eyebrow">{t.call.component}</span>
+      {view.settled.length > 0 && (
+        <div className="card settled">
+          <p className="eyebrow">Settled for you</p>
+          {view.settled.map((s) => (
+            <div className="settle" key={s.gap}>
+              <div>
+                <b>
+                  {s.mode === "conflict" ? `${s.about}: ${s.text}` : `${s.about.replace(/_/g, " ")}: kept as drafted`}
+                </b>
+                <p>{s.why}</p>
+              </div>
+              <button className="c-btn ghost" disabled={asking || !!pending} title={pending ? "Answer the call on screen first" : undefined} onClick={() => undo(s)}>
+                Undo
+              </button>
             </div>
           ))}
+        </div>
+      )}
 
+      <div className="calls-grid">
+        <div className="calls-main">
           {pending && pendingCall && (
-            <div className="intake-now">
+            <div className="card call-card">
+              <div className="call-head">
+                <span className="eyebrow">
+                  Call {Math.min(made + 1, total)} of {total}
+                </span>
+                <span className="dots" aria-hidden="true">
+                  {Array.from({ length: total }, (_, i) => (
+                    <i key={i} className={i < made ? "on" : i === made ? "now" : ""} />
+                  ))}
+                </span>
+              </div>
               <p className="intake-say now">{pending.say}</p>
               <RenderCall
                 key={pending.id}
@@ -150,36 +199,46 @@ function IntakeInner({ sessionId, onKitChanged }: { sessionId: string; onKitChan
                 errorText={error ?? undefined}
                 onAnswer={(_, answer) => reply({ answer }, "Saved to your kit")}
               />
-              <form
-                className="intake-type"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (typed.trim() && charCount(typed) <= LIMITS.messageChars) reply({ text: typed.trim() }, "Saved to your kit");
-                }}
-              >
-                <label htmlFor="intake-typed" className="eyebrow">
-                  Or answer in your own words
-                </label>
-                <div className="intake-type-row">
-                  <input id="intake-typed" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Type an answer…" disabled={asking} autoComplete="off" />
-                  <button type="submit" disabled={asking || !typed.trim() || charCount(typed) > LIMITS.messageChars}>
-                    Send
-                  </button>
-                </div>
-                <div className="intake-type-foot">
-                  <button type="button" className="quiet" disabled={asking} onClick={() => reply({ skip: true }, "Skipped")}>
-                    Skip this one
-                  </button>
-                  <span className="counter">
-                    {charCount(typed)}/{LIMITS.messageChars}
-                  </span>
-                </div>
-              </form>
+              <div className="call-else">
+                {!typing ? (
+                  <div className="row">
+                    <button type="button" className="quiet" disabled={asking} onClick={() => setTyping(true)}>
+                      Something else…
+                    </button>
+                    <button type="button" className="quiet" disabled={asking} onClick={() => reply({ skip: true }, "Skipped")}>
+                      Skip this one
+                    </button>
+                  </div>
+                ) : (
+                  <form
+                    className="intake-type"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (typed.trim() && charCount(typed) <= LIMITS.messageChars) reply({ text: typed.trim() }, "Saved to your kit");
+                    }}
+                  >
+                    <div className="intake-type-row">
+                      <input id="intake-typed" aria-label="Answer in your own words" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Tell me in your words" disabled={asking} autoComplete="off" autoFocus />
+                      <button type="submit" disabled={asking || !typed.trim() || charCount(typed) > LIMITS.messageChars}>
+                        Use this
+                      </button>
+                    </div>
+                    <div className="intake-type-foot">
+                      <button type="button" className="quiet" onClick={() => setTyping(false)}>
+                        Back to the choices
+                      </button>
+                      <span className="counter">
+                        {charCount(typed)}/{LIMITS.messageChars}
+                      </span>
+                    </div>
+                  </form>
+                )}
+              </div>
             </div>
           )}
 
           {!pending && asking && (
-            <div className="c-card">
+            <div className="card">
               <Skeleton lines={3} block={80} />
             </div>
           )}
@@ -200,24 +259,99 @@ function IntakeInner({ sessionId, onKitChanged }: { sessionId: string; onKitChan
 
           {view.done && (
             <div className="intake-complete">
-              <span className="eyebrow">Kit complete</span>
-              <p>Every chunk has what it needs, and nothing is waiting on you. Your answers are marked as yours in the kit above.</p>
+              <span className="eyebrow">Kit ready</span>
+              <p>
+                {made} {made === 1 ? "call" : "calls"} made, {view.settled.length} settled for you, nothing left open. You can still change
+                anything in the kit below, for free.
+              </p>
             </div>
           )}
 
           {!view.done && view.capped && !pending && (
             <div className="intake-complete">
-              <span className="eyebrow">That&rsquo;s all the questions for this session</span>
-              <p>
-                {view.gapsLeft} {view.gapsLeft === 1 ? "thing is" : "things are"} still open. You can fill them in by editing
-                the kit above.
-              </p>
+              <span className="eyebrow">That&rsquo;s all the calls for this session</span>
+              <p>The rest stays as drafted. You can change anything in the kit below.</p>
             </div>
           )}
-          <div ref={bottom} />
+
+          {made > 0 && (
+            <details className="made">
+              <summary>Your answers so far</summary>
+              {view.turns
+                .filter((t) => t.id !== view.pending)
+                .map((t) => (
+                  <div key={t.id} className="intake-done">
+                    <p className="intake-say">{t.say}</p>
+                    <p className="intake-answer">{t.skipped ? <span className="muted">Skipped</span> : t.answer}</p>
+                  </div>
+                ))}
+            </details>
+          )}
         </div>
+
+        <aside className="live">
+          <LivePost chunks={chunks} kit={kit} photoUrls={photoUrls} />
+        </aside>
       </div>
     </section>
+  );
+}
+
+/** The kit's first post, rebuilt from the kit as it stands. No model call: the copy is the kit's own words. */
+function LivePost({ chunks, kit, photoUrls }: { chunks: IntakeChunks; kit: KitFiles | null; photoUrls: Record<string, string> }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.3);
+  const [changed, setChanged] = useState(false);
+  const last = useRef<string>("");
+
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => e && setScale(e.contentRect.width / 1080));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [kit]);
+
+  const slots = kit ? previewSlots(chunks, kit.photos.map((p) => p.file)) : null;
+  const photoSrc = slots?.photo ? (photoUrls[`file:${slots.photo}`] ?? "") : "";
+  const html =
+    kit && slots && kit.templates["photo-led"]
+      ? buildPostPage({
+          templateHtml: kit.templates["photo-led"],
+          look: { tokensCss: kit.tokensCss, wordmarkLines: kit.wordmarkLines, fontsHref: kit.fontsHref, base: { css: kit.baseCss } },
+          slots: { headline: slots.headline, subhead: slots.subhead, badge: slots.badge },
+          photoSrc,
+        })
+      : null;
+
+  // Flag the post when an answer changes it.
+  const sig = slots ? `${slots.headline}|${slots.subhead}|${slots.badge}|${slots.photo}|${kit?.tokensCss.length}` : "";
+  useEffect(() => {
+    if (!sig) return;
+    if (last.current && last.current !== sig) {
+      setChanged(true);
+      const t = setTimeout(() => setChanged(false), 1600);
+      last.current = sig;
+      return () => clearTimeout(t);
+    }
+    last.current = sig;
+  }, [sig]);
+
+  return (
+    <>
+      <div className="live-head">
+        <span className="eyebrow">Your first post, live</span>
+        <span className={`changed ${changed ? "show" : ""}`}>● changed</span>
+      </div>
+      <div ref={box} className={`live-post ${changed ? "flash" : ""}`} style={{ aspectRatio: "4 / 5" }}>
+        {html ? (
+          <iframe title="Live post preview" sandbox="" srcDoc={html} style={{ width: 1080, height: 1350, transform: `scale(${scale})`, transformOrigin: "0 0" }} />
+        ) : (
+          <Skeleton lines={2} block={220} />
+        )}
+      </div>
+      <p className="muted small">The kit&rsquo;s own words in one of its layouts. Answers change it as you go; real posts are planned and written for each brief.</p>
+    </>
   );
 }
 
@@ -227,3 +361,24 @@ function withPhotos(c: Call, urls: Record<string, string>): Call {
   const photos = (c.props.photos as { src: string }[]).map((p) => ({ ...p, src: urls[p.src] ?? "data:image/gif;base64,R0lGODlhAQABAAAAACw=" }));
   return { ...c, props: { ...c.props, photos } };
 }
+
+/** A photo as a short object URL (for the catalog's PhotoPicker) and a data URL (for the sandboxed live post). */
+async function fetchImage(sessionId: string, uploadId: string): Promise<{ blob: string; data: string } | null> {
+  try {
+    const res = await fetch("/api/uploads/image", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sessionId, uploadId }) });
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    const data = await new Promise<string>((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(String(r.result));
+      r.onerror = () => reject(r.error);
+      r.readAsDataURL(blob);
+    });
+    return { blob: URL.createObjectURL(blob), data };
+  } catch {
+    return null;
+  }
+}
+
+const WORDS = ["No", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+const numberWord = (n: number) => WORDS[n] ?? String(n);

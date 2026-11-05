@@ -6,11 +6,11 @@ It is a public portfolio piece and an open-source repo, not a commercial product
 
 ## Current phase
 
-**Phase 5: A2UI intake (gate passed Nov 4, 2026).** Phases 1–4 passed on Nov 3, 2026. Next is phase 6; read `docs/spec.md` first.
+**Phase 7: launch and case study (started Nov 5, 2026).** Phases 1–5 passed their gates; phase 6 (signature layer and demos) is built, and its proposed gate is folded into phase 7's launch check. Before launch, intake was reworked after the first live run: code triages gaps (`core/triage.ts`: ask what changes a post, settle what the uploads settle with an Undo, skip the rest; at most 5 calls, prices and dates always asked), the reveal is a mood board, and each call sits beside a live post (`core/preview.ts`).
 
 The app's look is agreed with Scott ("Quiet room. Loud brand."): gray canvas, white cards, Geist and Geist Mono, no color of its own except one signal red meaning "needs your call"; light and dark, following the system, with a switch in the top bar. Tokens are in `app/globals.css`, component styles in `app/ui/catalog.css`. The ten catalog components live in `app/ui/catalog/` (plain React); their props and answers are zod schemas in `core/catalog.ts`, and `app/ui/render.tsx` renders one validated component call. `/catalog` shows them all.
 
-Fill the gaps (`/build`, after the reveal): `POST /api/intake` writes the owner's reply into the kit (no model call), runs the completeness check in code (`core/intake.ts`: required items per chunk, no needs-review items, every conflict answered or skipped), and if gaps remain asks Haiku (`prompts/intake.md`) for one gap, one component, one sentence. Capped at 12 questions per session.
+Fill the gaps (`/build`, after the reveal): `POST /api/intake` triages once (`core/triage.ts`), writes the owner's reply into the kit (no model call), runs the completeness check in code (`core/intake.ts`: required items per chunk, no needs-review items, every conflict answered, settled or skipped), and if a planned call remains asks Haiku (`prompts/intake.md`) to word it: one component, one sentence. `{ undo: gapId }` reverts a settlement and makes it the next call.
 
 Make posts from the visitor's own kit (`/build`, after Fill the gaps): `core/session-kit.ts` turns drafted chunks into kit files and tokens; `server/kit-source.ts` gives plan, write and compose one kit shape for demo brands and sessions; `POST /api/posts/compose` (two tries, probe issues as codes only) and `POST /api/posts/baseline` (no-kit version); the browser runs `LAYOUT_PROBE` and falls back to the template.
 
