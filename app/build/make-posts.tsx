@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 import { LIMITS, POST_INTENTS, charCount, type PostIntent } from "../../core/limits.ts";
 import { buildComposedPage, LAYOUT_PROBE, TEXT_SLOTS, type Composition, type ProbeIssue, type TextSlot } from "../../core/compose.ts";
 import { buildPostPage, type PostLook } from "../../core/post-html.ts";
-import { findTemplate, parseTemplates, type TemplateId } from "../../core/templates.ts";
+import { escapeHtml, findTemplate, parseTemplates, type TemplateId } from "../../core/templates.ts";
 import type { PropsOf } from "../../core/catalog.ts";
 import { call, type ApiError } from "../lib/api.ts";
 import { PostPreview } from "../ui/catalog/PostPreview.tsx";
@@ -40,6 +40,9 @@ type Post = {
   error?: string;
   preview?: PropsOf<"PostPreview">;
   layoutNote?: string;
+  /** The kit look the post was drawn with, so a kit change can restyle it in place. */
+  look?: { tokensCss: string; fontsHref?: string };
+  restyled?: number;
 };
 
 const INTENT_LABEL: Record<PostIntent, string> = { promo: "Promo", announcement: "Announcement", event: "Event", testimonial: "Testimonial", tip: "Tip" };
@@ -47,7 +50,15 @@ const LAYOUT_NOTE = /template|layout|composition|photo|image|crop/i;
 const RETRY_NOTE = /^(fix|fixes|fix from|previous|retry)/i;
 const messageOf = (e: unknown) => (e instanceof Error ? e.message : "Something went wrong.");
 
-export default function MakePosts({ sessionId }: { sessionId: string }) {
+/** Swaps a post's kit colors and fonts for new ones. Layout and copy stay; no model call. */
+function restyle(html: string, from: NonNullable<Post["look"]>, to: NonNullable<Post["look"]>): string {
+  let out = html.replace(`<style>${from.tokensCss}</style>`, () => `<style>${to.tokensCss}</style>`);
+  const link = (h?: string) => (h ? `<link rel="stylesheet" href="${escapeHtml(h)}">` : "");
+  if (from.fontsHref !== to.fontsHref && from.fontsHref && to.fontsHref) out = out.replace(link(from.fontsHref), () => link(to.fontsHref));
+  return out;
+}
+
+export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: string; kitVersion?: number }) {
   const [kit, setKit] = useState<Kit | null>(null);
   const [kitError, setKitError] = useState<string | null>(null);
   const [photos, setPhotos] = useState<Record<string, string>>({});
@@ -81,6 +92,26 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
   useEffect(() => {
     void loadKit();
   }, [loadKit]);
+
+  // The kit changed (a chat change, an answer): reload it, and restyle the posts already made
+  // with its new colors and fonts, so "make it neon pink" shows on the post you're looking at.
+  const [seenVersion, setSeenVersion] = useState(kitVersion);
+  useEffect(() => {
+    if (kitVersion === seenVersion) return;
+    setSeenVersion(kitVersion);
+    void loadKit();
+  }, [kitVersion, seenVersion, loadKit]);
+  useEffect(() => {
+    if (!kit) return;
+    const to = { tokensCss: kit.tokensCss, fontsHref: kit.fontsHref };
+    setPosts((ps) =>
+      ps.map((p) => {
+        if (!p.look || !p.preview || p.stage || (p.look.tokensCss === to.tokensCss && p.look.fontsHref === to.fontsHref)) return p;
+        const html = restyle(p.preview.html, p.look, to);
+        return { ...p, look: to, restyled: (p.restyled ?? 0) + 1, layoutNote: "Restyled with your kit's new look.", preview: { ...p.preview, html } };
+      }),
+    );
+  }, [kit]);
 
   const patch = (id: string, change: Partial<Post>) => setPosts((ps) => ps.map((p) => (p.id === id ? { ...p, ...change } : p)));
 
@@ -124,7 +155,7 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
         caption: written.slots.caption?.slice(0, 2200) || undefined,
         fileName,
       };
-      patch(id, { stage: "Designing the layout from your kit…", preview: base });
+      patch(id, { stage: "Designing the layout from your kit…", preview: base, look: { tokensCss: kit.tokensCss, fontsHref: kit.fontsHref } });
 
       // The without-kit version, in parallel; the toggle appears when it lands.
       void call<{ template: TemplateId | null; photo: string | null; slots: Slots | null; rationale: Note[] }>("/api/posts/baseline", { sessionId, postId: id })
@@ -229,7 +260,7 @@ export default function MakePosts({ sessionId }: { sessionId: string }) {
 
           <div className="posts-grid">
             {posts.map((p) => (
-              <article key={p.id} className="posts-item" data-drafting={p.preview ? String(!!p.stage) : undefined}>
+              <article key={p.id} className="posts-item" data-restyled={p.restyled ? p.restyled % 2 : undefined} data-drafting={p.preview ? String(!!p.stage) : undefined}>
                 <header>
                   <span className="eyebrow">{INTENT_LABEL[p.intent]}</span>
                   <p className="posts-goal">{p.goal}</p>
