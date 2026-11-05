@@ -15,7 +15,7 @@ export type SessionKit = {
   tokensCss: string;
   wordmarkLines: string[];
   /** accent2: a second brand color the others left out (a neon next to a sign yellow), or null. */
-  colors: { background: string; text: string; heading: string; accent: string; label: string; accent2: string | null };
+  colors: { background: string; text: string; heading: string; accent: string; label: string; accent2: string | null; headingPinned?: boolean };
   fonts: { heading: string; body: string; wordmark: string; hand: string };
   /** Plain notes on what code decided (font stand-ins, contrast fixes), shown in the readme. */
   notes: string[];
@@ -59,14 +59,17 @@ const lastItem = (items: IntakeItem[], ...prefixes: string[]) =>
 
 function pickColors(items: IntakeItem[], notes: string[]) {
   const role = (p: string) => hexes(lastItem(items, p)?.value ?? "")[0];
-  const palette = hexes(lastItem(items, "palette")?.value ?? "");
+  // A palette answer can also name the headline color: "Palette: … (#…, #…); headings #FF189B".
+  const paletteValue = lastItem(items, "palette")?.value ?? "";
+  const palette = hexes(paletteValue.replace(/;\s*headings?\b.*$/i, ""));
+  const headingPick = hexes(paletteValue.match(/;\s*headings?\s+(#[0-9a-f]{6})/i)?.[1] ?? "")[0];
   const any = [...new Set(items.filter((i) => i.label.toLowerCase().startsWith("color")).flatMap((i) => hexes(i.value)))];
   const pool = palette.length ? palette : any;
 
   // An owner's palette answer outranks the draft's role guesses.
   let background = (palette.length ? palette[0] : role("color: background")) ?? pool[0] ?? "#F5F3EF";
   let text = (palette.length ? undefined : role("color: body_text")) ?? [...pool].filter((h) => h !== background).sort((a, b) => contrast(b, background) - contrast(a, background))[0] ?? bestInk(background);
-  const heading0 = (palette.length ? undefined : role("color: heading")) ?? text;
+  const heading0 = headingPick ?? (palette.length ? undefined : role("color: heading")) ?? text;
   const accent0 =
     (palette.length ? undefined : role("color: accent")) ??
     [...pool].filter((h) => h !== background && h !== text).sort((a, b) => saturation(b) - saturation(a))[0] ??
@@ -88,7 +91,9 @@ function pickColors(items: IntakeItem[], notes: string[]) {
     [...pool]
       .filter((h) => !used.includes(h) && saturation(h) >= 0.35 && used.filter((u) => saturation(u) >= 0.35).every((u) => hueGap(h, u) >= 40) && contrast(h, background) >= 3)
       .sort((a, b) => saturation(b) - saturation(a))[0] ?? null;
-  return { background, text, heading, accent, label, accent2 };
+  // The owner named a headline color and it reads on the background: posts must use it.
+  const headingPinned = !!headingPick && heading === headingPick;
+  return { background, text, heading, accent, label, accent2, headingPinned };
 }
 
 // ---------- fonts ----------
@@ -137,7 +142,14 @@ function pickFonts(items: IntakeItem[], notes: string[]) {
 
 const DISPLAY_FONTS = new Set<string>(["Archivo Black", "DM Serif Display", "Playfair Display", "Instrument Serif", "Syne"]);
 
-export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["fonts"]): string {
+/** The owner's logo size, as a share of the standard (1 = 3.2em tall), from a "Logo size: 130%…" answer. */
+export function logoScaleOf(items: IntakeItem[]): number {
+  const v = [...items].reverse().find((i) => /^logo size:/i.test(i.value.trim()))?.value;
+  const pct = Number(v?.match(/(\d{2,3})\s*%/)?.[1]);
+  return pct ? Math.min(200, Math.max(50, pct)) / 100 : 1;
+}
+
+export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["fonts"], logoScale = 1): string {
   const font = (f: string) => `"${f}", system-ui, sans-serif`;
   const headingWeight = DISPLAY_FONTS.has(fonts.heading) ? 400 : 700;
   const lines = [
@@ -167,6 +179,7 @@ export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["
     `  --stamp-rotation: -3deg;`,
     `  --safe-margin: 80px;`,
     `  --unit: 8px;`,
+    ...(logoScale !== 1 ? [`  --logo-height: ${+(3.2 * logoScale).toFixed(2)}em;`] : []),
     `  --role-background: var(--color-background);`,
     `  --role-text: var(--color-text);`,
     `  --role-heading: var(--color-heading);`,
@@ -175,7 +188,9 @@ export function buildTokensCss(colors: SessionKit["colors"], fonts: SessionKit["
     `  --role-label: var(--color-label);`,
     ...(colors.accent2 ? [`  --role-accent-2: var(--color-accent-2);`] : []),
   ];
-  return `/* Built by Specs from this kit's visual-system chunk. */\n:root {\n${lines.join("\n")}\n}\n`;
+  // A headline color the owner picked wins over whatever role a layout gave its headline.
+  const pinned = colors.headingPinned ? `.headline, [data-slot="headline"] { color: var(--color-heading) !important; }\n` : "";
+  return `/* Built by Specs from this kit's visual-system chunk. */\n:root {\n${lines.join("\n")}\n}\n${pinned}`;
 }
 
 const RETRIEVAL_RULES = `# Which chunks load for each job. Built by Specs for a kit drafted from uploads.
@@ -221,7 +236,8 @@ export function kitFromChunks(chunks: IntakeChunks, business: { name: string }):
   for (const id of ["voice-core", "visual-system", "art-direction", "social-rules", "terminology"] as const) {
     if (!files[`${id}.md`]) files[`${id}.md`] = `---\nchunk_id: ${id}\nconfidence: needs-review\nsummary: >-\n  Not drafted; nothing in the uploads covered it.\n---\n`;
   }
-  const tokensCss = buildTokensCss(colors, fonts);
+  const logoScale = logoScaleOf(visual);
+  const tokensCss = buildTokensCss(colors, fonts, logoScale);
   files["tokens.css"] = tokensCss;
   files["_retrieval-rules.yaml"] = RETRIEVAL_RULES;
   files["readme.md"] = [
@@ -243,7 +259,7 @@ export function kitFromChunks(chunks: IntakeChunks, business: { name: string }):
     "",
     "## Colors and fonts in posts",
     "",
-    `Background ${colors.background}, body text ${colors.text}, headings ${colors.heading}, accent ${colors.accent}${colors.accent2 ? `, second accent ${colors.accent2}` : ""}. Headings in ${fonts.heading}, body in ${fonts.body}.`,
+    `Background ${colors.background}, body text ${colors.text}, headings ${colors.heading}, accent ${colors.accent}${colors.accent2 ? `, second accent ${colors.accent2}` : ""}. Headings in ${fonts.heading}, body in ${fonts.body}.${logoScale !== 1 ? ` Logo at ${Math.round(logoScale * 100)}% of the standard size.` : ""}`,
     ...(notes.length ? ["", ...notes.map((n) => `- ${n}`)] : []),
     "",
   ].join("\n");

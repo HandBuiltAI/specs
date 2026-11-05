@@ -149,7 +149,7 @@ html,body{margin:0;padding:0;background:#888}
 .post--4x5{width:1080px!important;height:1350px!important}
 .post img[data-slot="photo"]{display:block}
 .post .wordmark span{display:block}
-.post .wordmark img.logo{display:block;height:var(--logo-height,3.2em);width:auto;max-width:100%}
+.post .wordmark img.logo{display:block;height:var(--logo-height,3.2em);width:auto;max-width:100%;object-fit:contain}
 .post .wordmark.auto-sign{position:absolute;right:64px;bottom:56px;z-index:5;font-family:var(--font-wordmark);font-weight:var(--weight-wordmark);color:var(--role-wordmark);font-size:34px;line-height:.92;text-align:right}
 `;
 

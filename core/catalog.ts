@@ -42,7 +42,7 @@ export const catalogProps = {
   SwatchPicker: z.object({
     ...heading,
     options: z
-      .array(z.object({ id, label: short(40), note: z.string().max(60).optional(), colors: z.array(hex).min(2).max(6), sources: z.array(sourceRef).max(3).default([]) }))
+      .array(z.object({ id, label: short(40), note: z.string().max(60).optional(), colors: z.array(hex).min(2).max(6), heading: hex.optional(), sources: z.array(sourceRef).max(3).default([]) }))
       .min(2)
       .max(3),
   }),
@@ -59,6 +59,8 @@ export const catalogProps = {
     right: z.object({ label: short(24), sample: short(140) }),
     middle: z.string().max(140).optional(),
     value: z.number().min(0).max(100).default(50),
+    /** A size slider (the logo): the line reads the size as a percent of the standard, half to double. */
+    size: z.boolean().optional(),
   }),
   ChoiceChips: z.object({
     ...heading,
@@ -196,3 +198,8 @@ export const CURATED_FONTS = [
   "Lora",
   "Syne",
 ] as const;
+
+/** A size slider's position (0–100, 50 = standard) as a percent of the standard size: half to double. */
+export const sizePercent = (v: number) => Math.round(100 * 2 ** ((v - 50) / 50));
+/** The slider position for a percent of the standard size, clamped to half and double. */
+export const sliderForPercent = (pct: number) => Math.round(50 + 50 * Math.log2(Math.min(200, Math.max(50, pct)) / 100));

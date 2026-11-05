@@ -9,7 +9,8 @@ import { readUpload, assemble, getKit } from "../server/extract.ts";
 import { intakeTurn } from "../server/intake.ts";
 import { todaysSpend } from "../server/spend.ts";
 import { ASSEMBLE_TARGETS, EXTRACT_CHUNKS } from "../core/extract.ts";
-import { applyAnswer, describeAnswer, findGaps, oneSentence, progress, REQUIRED, typedPalette, tidyPalettes, ownerHexes, type IntakeChunks } from "../core/intake.ts";
+import { applyAnswer, describeAnswer, findGaps, oneSentence, progress, REQUIRED, typedPalette, tidyPalettes, ownerHexes, logoSizeCall, type IntakeChunks } from "../core/intake.ts";
+import { sizePercent } from "../core/catalog.ts";
 import { parseCall } from "../core/catalog.ts";
 import { LIMITS } from "../core/limits.ts";
 import { ASK_CAP } from "../core/triage.ts";
@@ -295,6 +296,17 @@ test("the owner can ask for a change any time: Specs brings the card, the answer
   const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, ...new Array(64).fill(0)]);
   const up = await run(() => upload(formReq({ sessionId: sid, kind: "logo", file: new File([png], "logo.png", { type: "image/png" }) }), deps));
   assert.equal(up.status, 201, JSON.stringify(await body(up.clone())));
+
+  // With a logo, "make it bigger" brings a size slider built in code, and its answer sizes every post's logo.
+  const m = sent.length;
+  const sized = await view(await turn(deps, { sessionId: sid, ask: "make the logo 30% larger" }));
+  assert.equal(sent.length, m, "no model call for a size slider");
+  const slider = sized.turns.at(-1)!;
+  assert.equal(slider.call.component, "ToneSlider");
+  await turn(deps, { sessionId: sid, reply: { turnId: slider.id, answer: { value: 69 } } });
+  const kit2 = await body(await run(() => getKit(jsonReq("/api/kit", { sessionId: sid }), deps)));
+  const vs2 = (kit2.chunks as { target: string; draft?: { items: { label: string; value: string }[] } }[]).find((c) => c.target === "visual-system")!;
+  assert.match(vs2.draft!.items.at(-1)!.value, /^Logo size: 1[23]\d% of the standard size$/);
 });
 
 test("a hex typed on a palette card replaces the nearest color, keeping role order", () => {
@@ -321,4 +333,25 @@ test("palette cards drop repeats and always offer a color the owner typed", () =
   assert.deepEqual(ownerHexes("let's add #fff"), ["#FFFFFF"]);
   // No near match: the color is added, not swapped for the pink.
   assert.deepEqual(tidyPalettes([opts[0]!, { id: "d", label: "Pink lead", colors: ["#111111", "#FF2E88"] }], ["#FFFFFF"])[0]!.colors, ["#14110F", "#FF2E88", "#FFFFFF"]);
+});
+
+test("asking to resize the logo brings a size slider that starts where the owner asked", () => {
+  const call = logoSizeCall("make the logo 30% larger")!;
+  assert.equal(call.component, "ToneSlider");
+  const props = call.props as { value: number; size?: boolean };
+  assert.equal(props.size, true);
+  assert.ok(Math.abs(sizePercent(props.value) - 130) <= 2, `starts near 130%, got ${sizePercent(props.value)}%`);
+  assert.ok(Math.abs(sizePercent((logoSizeCall("logo a bit smaller", 1.3)!.props as { value: number }).value) - 104) <= 2);
+  assert.equal(sizePercent((logoSizeCall("double the logo size")!.props as { value: number }).value), 200);
+  assert.equal(logoSizeCall("where's the logo?"), null);
+  assert.equal(logoSizeCall("make the title pink"), null);
+  assert.equal(describeAnswer(call, { value: 50 }), "Logo size: 100% of the standard size");
+});
+
+test("a palette with a headline color says so in the kit", () => {
+  const call = { component: "SwatchPicker", props: { title: "Which", options: [{ id: "a", label: "Pink titles", colors: ["#14110F", "#FFFFFF"], heading: "#FF189B", sources: [] }, { id: "b", label: "Plain", colors: ["#14110F", "#FFFFFF"], sources: [] }] } } as never;
+  assert.equal(describeAnswer(call, { optionId: "a" }), "Palette: Pink titles (#14110F, #FFFFFF); headings #FF189B");
+  const tidy = tidyPalettes([{ id: "a", label: "A", colors: ["#14110F", "#FFF"], heading: "#ff189b" }, { id: "b", label: "B", colors: ["#14110F", "#FFF"] }], ["#FF189B"]);
+  assert.equal(tidy.length, 2, "same colors with a different headline aren't duplicates, and the owner's hex counts as offered");
+  assert.equal(tidy[0]!.heading, "#FF189B");
 });
