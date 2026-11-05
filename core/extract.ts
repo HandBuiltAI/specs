@@ -138,12 +138,18 @@ export const ChunkDraftSchema = z.object({
 export type ChunkDraft = z.infer<typeof ChunkDraftSchema>;
 export type ChunkItem = ChunkDraft["items"][number];
 
+/** What a conflict is about. Intake uses it to judge what an answer would change on a post. */
+export const CONFLICT_TOPICS = ["price", "date_time", "count", "name_place", "contact", "color", "font", "voice", "photo", "other"] as const;
+export type ConflictTopic = (typeof CONFLICT_TOPICS)[number];
+
 export const ConflictsSchema = z.object({
   conflicts: z.array(
     z.object({
       about: z.string().describe("What the uploads disagree on, in a few words."),
       sides: z.array(z.object({ says: z.string(), source: Source })).describe("Each version and where it came from. At least two."),
       suggestion: z.string().describe("Which side to trust and why, or what to ask the owner."),
+      topic: z.enum(CONFLICT_TOPICS).describe("What kind of fact this is. price: any price or fee. date_time: dates, days, hours, times. count: quantities and sizes. name_place: names of the business, people, products or places. contact: addresses, handles, links. color, font, voice, photo: the look and sound. other: anything else."),
+      trust: z.number().int().describe("The index in sides of the version to trust, when the uploads settle it: more sources agree, one is clearly newer, or an upload says the other is out of date. -1 when they don't settle it."),
     }),
   ),
 });
@@ -189,7 +195,7 @@ export function formatEvidence(notes: { upload: string; kind: UploadKind; eviden
 
 export function targetInstructions(target: AssembleTarget): string {
   if (target === "conflicts") {
-    return "Target: conflicts.\nList every place where two uploads disagree on a fact: a number, a name, a date, what's in the product, a color. Include disagreements between a photo and a document. Leave out differences in wording that don't change the fact. An empty list is fine.";
+    return "Target: conflicts.\nList every place where two uploads disagree on a fact: a number, a name, a date, what's in the product, a color. Include disagreements between a photo and a document. Leave out differences in wording that don't change the fact. For each, name its topic, and set trust to the side the uploads themselves settle on (more sources, clearly newer, or another upload calls it out of date), or -1 if they don't. An empty list is fine.";
   }
   const c = EXTRACT_CHUNKS.find((x) => x.id === target)!;
   return `Target: the ${c.id} chunk ("${c.title}").\nIt holds: ${c.job}\nUseful labels: ${c.labels}.`;

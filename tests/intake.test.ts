@@ -12,6 +12,7 @@ import { ASSEMBLE_TARGETS, EXTRACT_CHUNKS } from "../core/extract.ts";
 import { applyAnswer, describeAnswer, findGaps, oneSentence, progress, REQUIRED, type IntakeChunks } from "../core/intake.ts";
 import { parseCall } from "../core/catalog.ts";
 import { LIMITS } from "../core/limits.ts";
+import { ASK_CAP } from "../core/triage.ts";
 import { readSettings } from "../server/settings.ts";
 import { makeDeps, jsonReq, formReq, body, CONFLICTS, DRAFT, ENV } from "./helpers.ts";
 
@@ -45,7 +46,7 @@ async function draftedSession(deps: Deps, withPhoto = false) {
 }
 
 const turn = (deps: Deps, b: Record<string, unknown>) => run(() => intakeTurn(jsonReq("/api/intake", b), deps));
-type View = { done: boolean; gapsLeft: number; turnsLeft: number; pending: string | null; capped?: boolean; progress: { id: string; status: string }[]; turns: { id: string; say: string; answer?: string; skipped?: boolean; call: { component: string; props: Record<string, unknown> } }[] };
+type View = { done: boolean; gapsLeft: number; callsLeft: number; settled: { gap: string; about: string; text: string; mode: string }[]; turnsLeft: number; pending: string | null; capped?: boolean; progress: { id: string; status: string }[]; turns: { id: string; say: string; answer?: string; skipped?: boolean; call: { component: string; props: Record<string, unknown> } }[] };
 const view = async (res: Response) => {
   const b = await body(res);
   assert.equal(res.status, 200, JSON.stringify(b));
@@ -133,7 +134,8 @@ test("a turn: one model call, one component, one sentence; peeking and reloading
   const first = await view(await turn(deps, { sessionId: sid }));
   assert.equal(sent.length, before + 1);
   assert.equal(sent.at(-1)!.step, "intake");
-  assert.match(sent.at(-1)!.user, /<open_gaps>[\s\S]*conflict:0/);
+  // Code picked the gap: the price conflict, which is always asked.
+  assert.match(sent.at(-1)!.user, /<open_gaps>\n- ask about: Uploads disagree: Monthly price/);
   const q = first.turns.at(-1)!;
   assert.equal(first.pending, q.id);
   assert.equal(q.call.component, "SourceCard");
@@ -155,16 +157,17 @@ test("replies: checked against the component, written into the kit, then the nex
 
   const next = await view(await turn(deps, { sessionId: sid, reply: { turnId: q.id, answer: { action: "confirm" } } }));
   assert.equal(next.turns[0]!.answer, "Confirmed: Your first box is Box 01.");
+  assert.ok(next.settled.some((x) => x.about === "Box number for pea shoots" && x.text === "Box 01"));
   assert.notEqual(next.pending, q.id);
   // The conflict's answer went into the chunk the SourceCard named.
   const kit = await body(await run(() => getKit(jsonReq("/api/kit", { sessionId: sid }), deps)));
   const about = (kit.chunks as { target: string; draft?: { items: { label: string; value: string; sources: { upload: string }[] }[] } }[]).find((c) => c.target === "brand-about")!;
   const item = about.draft!.items.find((i) => i.label.startsWith("resolved:"))!;
-  assert.equal(item.value, "Confirmed: Your first box is Box 01.");
+  assert.equal(item.value, "Your first box is Box 01.");
   assert.equal(item.sources[0]!.upload, "owner");
   // The transcript shows the model the answer, so it won't ask again.
   assert.match(sent.at(-1)!.user, /<transcript>[\s\S]*Confirmed: Your first box is Box 01/);
-  assert.doesNotMatch(sent.at(-1)!.user, /- id: conflict:0/);
+  assert.doesNotMatch(sent.at(-1)!.user, /ask about: Uploads disagree: Monthly price/);
 });
 
 test("typed replies enter the next prompt only as data", async () => {
@@ -178,37 +181,35 @@ test("typed replies enter the next prompt only as data", async () => {
   assert.equal(user.match(/<\/owner_message>/g)!.length, 1);
 });
 
-test("skipping closes a gap without touching the kit, and the per-session cap stops the questions", async () => {
+test("skipping closes a call without touching the kit, and the kit is done within the ask cap", async () => {
   const { deps, sent } = makeDeps();
   const { sid } = await draftedSession(deps);
   let v = await view(await turn(deps, { sessionId: sid }));
-  const total = v.gapsLeft;
-  while (!v.done) {
-    if (v.capped) break;
+  while (!v.done && !v.capped) {
     v = await view(await turn(deps, { sessionId: sid, reply: { turnId: v.pending!, skip: true } }));
   }
-  // There are more gaps than the cap, so the cap stops the questions first.
-  assert.ok(total > LIMITS.intakeTurns);
-  assert.equal(v.capped, true);
-  assert.equal(v.turnsLeft, 0);
-  assert.equal(sent.filter((s) => s.step === "intake").length, LIMITS.intakeTurns);
+  assert.equal(v.done, true);
+  const calls = sent.filter((s) => s.step === "intake").length;
+  assert.ok(calls > 0 && calls <= ASK_CAP, `${calls} calls`);
   assert.ok(v.turns.every((t) => t.skipped));
   await expectRefusal(await turn(deps, { sessionId: sid, reply: { turnId: v.turns.at(-1)!.id, skip: true } }), 409, "stale_reply");
 });
 
-test("each answer closes exactly one gap", async () => {
+test("each answer closes exactly one call", async () => {
   const { deps } = makeDeps();
   const { sid } = await draftedSession(deps);
   let v = await view(await turn(deps, { sessionId: sid }));
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 3 && !v.done; i++) {
     const left = v.gapsLeft;
+    const calls = v.callsLeft;
     v = await view(await turn(deps, { sessionId: sid, reply: { turnId: v.pending!, answer: { action: "edit", value: "The owner's answer" } } }));
-    assert.equal(v.gapsLeft, left - 1);
+    assert.ok(v.gapsLeft < left);
+    assert.equal(v.callsLeft, calls - 1);
   }
 });
 
-test("the model can't point at a closed gap or a photo that wasn't uploaded", async () => {
-  let reply: unknown = { gap: "need:made-up:gap", say: "Hi.", call: { component: "ChoiceChips", props: { title: "Who?", options: [{ id: "a", label: "A" }, { id: "b", label: "B" }] } } };
+test("the model can't send a malformed component or a photo that wasn't uploaded", async () => {
+  let reply: unknown = { gap: "x", say: "Hi.", call: { component: "ChoiceChips", props: { title: "Who?", options: [{ id: "a", label: "A" }] } } };
   const { deps } = makeDeps({ intake: () => reply });
   const { sid, ids } = await draftedSession(deps, true);
   await expectRefusal(await turn(deps, { sessionId: sid }), 502, "model_output");

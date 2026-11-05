@@ -59,12 +59,24 @@ export const DRAFT: ChunkDraft = {
 export const CONFLICTS: Conflicts = {
   conflicts: [
     {
+      about: "Monthly price",
+      sides: [
+        { says: "$24 a month", source: { upload: "rough-notes.pdf", location: "page 1" } },
+        { says: "$22 a month", source: { upload: "brochure.pdf", location: "p1" } },
+      ],
+      suggestion: "The notes are newer.",
+      topic: "price",
+      trust: 0,
+    },
+    {
       about: "Box number for pea shoots",
       sides: [
         { says: "BOX No. 014", source: { upload: "photo-01.jpg", location: "card" } },
         { says: "Box 01", source: { upload: "rough-notes.pdf", location: "page 1" } },
       ],
       suggestion: "Trust the notes.",
+      topic: "count",
+      trust: 1,
     },
   ],
 };
