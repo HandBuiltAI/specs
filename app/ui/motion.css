@@ -216,3 +216,18 @@ button[aria-busy="true"]::after {
 .posts-item[data-restyled="1"] .c-post iframe { animation: m-develop 900ms var(--m-out) both; }
 .posts-item[data-restyled="0"] .c-post iframe { animation: m-develop-2 900ms var(--m-out) both; }
 @keyframes m-develop-2 { from { filter: blur(8px) saturate(0.4) brightness(0.9); opacity: 0.6; } }
+
+/* A new post card rises in where it lands, so the eye goes to it. */
+.posts-item { animation: m-post-in 620ms var(--m-native) both; scroll-margin-top: 88px; }
+@keyframes m-post-in { from { opacity: 0; transform: translateY(28px) scale(0.98); } }
+
+/* "Your post is ready": shown when a post finishes while you're looking elsewhere. */
+.ready-pill {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 40;
+  display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px; border-radius: 999px;
+  background: var(--ink); color: var(--surface); border: 0; font: inherit; font-size: 15px; cursor: pointer;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25); translate: -50% 0;
+  animation: m-pill-in 520ms var(--m-native) both;
+}
+@media (min-width: 1100px) { body.chat-open .ready-pill { left: calc(50% - var(--chat-w) / 2); } }
+@keyframes m-pill-in { from { opacity: 0; transform: translateY(24px) scale(0.96); } }
