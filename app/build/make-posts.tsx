@@ -34,6 +34,8 @@ type Kit = {
 type Slots = Record<string, string | null>;
 type Post = {
   id: string;
+  /** Stays the same when the server's id replaces the temporary one, so the card isn't remounted. */
+  uid: string;
   intent: PostIntent;
   goal: string;
   stage: string | null;
@@ -69,6 +71,12 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
   const [posts, setPosts] = useState<Post[]>([]);
   const [left, setLeft] = useState<number>(LIMITS.postsPerSession);
   const [busy, setBusy] = useState(false);
+  // The post the page is following: scrolled to when it starts, flagged with a pill when it's ready off screen.
+  const [follow, setFollow] = useState<string | null>(null);
+  const [readyOffscreen, setReadyOffscreen] = useState<string | null>(null);
+  const reduceMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const postEl = (id: string) => document.querySelector<HTMLElement>(`[data-post-id="${CSS.escape(id)}"]`);
+  const goTo = (id: string) => postEl(id)?.scrollIntoView({ behavior: reduceMotion() ? "auto" : "smooth", block: "start" });
 
   const loadKit = useCallback(async () => {
     setKitError(null);
@@ -113,6 +121,32 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
     );
   }, [kit]);
 
+  useEffect(() => {
+    if (!follow) return;
+    const t = setTimeout(() => goTo(follow), 120);
+    return () => clearTimeout(t);
+  }, [follow]);
+
+  // When the followed post finishes and it's out of view, a pill says so and takes you there.
+  const followed = posts.find((p) => p.id === follow);
+  const followedDone = !!followed && !followed.stage && !!(followed.preview || followed.error);
+  useEffect(() => {
+    if (!followedDone || !follow) return;
+    const el = postEl(follow);
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (r.bottom < 80 || r.top > window.innerHeight - 120) setReadyOffscreen(follow);
+    setFollow(null);
+  }, [followedDone, follow]);
+  useEffect(() => {
+    if (!readyOffscreen) return;
+    const el = postEl(readyOffscreen);
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && setReadyOffscreen(null), { threshold: 0.3 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [readyOffscreen]);
+
   const patch = (id: string, change: Partial<Post>) => setPosts((ps) => ps.map((p) => (p.id === id ? { ...p, ...change } : p)));
 
   async function make() {
@@ -120,7 +154,9 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
     setBusy(true);
     const tempId = crypto.randomUUID();
     const brief = { goal: goal.trim(), details: details.trim() };
-    setPosts((ps) => [{ id: tempId, intent, goal: brief.goal, stage: "Planning the post…" }, ...ps]);
+    setPosts((ps) => [{ id: tempId, uid: tempId, intent, goal: brief.goal, stage: "Planning the post…" }, ...ps]);
+    // The new post lands below the form: bring it into view, so the wait is watched, not guessed at.
+    setFollow(tempId);
     let id = tempId;
     try {
       const planned = await call<{ postId: string; plan: { template: TemplateId; photo: string | null; angle: string; rationale: Note[] }; postsLeft: number }>("/api/posts", {
@@ -131,6 +167,7 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
       });
       id = planned.postId;
       setPosts((ps) => ps.map((p) => (p.id === tempId ? { ...p, id } : p)));
+      setFollow((f) => (f === tempId ? id : f));
       setLeft(planned.postsLeft);
       setGoal("");
       setDetails("");
@@ -258,9 +295,16 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
             </div>
           </form>
 
+          {readyOffscreen && (
+            <button type="button" className="ready-pill" onClick={() => goTo(readyOffscreen)}>
+              <span className="working-dot" aria-hidden="true" />
+              Your post is ready ↓
+            </button>
+          )}
+
           <div className="posts-grid">
             {posts.map((p) => (
-              <article key={p.id} className="posts-item" data-restyled={p.restyled ? p.restyled % 2 : undefined} data-drafting={p.preview ? String(!!p.stage) : undefined}>
+              <article key={p.uid} data-post-id={p.id} className="posts-item" data-restyled={p.restyled ? p.restyled % 2 : undefined} data-drafting={p.preview ? String(!!p.stage) : undefined}>
                 <header>
                   <span className="eyebrow">{INTENT_LABEL[p.intent]}</span>
                   <p className="posts-goal">{p.goal}</p>
