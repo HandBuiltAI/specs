@@ -108,6 +108,15 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
 
   const onToken = useCallback((t: string | null) => setToken(t), []);
 
+  /** This tab keeps its kit across reloads; starting over forgets it here and begins again. */
+  function startOver() {
+    if (!window.confirm("Start a new kit? This one stays saved until it expires, but this tab will forget it.")) return;
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch {}
+    window.location.reload();
+  }
+
   async function start() {
     setError(null);
     setBusy("Starting a session…");
@@ -450,9 +459,14 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
 
       {started && (
         <>
-          <h2 className="reveal-title">
-            {name ? `Here's ${name},` : "Here's your brand,"} <span>as your files describe it.</span>
-          </h2>
+          <div className="reveal-head">
+            <h2 className="reveal-title">
+              {name ? `Here's ${name},` : "Here's your brand,"} <span>as your files describe it.</span>
+            </h2>
+            <button type="button" className="c-btn ghost" onClick={startOver} disabled={working}>
+              Start a new kit
+            </button>
+          </div>
           {!draftingDone && (
             <ReadingFinds
               uploads={uploads}

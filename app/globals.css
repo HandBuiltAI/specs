@@ -393,3 +393,6 @@ main.kitpage .kitpage-lede { max-width: 42rem; }
   .chat-panel { top: auto; left: 0; width: auto; height: min(78vh, 680px); border-left: 0; border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; box-shadow: 0 -24px 48px -24px rgba(0, 0, 0, 0.45); }
   .chat-head::before { content: ""; position: absolute; left: 50%; top: 8px; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: var(--line); }
 }
+.reveal-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s4); flex-wrap: wrap; }
+.reveal-head .reveal-title { margin-bottom: 0; }
+.reveal-head .c-btn { margin: 0 0 var(--s2); flex: none; }

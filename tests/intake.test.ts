@@ -284,7 +284,7 @@ test("the owner can ask for a change any time: Specs brings the card, the answer
   const why = await view(await turn(deps, { sessionId: sid, ask: "Why these colors?" }));
   const w = why.turns.at(-1)! as unknown as { call: unknown; say: string };
   assert.equal(w.call, null);
-  assert.equal(w.say, "Those colors come from your photos.");
+  assert.equal(w.say, "Those colors come from your photos. A second sentence.");
   assert.equal(why.pending, null);
 
   // No logo uploaded: code answers, no model call, and a logo can still go up after drafting.

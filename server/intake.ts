@@ -19,6 +19,7 @@ import {
   findGaps,
   intakePrompt,
   oneSentence,
+  shortAnswer,
   progress,
   rawCall,
   targetChunk,
@@ -377,7 +378,7 @@ async function changeTurn(deps: Deps, session: Session, message: string) {
       call = parsed.call;
     }
     const about = data.about.replace(/\s+/g, " ").trim().slice(0, 60) || "Your change";
-    const turn: Turn = { id: crypto.randomUUID(), gap: `request:${crypto.randomUUID().slice(0, 8)}`, about, say: oneSentence(data.say), call, asked: message, request: { chunk: data.chunk } };
+    const turn: Turn = { id: crypto.randomUUID(), gap: `request:${crypto.randomUUID().slice(0, 8)}`, about, say: call ? oneSentence(data.say) : shortAnswer(data.say), call, asked: message, request: { chunk: data.chunk } };
     // The planned call on screen steps aside; its gap is still open, so it's asked again after.
     const saved = await update<IntakeState>(deps.kv, intakeKey(session.id), empty, (s) => ({ ...s, running: false, turns: [...s.turns.filter((t) => t !== pendingOf(s)), turn] }));
     const after = await loadChunks(deps, session);
