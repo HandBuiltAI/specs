@@ -141,10 +141,16 @@ export function PostPreview(props: Props) {
               />
             ))}
             {[...outlines.values()].map(({ box: b, n }, k) => {
-              // The numbers sit on the outline's top-left corner, kept inside the post so none is cut off.
-              const w = n.length * 25;
-              const left = Math.min(Math.max(b.x * scale - 11, 4), 1080 * scale - w - 4);
-              const top = Math.min(Math.max(b.y * scale - 11, 4), h * scale - 26);
+              // The numbers sit just outside their outline, to the left when there's room, else above
+              // it, else on its corner; always inside the post so none is cut off or covers the copy.
+              const w = n.length * 25 - 3;
+              const [x, y, bw] = [b.x * scale, b.y * scale, b.w * scale];
+              const fitsLeft = x >= w + 6;
+              const fitsAbove = y >= 28;
+              const rawLeft = fitsLeft ? x - w - 4 : fitsAbove ? x : x - 11;
+              const rawTop = fitsLeft ? y - 2 : fitsAbove ? y - 26 : y - 11;
+              const left = Math.min(Math.max(rawLeft, 4), Math.max(4, Math.min(x + bw, 1080 * scale) - w - 4));
+              const top = Math.min(Math.max(rawTop, 4), h * scale - 26);
               return (
                 <span key={n[0]} className="c-pin-tags" style={{ left, top, ["--k" as string]: k }}>
                   {n.map((i) => (
