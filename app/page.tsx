@@ -64,9 +64,13 @@ export default function Home() {
       <h1>
         Your brand, <span>written down for machines.</span>
       </h1>
-      <p className="muted start-lede">
-        Specs turns a small business&rsquo;s messy brand materials into a brand kit an AI can read, then art-directs Instagram
-        posts that explain their own design decisions.
+      <p className="start-lede">
+        Hand Specs the messy stuff: a logo, a website, a rough PDF, phone photos. It writes your brand down as a kit an AI can
+        read, then art-directs Instagram posts that explain their own design decisions.
+      </p>
+      <p className="muted start-lede-2">
+        The kit is yours to keep. Download it, give it to the coding agent of your choice, and whatever it builds starts on
+        brand.
       </p>
 
       <h2>

@@ -205,7 +205,8 @@ main.posts .posts-lede { max-width: 46rem; }
 .posts-goal { margin: var(--s1) 0 0; font-weight: 500; letter-spacing: -0.01em; text-wrap: balance; }
 
 /* Start screen */
-main.start .start-lede { max-width: 40rem; font-size: 18px; }
+main.start .start-lede { max-width: 40rem; font-size: 18px; margin-bottom: var(--s2); }
+main.start .start-lede-2 { max-width: 40rem; margin-top: 0; }
 .demo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: var(--s5); margin-top: var(--s5); }
 .demo-card { margin: 0; display: flex; flex-direction: column; padding: 0; overflow: hidden; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; }
 .demo-card:hover { transform: translateY(-2px); }

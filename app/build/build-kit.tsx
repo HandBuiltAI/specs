@@ -9,7 +9,7 @@ import { LIMITS, charCount } from "../../core/limits.ts";
 import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type Evidence } from "../../core/extract.ts";
 import type { Swatch } from "../../core/colors.ts";
 import { call, pool, sendForm, type ApiError } from "../lib/api.ts";
-import { prepareImage } from "../lib/images.ts";
+import { LOGO_ACCEPT, isSvg, logoProblem, prepareImage } from "../lib/images.ts";
 import { Turnstile } from "../lib/turnstile.tsx";
 import Intake from "./intake.tsx";
 import { BrandBoard } from "./brand-board.tsx";
@@ -246,13 +246,28 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
 
   /** Dropped files go where they belong: images to photos, a PDF to the PDF slot. */
   function onDrop(files: File[]) {
-    const images = files.filter((f) => /^image\/(jpeg|png|webp|gif)$/.test(f.type));
+    // An SVG, or an image named like a logo, goes to the logo slot; other images are photos.
+    const logoLike = files.find((f) => isSvg(f) || (/^image\//.test(f.type) && /logo|wordmark|lockup/i.test(f.name)));
+    const images = files.filter((f) => f !== logoLike && /^image\/(jpeg|png|webp|gif|avif|heic|heif)$/.test(f.type));
     const pdfs = files.filter((f) => f.type === "application/pdf" || /\.pdf$/i.test(f.name));
+    const design = files.map(logoProblem).find((p) => p && !/\.pdf/i.test(p));
+    if (logoLike) setLogo(logoLike);
     if (images.length) setPhotos((p) => [...p, ...images].slice(0, LIMITS.imageCount));
     if (pdfs[0]) setPdf(pdfs[0]);
-    const rest = files.length - images.length - pdfs.length;
-    if (rest > 0 || pdfs.length > 1) setError(`Specs takes photos (JPEG, PNG, WebP, GIF) and one PDF. ${rest + Math.max(0, pdfs.length - 1)} ${rest + Math.max(0, pdfs.length - 1) === 1 ? "file was" : "files were"} left out.`);
+    const left = files.length - (logoLike ? 1 : 0) - images.length - Math.min(1, pdfs.length);
+    if (design) setError(design);
+    else if (left > 0) setError(`Specs takes photos, one logo (SVG, PNG, JPEG or WebP) and one PDF. ${left} ${left === 1 ? "file was" : "files were"} left out.`);
     else setError(null);
+  }
+
+  function pickLogo(f: File | null) {
+    const problem = f && logoProblem(f);
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    setError(null);
+    setLogo(f);
   }
 
   return (
@@ -295,22 +310,36 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
               onDrop([...e.dataTransfer.files]);
             }}
           >
-            <p className="dropzone-title">Drop photos and a PDF here</p>
+            <p className="dropzone-title">Drop photos, a logo and a PDF here</p>
             <p className="muted small">
-              Up to {LIMITS.imageCount} photos and one PDF of up to {LIMITS.pdfPages} pages. Photos are shrunk in your browser before upload.
+              Up to {LIMITS.imageCount} photos, one logo (SVG or PNG is best) and one PDF of up to {LIMITS.pdfPages} pages. Images are shrunk in your browser before upload.
             </p>
             <div className="dropzone-pick">
               <label htmlFor="photos" className="c-btn ghost">
                 Choose photos
               </label>
-              <input id="photos" className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={(e) => setPhotos((p) => [...p, ...(e.target.files ?? [])].slice(0, LIMITS.imageCount))} />
+              <input id="photos" className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,.heic,.heif" multiple onChange={(e) => setPhotos((p) => [...p, ...(e.target.files ?? [])].slice(0, LIMITS.imageCount))} />
+              <label htmlFor="logo" className="c-btn ghost">
+                Choose a logo
+              </label>
+              <input id="logo" className="visually-hidden" type="file" accept={LOGO_ACCEPT} onChange={(e) => pickLogo(e.target.files?.[0] ?? null)} />
               <label htmlFor="pdf" className="c-btn ghost">
                 Choose a PDF
               </label>
               <input id="pdf" className="visually-hidden" type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] ?? null)} />
             </div>
-            {(photos.length > 0 || pdf) && (
+            {(photos.length > 0 || pdf || logo) && (
               <ul className="dropped">
+                {logo && (
+                  <li>
+                    <span>
+                      {logo.name} <span className="muted small">logo</span>
+                    </span>
+                    <button type="button" className="quiet" aria-label={`Remove ${logo.name}`} onClick={() => setLogo(null)}>
+                      Remove
+                    </button>
+                  </li>
+                )}
                 {photos.map((p, i) => (
                   <li key={`${p.name}-${i}`}>
                     <span>{p.name}</span>
@@ -330,9 +359,6 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
               </ul>
             )}
           </div>
-
-          <label htmlFor="logo">Logo</label>
-          <input id="logo" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setLogo(e.target.files?.[0] ?? null)} />
 
 
           <label htmlFor="url">Website</label>
