@@ -11,7 +11,7 @@ import { buildComposedPage, LAYOUT_PROBE, TEXT_SLOTS, type Composition, type Pro
 import { buildPostPage, type PostLook } from "../../core/post-html.ts";
 import { escapeHtml, findTemplate, parseTemplates, type TemplateId } from "../../core/templates.ts";
 import type { PropsOf } from "../../core/catalog.ts";
-import { call, type ApiError } from "../lib/api.ts";
+import { call, callAgainIfDropped, isDropped, type ApiError } from "../lib/api.ts";
 import { PostPreview } from "../ui/catalog/PostPreview.tsx";
 import { logoDataUrl } from "../lib/logo.ts";
 import { KitDownload } from "../ui/KitDownload.tsx";
@@ -50,7 +50,7 @@ type Post = {
 const INTENT_LABEL: Record<PostIntent, string> = { promo: "Promo", announcement: "Announcement", event: "Event", testimonial: "Testimonial", tip: "Tip" };
 const LAYOUT_NOTE = /template|layout|composition|photo|image|crop/i;
 const RETRY_NOTE = /^(fix|fixes|fix from|previous|retry)/i;
-const messageOf = (e: unknown) => (e instanceof Error ? e.message : "Something went wrong.");
+const messageOf = (e: unknown) => (isDropped(e) ? "The connection dropped before this post came back. Try making it again." : e instanceof Error ? e.message : "Something went wrong.");
 
 /** Swaps a post's kit colors and fonts for new ones. Layout and copy stay; no model call. */
 function restyle(html: string, from: NonNullable<Post["look"]>, to: NonNullable<Post["look"]>): string {
@@ -172,7 +172,8 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
       setGoal("");
       setDetails("");
       patch(id, { stage: "Writing the copy…" });
-      const written = await call<{ template: TemplateId; photo: string | null; slots: Slots; rationale: Note[] }>("/api/posts/write", { sessionId, postId: id });
+      // Writing a post twice returns the first answer, so a dropped connection is simply tried again.
+      const written = await callAgainIfDropped<{ template: TemplateId; photo: string | null; slots: Slots; rationale: Note[] }>("/api/posts/write", { sessionId, postId: id });
 
       // The template version first, so there's a post on screen while the layout is designed.
       const templates = parseTemplates(kit.templatesManifest);

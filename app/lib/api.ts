@@ -39,6 +39,27 @@ export async function pool<T>(items: T[], size: number, work: (item: T) => Promi
   );
 }
 
+/** True when the request never got an answer (Safari says "Load failed", Chrome "Failed to fetch"). */
+export const isDropped = (e: unknown) => e instanceof TypeError;
+
+/**
+ * A call that's safe to repeat, tried again if the connection drops on the way back. After a drop
+ * the server may still be finishing the first try, so "still working" answers wait and ask again.
+ */
+export async function callAgainIfDropped<T>(path: string, body: unknown, stillWorking = "not_ready"): Promise<T> {
+  let dropped = 0;
+  for (let waited = 0; ; ) {
+    try {
+      return await call<T>(path, body);
+    } catch (e) {
+      if (isDropped(e) && dropped < 2) dropped++;
+      else if (dropped && (e as ApiError).code === stillWorking && waited < 10) waited++;
+      else throw e;
+      await new Promise((r) => setTimeout(r, 2500));
+    }
+  }
+}
+
 /** A call that waits and tries again while the day's budget is held by other steps still running. */
 export async function callPatiently<T>(path: string, body: unknown, tries = 8): Promise<T> {
   for (let i = 1; ; i++) {
