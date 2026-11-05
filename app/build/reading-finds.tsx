@@ -4,6 +4,7 @@
 // scanned, and what Specs finds in it (a color, a line in the brand's own words, a fact) drops
 // onto the table as a card the moment it is found. It turns the wait into the first look at the brand.
 import { useMemo } from "react";
+import { Working } from "../ui/working.tsx";
 import type { Evidence } from "../../core/extract.ts";
 import type { Swatch } from "../../core/colors.ts";
 
@@ -57,6 +58,7 @@ export function ReadingFinds(props: {
         <p className="eyebrow">What we&rsquo;re finding</p>
         <span className="finds-stage mono">{stage}</span>
       </div>
+      <Working kind={read < uploads.length ? "reading" : "drafting"} />
       <ul className="finds-files">
         {uploads.map((u, i) => {
           const s = reads[u.id]?.status ?? "waiting";

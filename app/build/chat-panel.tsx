@@ -7,6 +7,7 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { LIMITS, charCount } from "../../core/limits.ts";
 import { LOGO_ACCEPT } from "../lib/images.ts";
+import { Working } from "../ui/working.tsx";
 import type { IntakeChunks } from "../../core/intake.ts";
 
 type Turn = { id: string; about: string; say: string; call: unknown; answer?: string; skipped?: boolean; asked?: string };
@@ -110,6 +111,7 @@ export function ChatPanel(props: {
               <i />
               <i />
             </p>
+            <Working kind="chat" className="chat-working" />
           </div>
         )}
         {error && (

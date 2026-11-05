@@ -4,6 +4,7 @@
 // files and structured fields; the server writes every prompt. Extraction runs as many short
 // calls (one per upload, then one per kit chunk) because the deployed function is cut off at
 // about 30 seconds, and each answer is shown as soon as it lands.
+import { Working } from "../ui/working.tsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LIMITS, charCount } from "../../core/limits.ts";
 import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type Evidence } from "../../core/extract.ts";
@@ -442,13 +443,13 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
             {charCount(note)} / {LIMITS.messageChars}
           </p>
 
-          <button onClick={buildKit} disabled={nothingChosen || tooLong || !!busy}>
+          <button onClick={buildKit} aria-busy={!!busy} disabled={nothingChosen || tooLong || !!busy}>
             Build my kit
           </button>
         </div>
       )}
 
-      {busy && <p className="muted">{busy}</p>}
+      {busy && <Working kind="reading" lead={busy} />}
       {error && <p className="error">{error}</p>}
       {stalled && sessionId && (
         <div className="card resume">

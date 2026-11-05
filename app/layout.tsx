@@ -6,6 +6,7 @@ import "./globals.css";
 import "./ui/catalog.css";
 import "./ui/motion.css";
 import { THEME_SCRIPT, ThemeToggle } from "./ui/theme.tsx";
+import { NavDirection } from "./ui/page-motion.tsx";
 
 export const metadata: Metadata = {
   title: "Specs",
@@ -29,16 +30,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <header className="topbar">
-          <Link href="/" className="wordmark" aria-label="Specs home" transitionTypes={["nav-back"]}>
+          <Link href="/" className="wordmark" aria-label="Specs home" data-nav="back">
             Specs<i aria-hidden="true" />
           </Link>
           <nav>
-            <Link href="/build" transitionTypes={["nav-forward"]}>Build a kit</Link>
-            <Link href="/catalog" transitionTypes={["nav-forward"]}>Components</Link>
+            <Link href="/build">Build a kit</Link>
+            <Link href="/catalog">Components</Link>
             <ThemeToggle />
           </nav>
         </header>
         {children}
+        <NavDirection />
       </body>
     </html>
   );
