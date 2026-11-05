@@ -37,7 +37,7 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
   // Cite only chunks that exist in this kit, so a note never points at a rule you can't open.
   const chunkIds = new Set(Object.keys(b.kit).map((f) => f.replace(/\.(md|ya?ml|json|css)$/, "")));
   const base = { css: CONTENT.baseCss };
-  const kitLook: PostLook = { tokensCss: b.kit["tokens.css"] ?? CONTENT.neutralTokensCss, wordmarkLines: b.wordmark, fontsHref: "/generated/fonts/fonts.css", base };
+  const kitLook: PostLook = { tokensCss: b.kit["tokens.css"] ?? CONTENT.neutralTokensCss, wordmarkLines: b.wordmark, logoSrc: b.logo, fontsHref: "/generated/fonts/fonts.css", base };
   const plainLook: PostLook = { tokensCss: CONTENT.neutralTokensCss, wordmarkLines: [b.businessName], base };
 
   const notes = (ns: Note[]) =>
@@ -71,6 +71,7 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
         tokensCss: kitLook.tokensCss,
         fontsHref: kitLook.fontsHref,
         wordmarkLines: b.wordmark,
+        logoSrc: b.logo,
         photo: p.kit.photo ? { src: `/generated/${brand}/${p.kit.photo}`, alt: base.alt } : null,
       }),
       rationale: notes(c.rationale).slice(0, 16),

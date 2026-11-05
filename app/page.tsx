@@ -34,10 +34,16 @@ function DemoCard({ id }: { id: DemoBrandId }) {
     <Link href={`/posts/${id}`} className="demo-card card">
       <div className="demo-plate" style={plate}>
         {photo && <img src={`/generated/${id}/${photo.file}`} alt="" loading="lazy" />}
-        <p className="demo-wordmark" aria-hidden="true">
-          <span>{line1}</span>
-          {rest.length > 0 && <span className="demo-wordmark-2">{rest.join(" ")}</span>}
-        </p>
+        {b.logo ? (
+          <div className="demo-logo">
+            <img src={b.logo} alt="" />
+          </div>
+        ) : (
+          <p className="demo-wordmark" aria-hidden="true">
+            <span>{line1}</span>
+            {rest.length > 0 && <span className="demo-wordmark-2">{rest.join(" ")}</span>}
+          </p>
+        )}
       </div>
       <div className="demo-body">
         <p className="eyebrow">{STYLE[id]}</p>

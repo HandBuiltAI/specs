@@ -215,6 +215,8 @@ main.start .start-lede-2 { max-width: 40rem; margin-top: 0; }
 .demo-plate img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
 .demo-wordmark { margin: 0; padding: 18px 20px 20px; min-height: 100px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; font-family: var(--plate-font); font-weight: var(--plate-weight); letter-spacing: var(--plate-tracking); font-size: 34px; line-height: 0.95; }
 .demo-wordmark-2 { font-size: calc(1em * var(--plate-line2-scale)); letter-spacing: var(--plate-line2-tracking); margin-top: 0.3em; }
+.demo-logo { padding: 14px 20px; min-height: 100px; box-sizing: border-box; display: flex; align-items: center; }
+.demo-plate .demo-logo img { display: block; height: 72px; width: auto; max-width: 100%; aspect-ratio: auto; object-fit: contain; }
 .demo-body { padding: var(--s4) var(--s5) var(--s5); display: flex; flex-direction: column; gap: var(--s2); flex: 1; }
 .demo-body p { margin: 0; }
 .demo-foot { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); margin-top: auto; padding-top: var(--s3); }

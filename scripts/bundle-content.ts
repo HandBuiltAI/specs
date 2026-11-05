@@ -28,6 +28,14 @@ rmSync(PUBLIC_OUT, { recursive: true, force: true });
 mkdirSync(PUBLIC_OUT, { recursive: true });
 cpSync(join(ROOT, "assets", "fonts"), join(PUBLIC_OUT, "fonts"), { recursive: true });
 
+/** Copies brands/<brand>/logo.svg or logo.png next to the photos and returns its URL. */
+function logoOf(brand: string): string | null {
+  const file = ["logo.svg", "logo.png"].find((f) => existsSync(join(brandDir(brand), f)));
+  if (!file) return null;
+  cpSync(join(brandDir(brand), file), join(PUBLIC_OUT, brand, file));
+  return `/generated/${brand}/${file}`;
+}
+
 const brands = Object.fromEntries(
   DEMO_BRANDS.map((brand) => {
     const kitFiles = Object.fromEntries(readdirSync(kitDir(brand)).sort().map((f) => [f, read(join(kitDir(brand), f))]));
@@ -50,6 +58,8 @@ const brands = Object.fromEntries(
         kit: kitFiles,
         photos,
         wordmark: wordmarkLines(kitFiles, briefs.business_name),
+        // The brand's own logo, designed for the demo; posts fall back to the type-built wordmark without one.
+        logo: logoOf(brand),
         demoPosts,
       },
     ];
@@ -81,6 +91,8 @@ export type DemoBrand = {
   kit: Record<string, string>;
   photos: DemoPhoto[];
   wordmark: string[];
+  /** URL of the brand's logo image, or null. */
+  logo: string | null;
   demoPosts: DemoPosts | null;
 };
 
