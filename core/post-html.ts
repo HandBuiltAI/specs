@@ -9,6 +9,8 @@ export type PostLook = {
   tokensCss: string;
   /** Wordmark lines: the brand's lockup, or just the business name for the no-kit baseline. */
   wordmarkLines: string[];
+  /** The brand's own logo image (a URL), which signs the post in place of the type-built wordmark. */
+  logoSrc?: string | null;
   /** A stylesheet with the brand's @font-face rules, or none for system fonts. */
   fontsHref?: string;
   /** base.css: inlined text, or a link to it. */
@@ -27,9 +29,15 @@ export function buildPostPage(opts: {
     `<style>${look.tokensCss}</style>`,
     "css" in look.base ? `<style>${look.base.css}</style>` : `<link rel="stylesheet" href="${escapeHtml(look.base.href)}">`,
   ].join("");
-  const wordmark = look.wordmarkLines.map((l) => `<span>${escapeHtml(l)}</span>`).join("");
+  const wordmark = wordmarkHtml(look.wordmarkLines, look.logoSrc);
   const slots = Object.fromEntries(Object.entries(opts.slots).map(([k, v]) => [k, v ?? undefined]));
   return fill(opts.templateHtml, { ...slots, head, wordmark, photo_src: opts.photoSrc ?? "" });
+}
+
+/** What goes inside the wordmark slot: the logo when the brand has one, else the type-built lockup. */
+export function wordmarkHtml(lines: string[], logoSrc?: string | null): string {
+  if (logoSrc) return `<img class="logo" src="${escapeHtml(logoSrc)}" alt="">`;
+  return lines.map((l) => `<span>${escapeHtml(l)}</span>`).join("");
 }
 
 /**

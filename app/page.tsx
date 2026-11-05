@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CONTENT, DEMO_BRAND_IDS, type DemoBrandId } from "../server/generated/content.ts";
 import { tokenValues } from "../core/kit.ts";
+import { PageMotion, Shared } from "./ui/page-motion.tsx";
 
 // The start screen: pick a precomputed demo brand (free, instant) or build a kit from your own
 // materials. Each demo card is set in that brand's own colors and type, read from its tokens.css.
@@ -31,17 +32,25 @@ function DemoCard({ id }: { id: DemoBrandId }) {
   } as React.CSSProperties;
 
   return (
-    <Link href={`/posts/${id}`} className="demo-card card">
+    <Link href={`/posts/${id}`} className="demo-card card" transitionTypes={["nav-forward"]}>
       <div className="demo-plate" style={plate}>
         {photo && <img src={`/generated/${id}/${photo.file}`} alt="" loading="lazy" />}
-        <p className="demo-wordmark" aria-hidden="true">
-          <span>{line1}</span>
-          {rest.length > 0 && <span className="demo-wordmark-2">{rest.join(" ")}</span>}
-        </p>
+        {b.logo ? (
+          <div className="demo-logo">
+            <img src={b.logo} alt="" />
+          </div>
+        ) : (
+          <p className="demo-wordmark" aria-hidden="true">
+            <span>{line1}</span>
+            {rest.length > 0 && <span className="demo-wordmark-2">{rest.join(" ")}</span>}
+          </p>
+        )}
       </div>
       <div className="demo-body">
         <p className="eyebrow">{STYLE[id]}</p>
-        <h3>{b.businessName}</h3>
+        <Shared name={`brand-${id}`}>
+          <h3 className="brand-name">{b.businessName}</h3>
+        </Shared>
         <p className="muted small">{b.businessLine}</p>
         <div className="demo-foot">
           <span className="swatches" aria-label="Brand colors">
@@ -58,15 +67,20 @@ function DemoCard({ id }: { id: DemoBrandId }) {
 
 export default function Home() {
   return (
+    <PageMotion>
     <main className="wide start">
       {/* Brand fonts for the demo cards; post pages load the same file. */}
       <link rel="stylesheet" href="/generated/fonts/fonts.css" precedence="default" />
       <h1>
         Your brand, <span>written down for machines.</span>
       </h1>
-      <p className="muted start-lede">
-        Specs turns a small business&rsquo;s messy brand materials into a brand kit an AI can read, then art-directs Instagram
-        posts that explain their own design decisions.
+      <p className="start-lede">
+        Hand Specs the messy stuff: a logo, a website, a rough PDF, phone photos. It writes your brand down as a kit an AI can
+        read, then art-directs Instagram posts that explain their own design decisions.
+      </p>
+      <p className="muted start-lede-2">
+        The kit is yours to keep. Download it, give it to the coding agent of your choice, and whatever it builds starts on
+        brand.
       </p>
 
       <h2>
@@ -85,7 +99,7 @@ export default function Home() {
       <h2>
         Or start with yours.
       </h2>
-      <Link href="/build" className="card start-own">
+      <Link href="/build" className="card start-own" transitionTypes={["nav-forward"]}>
         <div>
           <h3>Build a brand kit from your own materials</h3>
           <p className="muted small">
@@ -101,5 +115,6 @@ export default function Home() {
         <Link href="/live">live session test page</Link> for the cost guards.
       </p>
     </main>
+    </PageMotion>
   );
 }

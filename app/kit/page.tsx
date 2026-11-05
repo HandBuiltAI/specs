@@ -3,6 +3,7 @@ import Link from "next/link";
 import YAML from "yaml";
 import { CONTENT } from "../../server/generated/content.ts";
 import { KitDownload } from "../ui/KitDownload.tsx";
+import { PageMotion } from "../ui/page-motion.tsx";
 
 // Specs' own brand kit, in the same format it makes for other brands (spec: "the app ships with
 // its own brand kit ... so the method is visible in the tool itself"). Static, no API calls.
@@ -41,6 +42,7 @@ export default function SpecsKitPage() {
   const colors = Object.values((JSON.parse(files["visual-system.json"] ?? "{}") as { color?: Record<string, Color> }).color ?? {});
 
   return (
+    <PageMotion>
     <main className="wide kitpage">
       <p className="eyebrow">Specs · brand kit v1</p>
       <h1>
@@ -95,5 +97,6 @@ export default function SpecsKitPage() {
         generated from the visual system.
       </p>
     </main>
+    </PageMotion>
   );
 }

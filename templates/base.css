@@ -90,3 +90,6 @@ html, body { background: #888; }
   font-size: calc(1em * var(--wordmark-line2-scale, 1));
   margin-top: 4px;
 }
+
+/* The brand's own logo, when it has one, in place of the type-built lockup. Same size and corner. */
+.wordmark img.logo { display: block; height: var(--logo-height, 3.2em); width: auto; margin-left: auto; }

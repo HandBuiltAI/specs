@@ -7,6 +7,7 @@ import { buildComposedPage, checkComposition, TEXT_SLOTS, type TextSlot } from "
 import type { DemoPost, Note } from "../../../core/demo.ts";
 import type { PropsOf } from "../../../core/catalog.ts";
 import PostsBoard, { type BoardPost } from "./board.tsx";
+import { PageMotion, Shared } from "../../ui/page-motion.tsx";
 
 // Demo brands are precomputed: this page makes no API calls, so it costs nothing to visit.
 export const dynamicParams = false;
@@ -37,7 +38,7 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
   // Cite only chunks that exist in this kit, so a note never points at a rule you can't open.
   const chunkIds = new Set(Object.keys(b.kit).map((f) => f.replace(/\.(md|ya?ml|json|css)$/, "")));
   const base = { css: CONTENT.baseCss };
-  const kitLook: PostLook = { tokensCss: b.kit["tokens.css"] ?? CONTENT.neutralTokensCss, wordmarkLines: b.wordmark, fontsHref: "/generated/fonts/fonts.css", base };
+  const kitLook: PostLook = { tokensCss: b.kit["tokens.css"] ?? CONTENT.neutralTokensCss, wordmarkLines: b.wordmark, logoSrc: b.logo, fontsHref: "/generated/fonts/fonts.css", base };
   const plainLook: PostLook = { tokensCss: CONTENT.neutralTokensCss, wordmarkLines: [b.businessName], base };
 
   const notes = (ns: Note[]) =>
@@ -71,6 +72,7 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
         tokensCss: kitLook.tokensCss,
         fontsHref: kitLook.fontsHref,
         wordmarkLines: b.wordmark,
+        logoSrc: b.logo,
         photo: p.kit.photo ? { src: `/generated/${brand}/${p.kit.photo}`, alt: base.alt } : null,
       }),
       rationale: notes(c.rationale).slice(0, 16),
@@ -90,10 +92,14 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
   }));
 
   return (
+    <PageMotion>
     <main className="wide posts">
       <p className="eyebrow">Demo brand · fictional</p>
       <h1>
-        {b.businessName} <span>posts, with their reasons.</span>
+        <Shared name={`brand-${brand}`}>
+          <span className="brand-name">{b.businessName}</span>
+        </Shared>{" "}
+        <span>posts, with their reasons.</span>
       </h1>
       <p className="muted posts-lede">
         {b.businessLine} Each post was art-directed from the brand kit. Tap <b>Why this works</b> to see which rule shaped each
@@ -101,5 +107,6 @@ export default async function PostsPage({ params }: { params: Promise<{ brand: s
       </p>
       <PostsBoard brand={brand} businessName={b.businessName} kit={b.kit} posts={posts} costUsd={b.demoPosts ? b.demoPosts.costUsd + (b.demoPosts.composeCostUsd ?? 0) : null} />
     </main>
+    </PageMotion>
   );
 }

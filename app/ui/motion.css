@@ -1,0 +1,122 @@
+/* Motion: how Specs moves. Quick and quiet, so the brand on screen stays the loud part.
+   Page changes slide like a native app; things that arrive (a drafted kit card, the next call,
+   a finished kit) land with a small lift; presses give back. Reduced motion turns it all off. */
+
+:root {
+  --m-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --m-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --m-exit: 150ms;
+  --m-enter: 220ms;
+  --m-move: 380ms;
+}
+
+/* ---------- page changes (React <ViewTransition>, see app/ui/page-motion.tsx) ---------- */
+
+/* The top bar is the fixed point: the page moves, the bar doesn't. */
+.topbar { view-transition-name: topbar; }
+::view-transition-group(topbar) { animation: none; z-index: 100; }
+::view-transition-old(topbar) { display: none; }
+::view-transition-new(topbar) { animation: none; }
+/* Clicks during the slide go to the new page, not the overlay. */
+::view-transition { pointer-events: none; }
+
+::view-transition-old(.nav-forward) { --m-offset: -48px; animation: var(--m-exit) ease-in both m-fade reverse, var(--m-move) var(--m-out) both m-slide reverse; }
+::view-transition-new(.nav-forward) { --m-offset: 48px; animation: var(--m-enter) ease-out var(--m-exit) both m-fade, var(--m-move) var(--m-out) both m-slide; }
+::view-transition-old(.nav-back) { --m-offset: 48px; animation: var(--m-exit) ease-in both m-fade reverse, var(--m-move) var(--m-out) both m-slide reverse; }
+::view-transition-new(.nav-back) { --m-offset: -48px; animation: var(--m-enter) ease-out var(--m-exit) both m-fade, var(--m-move) var(--m-out) both m-slide; }
+
+/* A brand's name travels from its demo card to the top of its posts page. */
+::view-transition-group(.morph) { animation-duration: var(--m-move); animation-timing-function: var(--m-out); }
+::view-transition-image-pair(.morph) { animation-name: m-via-blur; }
+.brand-name { display: inline-block; }
+
+@keyframes m-fade { from { opacity: 0; filter: blur(2px); } to { opacity: 1; filter: blur(0); } }
+@keyframes m-slide { from { translate: var(--m-offset) 0; } to { translate: 0 0; } }
+@keyframes m-via-blur { 40% { filter: blur(2px); } }
+
+/* ---------- first paint: headings settle in, in order ---------- */
+
+main > h1, main > .eyebrow:first-child, main > .start-lede, main > .start-lede-2, main > .posts-lede, main > h1 + p {
+  animation: m-rise 520ms var(--m-out) both;
+}
+main > h1 { animation-delay: 40ms; }
+main > h1 + p, main > .start-lede, main > .posts-lede { animation-delay: 110ms; }
+main > .start-lede-2 { animation-delay: 170ms; }
+@keyframes m-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Demo cards come in one after another, and lean in under the pointer. */
+.demo-grid > .demo-card { animation: m-rise 560ms var(--m-out) both; }
+.demo-grid > .demo-card:nth-child(1) { animation-delay: 200ms; }
+.demo-grid > .demo-card:nth-child(2) { animation-delay: 270ms; }
+.demo-grid > .demo-card:nth-child(3) { animation-delay: 340ms; }
+.demo-plate { overflow: hidden; }
+.demo-plate > img { transition: transform 600ms var(--m-out); }
+.demo-card:hover .demo-plate > img { transform: scale(1.035); }
+.demo-card:hover { box-shadow: 0 24px 48px -28px rgba(0, 0, 0, 0.45); }
+.start-own { transition: transform 0.15s var(--m-out), box-shadow 0.15s; }
+.start-own:hover { transform: translateY(-2px); }
+.start-own .mono { transition: transform 0.2s var(--m-out); }
+.start-own:hover .mono { transform: translateX(4px); }
+
+/* ---------- presses ---------- */
+
+.c-btn, .c-chip, .c-line, .c-pal, .c-photo { transition-property: transform, background, color, box-shadow, opacity; transition-duration: 0.15s, 0.2s, 0.2s, 0.2s, 0.2s; transition-timing-function: var(--m-out); }
+.c-btn:active:not(:disabled), .c-chip:active:not(:disabled), .c-line:active:not(:disabled), .c-pal:active:not(:disabled), .c-photo:active:not(:disabled) { transform: scale(0.97); }
+
+/* ---------- the reveal ---------- */
+
+/* A board card lands when its part of the kit is drafted. */
+.board-card.in { animation: m-land 520ms var(--m-spring) both; }
+@keyframes m-land { from { transform: translateY(8px) scale(0.98); } to { transform: none; } }
+
+/* The palette deals out like paint chips. The chips' resting place is set inline, so the
+   animation only says where they start: stacked on the first one. */
+.board-card.in .fan-chip { animation: m-deal 700ms var(--m-spring) both; }
+.board-card.in .fan-chip:nth-child(2) { animation-delay: 70ms; }
+.board-card.in .fan-chip:nth-child(3) { animation-delay: 140ms; }
+.board-card.in .fan-chip:nth-child(4) { animation-delay: 210ms; }
+@keyframes m-deal { from { left: 0; transform: rotate(-4deg); opacity: 0.6; } }
+
+/* Kit items arrive with a short highlight. */
+.chunk.landed { animation: m-rise 420ms var(--m-out) both; }
+
+/* ---------- calls ---------- */
+
+/* Each new call slides up into place; the progress dots stretch toward the next one. */
+.call-card { animation: m-rise 380ms var(--m-out) both; }
+.dots i { transition: background 0.3s, width 0.4s var(--m-spring); }
+.dots i.now { width: 34px; }
+.settle { animation: m-rise 360ms var(--m-out) both; }
+
+/* The kit is done: the card pops, and the brand's own colors burst out of it once. */
+.intake-complete { position: relative; animation: m-pop 520ms var(--m-spring) both; }
+@keyframes m-pop { from { transform: scale(0.96); opacity: 0; } to { transform: none; opacity: 1; } }
+.burst { position: absolute; left: 50%; top: 40%; width: 0; height: 0; pointer-events: none; z-index: 5; }
+.burst i {
+  position: absolute; width: 12px; height: 16px; border-radius: 3px; background: var(--c);
+  box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.25);
+  animation: m-burst 900ms var(--m-out) var(--d, 0ms) both;
+}
+@keyframes m-burst {
+  0% { transform: translate(0, 0) rotate(0) scale(0.4); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(1); opacity: 0; }
+}
+
+/* ---------- posts ---------- */
+
+/* "Why this works" pins pop in one by one. */
+.c-pin-tags .c-pin { animation: m-pin 360ms var(--m-spring) both; }
+.c-pin-box:nth-child(2) .c-pin { animation-delay: 50ms; }
+.c-pin-box:nth-child(3) .c-pin { animation-delay: 100ms; }
+.c-pin-box:nth-child(4) .c-pin { animation-delay: 150ms; }
+.c-pin-box:nth-child(5) .c-pin { animation-delay: 200ms; }
+.c-pin-box:nth-child(n + 6) .c-pin { animation-delay: 250ms; }
+@keyframes m-pin { from { transform: scale(0.4); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*), ::view-transition-new(*), ::view-transition-group(*) { animation-duration: 0s !important; animation-delay: 0s !important; }
+  .burst { display: none; }
+}

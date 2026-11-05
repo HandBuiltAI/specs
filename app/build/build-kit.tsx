@@ -9,7 +9,7 @@ import { LIMITS, charCount } from "../../core/limits.ts";
 import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type Evidence } from "../../core/extract.ts";
 import type { Swatch } from "../../core/colors.ts";
 import { call, pool, sendForm, type ApiError } from "../lib/api.ts";
-import { prepareImage } from "../lib/images.ts";
+import { LOGO_ACCEPT, isSvg, logoProblem, prepareImage } from "../lib/images.ts";
 import { Turnstile } from "../lib/turnstile.tsx";
 import Intake from "./intake.tsx";
 import { BrandBoard } from "./brand-board.tsx";
@@ -60,6 +60,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
   const [pasted, setPasted] = useState("");
   const [note, setNote] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [working, setWorking] = useState(false);
 
   // What the server knows.
   const [uploads, setUploads] = useState<Upload[]>([]);
@@ -164,36 +165,56 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     setError(null);
     const sid = sessionId;
     const added: Upload[] = [];
-    try {
-      setBusy("Uploading…");
-      const send = async (fields: Record<string, string | Blob>) => {
-        const d = await sendForm<{ upload: Upload }>("/api/uploads", { sessionId: sid, ...fields });
-        added.push(d.upload);
-        setUploads((u) => [...u, d.upload]);
-      };
-      for (const p of photos) {
-        setBusy(`Shrinking and uploading ${p.name}…`);
+    const problems: string[] = [];
+    setBusy("Uploading…");
+    const send = async (fields: Record<string, string | Blob>) => {
+      const d = await sendForm<{ upload: Upload }>("/api/uploads", { sessionId: sid, ...fields });
+      added.push(d.upload);
+      setUploads((u) => [...u, d.upload]);
+    };
+    // One file that won't go up (an odd format, a refused size) never stops the rest.
+    const attempt = async (step: () => Promise<void>) => {
+      try {
+        await step();
+      } catch (e) {
+        problems.push(messageOf(e));
+      }
+    };
+    for (const p of photos) {
+      setBusy(`Shrinking and uploading ${p.name}…`);
+      await attempt(async () => {
         const { file, colors } = await prepareImage(p, "image");
         await send({ kind: "image", file, colors: JSON.stringify(colors) });
-      }
-      if (logo) {
+      });
+    }
+    if (logo) {
+      setBusy(`Preparing and uploading ${logo.name}…`);
+      await attempt(async () => {
         const { file, colors } = await prepareImage(logo, "logo");
         await send({ kind: "logo", file, colors: JSON.stringify(colors) });
-      }
-      if (pdf) await send({ kind: "pdf", file: pdf });
-      if (url.trim()) await send({ kind: "url", url: url.trim() });
-      if (pasted.trim()) await send({ kind: "pasted", text: pasted });
-      if (note.trim()) await send({ kind: "note", text: note });
-    } catch (e) {
-      setError(`${messageOf(e)}${added.length ? " The files uploaded before this one are kept." : ""}`);
-      setBusy(null);
-      return;
+      });
     }
+    setBusy("Uploading…");
+    if (pdf) await attempt(() => send({ kind: "pdf", file: pdf }));
+    if (url.trim()) await attempt(() => send({ kind: "url", url: url.trim() }));
+    if (pasted.trim()) await attempt(() => send({ kind: "pasted", text: pasted }));
+    if (note.trim()) await attempt(() => send({ kind: "note", text: note }));
     setBusy(null);
+    if (problems.length) setError(`${problems.join(" ")}${added.length ? " Building from the rest." : ""}`);
+    if (!added.length) return;
     await readAndDraft(sid, [...uploads, ...added]);
   }
 
   async function readAndDraft(sid: string, list: Upload[]) {
+    setWorking(true);
+    try {
+      await readAndDraftSteps(sid, list);
+    } finally {
+      setWorking(false);
+    }
+  }
+
+  async function readAndDraftSteps(sid: string, list: Upload[]) {
     const unread = list.filter((u) => reads[u.id]?.status !== "done");
     await pool(unread, 3, (u) => readOne(sid, u));
     // One more try for any read that failed (a slow page, a timeout), then draft from what was read.
@@ -233,6 +254,9 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
   const draftingDone =
     targetIds.some((t) => targets[t]?.status === "done") &&
     targetIds.every((t) => targets[t]?.status === "done" || (targets[t]?.status === "failed" && targets[t]!.attempts >= LIMITS.extractAttempts));
+  // Uploads that were never read, or drafting that stopped (a reload, a closed tab): offer to carry on.
+  const anyRunning = Object.values(reads).some((r) => r?.status === "running") || Object.values(targets).some((t) => t?.status === "running");
+  const stalled = started && !busy && !working && !anyRunning && !draftingDone && (uploads.some((u) => !reads[u.id]) || Object.values(reads).some((r) => r?.status === "done"));
   const labelOf = useMemo(() => Object.fromEntries(uploads.map((u) => [u.id, u.label])), [uploads]);
   const intakeChunks = useMemo<IntakeChunks>(() => {
     const out: IntakeChunks = {};
@@ -246,13 +270,28 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
 
   /** Dropped files go where they belong: images to photos, a PDF to the PDF slot. */
   function onDrop(files: File[]) {
-    const images = files.filter((f) => /^image\/(jpeg|png|webp|gif)$/.test(f.type));
+    // An SVG, or an image named like a logo, goes to the logo slot; other images are photos.
+    const logoLike = files.find((f) => isSvg(f) || (/^image\//.test(f.type) && /logo|wordmark|lockup/i.test(f.name)));
+    const images = files.filter((f) => f !== logoLike && /^image\/(jpeg|png|webp|gif|avif|heic|heif)$/.test(f.type));
     const pdfs = files.filter((f) => f.type === "application/pdf" || /\.pdf$/i.test(f.name));
+    const design = files.map(logoProblem).find((p) => p && !/\.pdf/i.test(p));
+    if (logoLike) setLogo(logoLike);
     if (images.length) setPhotos((p) => [...p, ...images].slice(0, LIMITS.imageCount));
     if (pdfs[0]) setPdf(pdfs[0]);
-    const rest = files.length - images.length - pdfs.length;
-    if (rest > 0 || pdfs.length > 1) setError(`Specs takes photos (JPEG, PNG, WebP, GIF) and one PDF. ${rest + Math.max(0, pdfs.length - 1)} ${rest + Math.max(0, pdfs.length - 1) === 1 ? "file was" : "files were"} left out.`);
+    const left = files.length - (logoLike ? 1 : 0) - images.length - Math.min(1, pdfs.length);
+    if (design) setError(design);
+    else if (left > 0) setError(`Specs takes photos, one logo (SVG, PNG, JPEG or WebP) and one PDF. ${left} ${left === 1 ? "file was" : "files were"} left out.`);
     else setError(null);
+  }
+
+  function pickLogo(f: File | null) {
+    const problem = f && logoProblem(f);
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    setError(null);
+    setLogo(f);
   }
 
   return (
@@ -295,22 +334,36 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
               onDrop([...e.dataTransfer.files]);
             }}
           >
-            <p className="dropzone-title">Drop photos and a PDF here</p>
+            <p className="dropzone-title">Drop photos, a logo and a PDF here</p>
             <p className="muted small">
-              Up to {LIMITS.imageCount} photos and one PDF of up to {LIMITS.pdfPages} pages. Photos are shrunk in your browser before upload.
+              Up to {LIMITS.imageCount} photos, one logo (SVG or PNG is best) and one PDF of up to {LIMITS.pdfPages} pages. Images are shrunk in your browser before upload.
             </p>
             <div className="dropzone-pick">
               <label htmlFor="photos" className="c-btn ghost">
                 Choose photos
               </label>
-              <input id="photos" className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif" multiple onChange={(e) => setPhotos((p) => [...p, ...(e.target.files ?? [])].slice(0, LIMITS.imageCount))} />
+              <input id="photos" className="visually-hidden" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/heic,image/heif,.heic,.heif" multiple onChange={(e) => setPhotos((p) => [...p, ...(e.target.files ?? [])].slice(0, LIMITS.imageCount))} />
+              <label htmlFor="logo" className="c-btn ghost">
+                Choose a logo
+              </label>
+              <input id="logo" className="visually-hidden" type="file" accept={LOGO_ACCEPT} onChange={(e) => pickLogo(e.target.files?.[0] ?? null)} />
               <label htmlFor="pdf" className="c-btn ghost">
                 Choose a PDF
               </label>
               <input id="pdf" className="visually-hidden" type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] ?? null)} />
             </div>
-            {(photos.length > 0 || pdf) && (
+            {(photos.length > 0 || pdf || logo) && (
               <ul className="dropped">
+                {logo && (
+                  <li>
+                    <span>
+                      {logo.name} <span className="muted small">logo</span>
+                    </span>
+                    <button type="button" className="quiet" aria-label={`Remove ${logo.name}`} onClick={() => setLogo(null)}>
+                      Remove
+                    </button>
+                  </li>
+                )}
                 {photos.map((p, i) => (
                   <li key={`${p.name}-${i}`}>
                     <span>{p.name}</span>
@@ -330,9 +383,6 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
               </ul>
             )}
           </div>
-
-          <label htmlFor="logo">Logo</label>
-          <input id="logo" type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setLogo(e.target.files?.[0] ?? null)} />
 
 
           <label htmlFor="url">Website</label>
@@ -359,6 +409,12 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
 
       {busy && <p className="muted">{busy}</p>}
       {error && <p className="error">{error}</p>}
+      {stalled && sessionId && (
+        <div className="card resume">
+          <p>Your uploads are here, but the kit stopped before it was finished.</p>
+          <button onClick={() => readAndDraft(sessionId, uploads)}>Keep building</button>
+        </div>
+      )}
 
       {started && (
         <>

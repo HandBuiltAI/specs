@@ -10,6 +10,7 @@
 // Pure: no file access, shared by the spike and (later) the app.
 import { z } from "zod";
 import { escapeHtml } from "./templates.ts";
+import { wordmarkHtml } from "./post-html.ts";
 
 export const ComposeSchema = z.object({
   html: z.string().describe("The post's inner HTML. Slot elements are empty and carry data-slot."),
@@ -148,6 +149,7 @@ html,body{margin:0;padding:0;background:#888}
 .post--4x5{width:1080px!important;height:1350px!important}
 .post img[data-slot="photo"]{display:block}
 .post .wordmark span{display:block}
+.post .wordmark img.logo{display:block;height:var(--logo-height,3.2em);width:auto;max-width:100%}
 `;
 
 /** Fills a checked composition with the written copy and builds the full page. */
@@ -158,6 +160,8 @@ export function buildComposedPage(opts: {
   tokensCss: string;
   fontsHref?: string;
   wordmarkLines: string[];
+  /** The brand's own logo image (a URL), used in place of the lockup lines. */
+  logoSrc?: string | null;
   photo?: { src: string; alt: string } | null;
 }): string {
   const fillTag = (open: string, slot: string) => {
@@ -170,7 +174,7 @@ export function buildComposedPage(opts: {
   let html = opts.composition.html;
   html = html.replace(/<([a-zA-Z0-9]+)(?=[\s>\/])([^>]*data-slot=["']?([\w-]+)["']?[^>]*)>\s*<\/\1>/g, (_m, tag: string, attrs: string, slot: string) => {
     const open = fillTag(`<${tag}${attrs}>`, slot);
-    if (slot === "wordmark") return `${open}${opts.wordmarkLines.map((l) => `<span>${escapeHtml(l)}</span>`).join("")}</${tag}>`;
+    if (slot === "wordmark") return `${open}${wordmarkHtml(opts.wordmarkLines, opts.logoSrc)}</${tag}>`;
     const text = opts.slots[slot as TextSlot];
     return `${open}${escapeHtml(text ?? "")}</${tag}>`;
   });
