@@ -8,6 +8,7 @@
 // (core/triage.ts); the model only chooses how to ask.
 import { z } from "zod";
 import type { ComponentName, ParsedCall } from "./catalog.ts";
+import { sizePercent, sliderForPercent } from "./catalog.ts";
 import { EXTRACT_CHUNKS, type ChunkDraft, type ConflictTopic, type Conflicts, type ExtractChunkId } from "./extract.ts";
 import { TOPIC_CHUNK } from "./triage.ts";
 import { asData, fillPrompt } from "./prompts.ts";
@@ -280,7 +281,7 @@ function swapNearest(palette: string[], hexes: string[]): string[] {
   return colors;
 }
 
-type SwatchOption = { id: string; label: string; note?: string; colors: string[]; sources?: unknown[] };
+type SwatchOption = { id: string; label: string; note?: string; colors: string[]; heading?: string; sources?: unknown[] };
 /**
  * Cleans the palettes the model offers before the owner sees them: one spelling per color, no
  * color twice in a palette, no palette twice. If the owner named exact colors and no palette has
@@ -290,12 +291,14 @@ export function tidyPalettes(options: SwatchOption[], named: string[]): SwatchOp
   const seen = new Set<string>();
   let out = options.flatMap((o) => {
     const colors = [...new Set(o.colors.map((c) => (/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(c) ? fullHex(c) : c)))];
+    const heading = o.heading && /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(o.heading) ? fullHex(o.heading) : o.heading;
     const key = colors.join();
-    if (colors.length < 2 || seen.has(key)) return [];
-    seen.add(key);
-    return [{ ...o, colors }];
+    const key2 = `${key}|${heading ?? ""}`;
+    if (colors.length < 2 || seen.has(key2)) return [];
+    seen.add(key2);
+    return [{ ...o, colors, ...(heading ? { heading } : {}) }];
   });
-  if (named.length && out[0] && !out.some((o) => named.every((h) => o.colors.includes(h)))) {
+  if (named.length && out[0] && !out.some((o) => named.every((h) => o.colors.includes(h) || o.heading === h))) {
     // Start from the palette that already has the nearest colors, so "pure white" lands on its off-white.
     const base = [...out].sort((a, b) => named.reduce((n, h) => n + nearestDistance(a.colors, h), 0) - named.reduce((n, h) => n + nearestDistance(b.colors, h), 0))[0]!;
     const colors = swapNearest(base.colors, named);
@@ -315,7 +318,7 @@ export function describeAnswer(call: ParsedCall, answer: unknown): string {
   switch (call.component) {
     case "SwatchPicker": {
       const o = call.props.options.find((x) => x.id === a.optionId);
-      return o ? `Palette: ${o.label} (${o.colors.join(", ")})` : "Palette: none of these";
+      return o ? `Palette: ${o.label} (${o.colors.join(", ")})${o.heading ? `; headings ${o.heading}` : ""}` : "Palette: none of these";
     }
     case "FontPairCard": {
       const o = call.props.options.find((x) => x.id === a.optionId);
@@ -323,6 +326,7 @@ export function describeAnswer(call: ParsedCall, answer: unknown): string {
     }
     case "ToneSlider": {
       const v = Number(a.value);
+      if (call.props.size) return `Logo size: ${sizePercent(v)}% of the standard size`;
       const { left, right, middle } = call.props;
       const line = middle ? (v < 34 ? left.sample : v > 66 ? right.sample : middle) : v < 50 ? left.sample : right.sample;
       return `Tone: ${v} on a scale from ${left.label} (0) to ${right.label} (100). Closest sample: "${line}"`;
@@ -392,4 +396,29 @@ export function applyAnswer(
   }
   items.push({ label: labelFor(gap, call), value: text, why: null, sources: [owner], confidence: "high", edited: true });
   return { ...base, items };
+}
+
+const LOGO_SIZE = /\b(logo|wordmark|lockup)\b[^.?!]*\b(size|sized|sizing|bigger|larger|smaller|tiny|huge|scale|grow|shrink|\d+\s*%)|\b(bigger|larger|smaller|resize|shrink|grow|scale)\b[^.?!]*\b(logo|wordmark|lockup)\b/i;
+
+/**
+ * "Make the logo 30% larger": a size slider built in code, no model call. It starts where the
+ * owner asked, relative to the size posts use now, and its answer sets the logo size for every post.
+ */
+export function logoSizeCall(message: string, current = 1): ParsedCall | null {
+  if (!LOGO_SIZE.test(message)) return null;
+  const m = message.toLowerCase();
+  const pct = Number(m.match(/(\d{1,3})\s*%/)?.[1]);
+  const smaller = /\b(smaller|shrink|tiny|less|down|reduce)\b/.test(m);
+  const factor = /\b(double|twice|2x)\b/.test(m) ? 2 : /\bhalf\b/.test(m) ? 0.5 : pct ? (smaller ? 1 - pct / 100 : pct > 100 && !/\b(larger|bigger)\b/.test(m) ? pct / 100 : 1 + pct / 100) : smaller ? 0.8 : /\b(bigger|larger|grow|huge)\b/.test(m) ? 1.25 : 1;
+  return {
+    component: "ToneSlider",
+    props: {
+      title: "How big",
+      titleMuted: "should your logo be?",
+      left: { label: "Half size", sample: "Half size" },
+      right: { label: "Double", sample: "Double" },
+      value: sliderForPercent(current * factor * 100),
+      size: true,
+    },
+  };
 }

@@ -18,6 +18,7 @@ import {
   describeAnswer,
   typedPalette,
   tidyPalettes,
+  logoSizeCall,
   ownerHexes,
   findGaps,
   intakePrompt,
@@ -32,6 +33,7 @@ import {
   type Resolutions,
   type Transcript,
 } from "../core/intake.ts";
+import { logoScaleOf } from "../core/session-kit.ts";
 import { keepItem, pullOf, triage, undoRestore, writeConflict, type Plan, type Restore, type Settlement } from "../core/triage.ts";
 import { CONTENT } from "./generated/content.ts";
 import { Refusal, json, readJson } from "./http.ts";
@@ -340,6 +342,17 @@ async function changeTurn(deps: Deps, session: Session, message: string) {
     }));
     const chunks = await loadChunks(deps, session);
     return { ...view(st, chunks, findGaps(chunks, st.resolutions)), needLogo: true };
+  }
+
+  // Logo size: a slider built in code, no model call.
+  const sizeCall = logoSizeCall(message, logoScaleOf((await loadChunks(deps, session))["visual-system"]?.draft.items ?? []));
+  if (sizeCall) {
+    const st = await update<IntakeState>(deps.kv, intakeKey(session.id), empty, (s) => ({
+      ...s,
+      turns: [...s.turns.filter((t) => t !== pendingOf(s)), { id: crypto.randomUUID(), gap: `request:${crypto.randomUUID().slice(0, 8)}`, about: "Logo size", say: "Slide to size your logo; every post signs at that size.", call: sizeCall, asked: message, request: { chunk: "visual-system" } }],
+    }));
+    const chunks = await loadChunks(deps, session);
+    return view(st, chunks, findGaps(chunks, st.resolutions));
   }
 
   await assertGenerationOpen(deps.kv, deps.settings, now);

@@ -48,6 +48,11 @@ export function SwatchPicker({ title, titleMuted, options, value, status, errorT
               <span>
                 <b>{o.label}</b>
                 {o.note && <small>{o.note}</small>}
+                {o.heading && (
+                  <small className="c-pal-heading">
+                    Headlines <i style={{ background: o.heading }} title={o.heading} />
+                  </small>
+                )}
                 <small className="c-pal-hex">{o.colors.join(" ")}</small>
               </span>
             </button>

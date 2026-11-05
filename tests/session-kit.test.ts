@@ -84,3 +84,25 @@ test("the business name comes from the facts list", () => {
   assert.equal(businessNameOf(chunks), "Night Slice");
   assert.equal(businessNameOf({}), null);
 });
+
+test("a palette can name the headline color, and posts are held to it", () => {
+  const withHeading: IntakeChunks = {
+    ...chunks,
+    "visual-system": { draft: draft([...chunks["visual-system"]!.draft.items, item("palette", "Palette: Pink titles (#14110F, #FFFFFF, #FFDB04); headings #FF189B")]) },
+  };
+  const kit = kitFromChunks(withHeading, { name: "Night Slice" });
+  assert.equal(kit.colors.heading, "#FF189B");
+  assert.equal(kit.colors.text, "#FFFFFF");
+  assert.notEqual(kit.colors.accent2, "#FF189B", "the headline pick isn't read as a palette color");
+  assert.match(kit.tokensCss, /\[data-slot="headline"\] \{ color: var\(--color-heading\) !important; \}/);
+  assert.doesNotMatch(kitFromChunks(chunks, { name: "Night Slice" }).tokensCss, /!important/);
+});
+
+test("a logo size answer sets the logo height for every post", () => {
+  const sized: IntakeChunks = {
+    ...chunks,
+    "visual-system": { draft: draft([...chunks["visual-system"]!.draft.items, item("owner: logo size", "Logo size: 130% of the standard size")]) },
+  };
+  assert.match(kitFromChunks(sized, { name: "Night Slice" }).tokensCss, /--logo-height: 4\.16em;/);
+  assert.doesNotMatch(kitFromChunks(chunks, { name: "Night Slice" }).tokensCss, /--logo-height/);
+});
