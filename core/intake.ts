@@ -247,21 +247,61 @@ export function intakePrompt(
  */
 export function typedPalette(call: ParsedCall | null, typed: string): string | null {
   if (call?.component !== "SwatchPicker") return null;
-  const typedHexes = [...new Set((typed.match(/#[0-9a-f]{6}\b|#[0-9a-f]{3}\b/gi) ?? []).map(fullHex))];
-  const base = call.props.options[0]?.colors.map((c) => fullHex(c));
+  const typedHexes = ownerHexes(typed);
+  const base = call.props.options[0]?.colors;
   if (!typedHexes.length || !base) return null;
-  const colors = [...base];
+  return swapNearest(base, typedHexes).join(", ");
+}
+
+/** The exact colors an owner names in a message: "#fff", "#FF2E88", as #RRGGBB. */
+export const ownerHexes = (text: string) => [...new Set((text.match(/#(?:[0-9a-f]{6}|[0-9a-f]{3})\b/gi) ?? []).map(fullHex))];
+
+/** How close two colors must be for one to replace the other ("pure white" for an off-white); farther, it's added. */
+const SAME_FAMILY = 120 ** 2;
+const nearestDistance = (palette: string[], h: string) => Math.min(...palette.map((c) => rgbDistance(fullHex(c), h)));
+
+/** Puts each new color in place of the nearest one in a palette, keeping its role order; a new color with no near match is added. */
+function swapNearest(palette: string[], hexes: string[]): string[] {
+  const colors = palette.map(fullHex);
   const taken = new Set<number>();
-  for (const h of typedHexes) {
+  for (const h of hexes) {
+    if (colors.includes(h)) {
+      taken.add(colors.indexOf(h));
+      continue;
+    }
     let best = -1;
     for (const [i, c] of colors.entries()) if (!taken.has(i) && (best < 0 || rgbDistance(c, h) < rgbDistance(colors[best]!, h))) best = i;
-    if (best < 0) colors.push(h);
+    if (best < 0 || rgbDistance(colors[best]!, h) > SAME_FAMILY) colors.push(h);
     else {
       colors[best] = h;
       taken.add(best);
     }
   }
-  return colors.join(", ");
+  return colors;
+}
+
+type SwatchOption = { id: string; label: string; note?: string; colors: string[]; sources?: unknown[] };
+/**
+ * Cleans the palettes the model offers before the owner sees them: one spelling per color, no
+ * color twice in a palette, no palette twice. If the owner named exact colors and no palette has
+ * them all, the first one is "Your exact colors": the leading palette with theirs swapped in.
+ */
+export function tidyPalettes(options: SwatchOption[], named: string[]): SwatchOption[] {
+  const seen = new Set<string>();
+  let out = options.flatMap((o) => {
+    const colors = [...new Set(o.colors.map((c) => (/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(c) ? fullHex(c) : c)))];
+    const key = colors.join();
+    if (colors.length < 2 || seen.has(key)) return [];
+    seen.add(key);
+    return [{ ...o, colors }];
+  });
+  if (named.length && out[0] && !out.some((o) => named.every((h) => o.colors.includes(h)))) {
+    // Start from the palette that already has the nearest colors, so "pure white" lands on its off-white.
+    const base = [...out].sort((a, b) => named.reduce((n, h) => n + nearestDistance(a.colors, h), 0) - named.reduce((n, h) => n + nearestDistance(b.colors, h), 0))[0]!;
+    const colors = swapNearest(base.colors, named);
+    out = [{ id: "yours", label: "Your exact colors", colors: [...new Set(colors)].slice(0, 6), sources: [{ upload: "your message" }] }, ...out].slice(0, 3);
+  }
+  return out.length >= 2 ? out : options;
 }
 const fullHex = (h: string) => (h.length === 4 ? `#${[...h.slice(1)].map((c) => c + c).join("")}` : h).toUpperCase();
 function rgbDistance(a: string, b: string): number {

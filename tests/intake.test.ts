@@ -9,7 +9,7 @@ import { readUpload, assemble, getKit } from "../server/extract.ts";
 import { intakeTurn } from "../server/intake.ts";
 import { todaysSpend } from "../server/spend.ts";
 import { ASSEMBLE_TARGETS, EXTRACT_CHUNKS } from "../core/extract.ts";
-import { applyAnswer, describeAnswer, findGaps, oneSentence, progress, REQUIRED, typedPalette, type IntakeChunks } from "../core/intake.ts";
+import { applyAnswer, describeAnswer, findGaps, oneSentence, progress, REQUIRED, typedPalette, tidyPalettes, ownerHexes, type IntakeChunks } from "../core/intake.ts";
 import { parseCall } from "../core/catalog.ts";
 import { LIMITS } from "../core/limits.ts";
 import { ASK_CAP } from "../core/triage.ts";
@@ -305,4 +305,20 @@ test("a hex typed on a palette card replaces the nearest color, keeping role ord
   assert.ok(parsed.ok);
   assert.equal(typedPalette(parsed.call, "here is the actual hex #FF2E88"), "#0B0B0B, #F2F2F2, #FF2E88");
   assert.equal(typedPalette(parsed.call, "make it pinker"), null);
+});
+
+test("palette cards drop repeats and always offer a color the owner typed", () => {
+  const opts = [
+    { id: "a", label: "Pink text", colors: ["#14110f", "#FF2E88", "#ff2e88"] },
+    { id: "b", label: "Paper text", colors: ["#14110F", "#E1CCC0", "#FF2E88"] },
+    { id: "c", label: "Same again", colors: ["#14110F", "#E1CCC0", "#FF2E88"] },
+  ];
+  const out = tidyPalettes(opts, ["#FFFFFF"]);
+  assert.equal(out[0]!.label, "Your exact colors");
+  assert.deepEqual(out[0]!.colors, ["#14110F", "#FFFFFF", "#FF2E88"]);
+  assert.deepEqual(out[1]!.colors, ["#14110F", "#FF2E88"]);
+  assert.equal(out.length, 3);
+  assert.deepEqual(ownerHexes("let's add #fff"), ["#FFFFFF"]);
+  // No near match: the color is added, not swapped for the pink.
+  assert.deepEqual(tidyPalettes([opts[0]!, { id: "d", label: "Pink lead", colors: ["#111111", "#FF2E88"] }], ["#FFFFFF"])[0]!.colors, ["#14110F", "#FF2E88", "#FFFFFF"]);
 });

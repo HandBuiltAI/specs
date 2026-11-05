@@ -17,6 +17,8 @@ import {
   requestGap,
   describeAnswer,
   typedPalette,
+  tidyPalettes,
+  ownerHexes,
   findGaps,
   intakePrompt,
   oneSentence,
@@ -375,6 +377,11 @@ async function changeTurn(deps: Deps, session: Session, message: string) {
           return u ? [{ ...p, src: `upload:${u.id}` }] : [];
         });
         raw = { ...out.call, props: { ...photoProps, photos: known } };
+      }
+      // Palettes are tidied in code, and a color the owner typed is always on offer.
+      const swatchProps = out.call.props as { options?: unknown };
+      if (out.call.component === "SwatchPicker" && Array.isArray(swatchProps.options)) {
+        raw = { ...out.call, props: { ...swatchProps, options: tidyPalettes(swatchProps.options as Parameters<typeof tidyPalettes>[0], ownerHexes(message)) } };
       }
       const parsed = parseCall(raw);
       if (!parsed.ok) throw new Refusal(502, "model_output", "That answer came back malformed. Try again.");
