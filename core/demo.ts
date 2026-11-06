@@ -29,6 +29,28 @@ const ComposedSchema = z.object({
   sourceRun: z.string(),
 });
 
+/** The bold pass, run ahead of time (spike/pack-bold.ts): the critic's top two, best first.
+ * "quick" stands for the post as first made (composed or template); others carry their layout. */
+const BoldSchema = z.object({
+  sourceRun: z.string(),
+  costUsd: z.number(),
+  why: z.string(),
+  energy: z.number().nullable(),
+  options: z.array(
+    z.object({
+      label: z.string(),
+      name: z.string(),
+      source: z.enum(["quick", "direction", "sketch"]),
+      pick: z.boolean(),
+      note: z.string(),
+      html: z.string().optional(),
+      css: z.string().optional(),
+      usesPhoto: z.boolean().optional(),
+      rationale: z.array(NoteSchema).optional(),
+    }),
+  ),
+});
+
 export const DemoPostsSchema = z.object({
   brand: z.string(),
   sourceRun: z.string(),
@@ -46,6 +68,7 @@ export const DemoPostsSchema = z.object({
         /** The layout the compose step designed from the kit's layout-system chunk, when it passed
          * every check (spike/pack-compose.ts). Without it the post shows its template. */
         composed: ComposedSchema.optional(),
+        bold: BoldSchema.optional(),
         critique: z.object({ verdict: z.enum(["pass", "revise"]), summary: z.string() }).nullable(),
         drafts: z.number().int().min(1),
       }),
