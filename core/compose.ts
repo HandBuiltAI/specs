@@ -292,6 +292,16 @@ export const LAYOUT_PROBE = `(() => {
     if (fa && fa === frame(b.el)) { a = { slot: a.slot, r: a.flat }; b = { slot: b.slot, r: b.flat }; }
     if (hit(a.r, b.r) > 0.1 * Math.min(a.r.width * a.r.height, b.r.width * b.r.height)) issues.push({ slot: a.slot + '+' + b.slot, code: 'overlap', problem: 'overlap' });
   }
+  // An echo (decorative repeat) may sit behind text only as giant ghost type; a small one on top
+  // of a slot just collides with it (live, Nov 6: a small wordmark echo over the headline).
+  for (const e of document.querySelectorAll('[data-echo]')) {
+    const er = e.getBoundingClientRect(); const es = parseFloat(getComputedStyle(e).fontSize);
+    if (!er.width || !er.height) continue;
+    for (const b of boxes) {
+      const bs = parseFloat(getComputedStyle(b.el).fontSize);
+      if (es < 2 * bs && hit(er, b.r) > 0.1 * Math.min(er.width * er.height, b.r.width * b.r.height)) issues.push({ slot: b.slot, code: 'overlap', problem: 'a small echo overlaps it' });
+    }
+  }
   if (photo && (!photo.complete || !photo.naturalWidth)) issues.push({ slot: 'photo', code: 'photo_missing', problem: 'did not load' });
   if (PR && hit(PR, P) < 0.08 * P.width * P.height) issues.push({ slot: 'photo', code: 'photo_small', problem: 'too small or off the canvas' });
   return issues;

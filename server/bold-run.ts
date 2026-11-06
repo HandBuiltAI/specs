@@ -230,7 +230,10 @@ async function judge(deps: Deps, t: BoldTrigger) {
   }
   // Blind: shuffled numbers.
   const order = kept.map((l) => ({ l, k: Math.random() })).sort((a, b) => a.k - b.k).map((o) => o.l);
-  const shuffled = order.map((l) => images[kept.indexOf(l)]!);
+  // Each image carries its number as text, and the list says which use the owner's photo
+  // (live, Nov 6: the critic mixed up three unlabeled images and called a photo post "no photo").
+  const shuffled = order.map((l, i) => ({ ...images[kept.indexOf(l)]!, label: `Candidate ${i + 1}:` }));
+  const usesPhoto = (l: string) => (l === "quick" ? Boolean(x.photo) : Boolean(job.candidates.find((c) => c.label === l)?.usesPhoto));
   const business = x.kit.id === "session" ? asData(x.kit.businessName) : x.kit.businessName;
   const prompt = fillPrompt("art-critique", CONTENT.prompts["art-critique"], {
     kit: pick(x.chunks, ["positioning-core", "energy", "layout-system", "visual-system", "art-direction", "social-rules", "guardrails"]),
@@ -238,7 +241,7 @@ async function judge(deps: Deps, t: BoldTrigger) {
     intent: x.post.intent,
     goal: asData(x.post.brief.goal),
     copy: copyOf(x.slots),
-    candidates: order.map((_, i) => `Candidate ${i + 1} (image ${i + 1}). Passed every code check.`).join("\n"),
+    candidates: order.map((l, i) => `Candidate ${i + 1} (image ${i + 1}). Passed every code check. ${usesPhoto(l) ? "Uses the owner's photo." : "No photo."}`).join("\n"),
   });
   let critique = (await guardedCall(deps, "art_critique", { ...prompt, images: shuffled }, ArtCritiqueSchema)).data;
   const scored = () => new Set(critique.candidates.map((c) => c.label.replace(/\D/g, "")));

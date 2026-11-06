@@ -8,7 +8,7 @@ import { STEPS, PRICES, FALLBACK_MODELS, type StepName } from "./config.ts";
 
 export type Usage = { step: StepName; model: string; input: number; output: number; cacheRead: number; cacheWrite: number; usd: number };
 
-export type Image = { mediaType: "image/jpeg" | "image/png" | "image/gif" | "image/webp"; base64: string };
+export type Image = { mediaType: "image/jpeg" | "image/png" | "image/gif" | "image/webp"; base64: string; /** Shown as text right before the image, so several images can't be mixed up. */ label?: string };
 
 /**
  * Extra inputs some steps need. `documents` are PDFs. `cachedText` goes before the user text
@@ -62,9 +62,10 @@ export async function callStructured<S extends z.ZodType>(
     ...(opts.documents ?? []).map(
       (doc): Anthropic.Beta.BetaRequestDocumentBlock => ({ type: "document", source: { type: "base64", media_type: "application/pdf", data: doc.base64 } }),
     ),
-    ...(opts.images ?? []).map(
-      (img): Anthropic.Beta.BetaImageBlockParam => ({ type: "image", source: { type: "base64", media_type: img.mediaType, data: img.base64 } }),
-    ),
+    ...(opts.images ?? []).flatMap((img): Anthropic.Beta.BetaContentBlockParam[] => [
+      ...(img.label ? [{ type: "text" as const, text: img.label }] : []),
+      { type: "image", source: { type: "base64", media_type: img.mediaType, data: img.base64 } },
+    ]),
     ...(opts.cachedText ? [{ type: "text" as const, text: opts.cachedText, cache_control: { type: "ephemeral" as const } }] : []),
     { type: "text", text: opts.user },
   ];
