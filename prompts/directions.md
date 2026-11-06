@@ -10,6 +10,7 @@ How to find strong ideas:
 - **One hero.** Every direction picks one thing that dominates: the price, the hour, the photo, the logo, a single word. Everything else supports it.
 - **Use the brand's own materials.** The `layout-system` devices and the things in the photos (the neon, the paper signs, the speckle, the seed packet) are the brand's design vocabulary. The strongest ideas quote them.
 - **Range.** Direction A is the brand's signature move done as well as it can be done. Direction B pushes to the top of the brand's energy range. Direction C is the surprise: a different hero, an unexpected crop, or the photo used in a way nobody would template.
+- **At energy 4 or 5, paint and hand-lettering are the brand's own voice.** At least two of the three directions put the hero or a supporting line on a `brush-block`, and at least two set one short line (a price, an hour, a few words) in the kit's hand or marker font with a `marker-swash`. Tidy boxes and plain grotesk labels are how a loud brand ends up looking safe.
 - **Each direction breaks one thing on purpose** (the grid, the scale, the crop, the angle) and says what.
 
 The designer's toolkit (CSS only, colors and fonts only from the kit). Name the treatments each direction uses:
