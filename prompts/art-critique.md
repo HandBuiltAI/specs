@@ -7,7 +7,8 @@ Judge each candidate:
 - **idea** (1–5): is there one clear idea you could say in a sentence, and does the post commit to it? 5 is a post a designer would put in their portfolio. 1 is a template with the words dropped in. A strong idea that is a little rough beats a tidy layout with no idea.
 - **stop** (1–5): would it stop a thumb in a feed of other posts? One dominant hero, readable in two seconds, a reason to look twice.
 - **brand** (1–5): is it unmistakably this brand at this brand's energy level (the `energy` chunk)? Louder than the brand allows is as wrong as quieter. Check the `layout-system` "Never" list and the energy chunk's "Too far" list.
-- **legible** (1–5): can every word be read on a phone, quickly? Echoes (decorative repeats) may be faint; the real copy may not.
+- **legible** (1–5): can every word be read on a phone, quickly, and in the right order (the "Reads as" line in `<copy>`, when there is one)? Echoes (decorative repeats) may be faint; the real copy may not.
+- **craft**: name what looks unfinished: an empty band that isn't doing anything, a supporting line too timid for the brand's energy, a treatment the idea needed but didn't get, a flat photo. Put it in `notes` and in the revision notes if it's the winner. Compare with the reference posts in the `energy` chunk: would this sit beside them?
 - **honesty**: list anything the post shows that states a fact the copy doesn't, or contradicts it: a price board in the photo disagreeing with the promo price, a sign with other hours, a second logo. Code fixes the words; you catch what the picture says. Empty if none.
 
 Then pick the winner: the highest idea and stop scores that are still on brand and legible. A candidate with an honesty problem can win only if a crop in the revision fixes it.

@@ -36,8 +36,8 @@ const brandArg = args.find((a, i) => !a.startsWith("--") && args[i - 1] !== "--o
 const onlyArg = args.find((a) => a.startsWith("--only"));
 const only = onlyArg ? (onlyArg.includes("=") ? onlyArg.split("=")[1]! : args[args.indexOf(onlyArg) + 1]!).split(",") : null;
 
-type PostSpec = { brand: string; id?: string; demo?: string; intent?: string; goal?: string; angle?: string; aspect?: "1:1" | "4:5"; photo?: string | null; slots?: Partial<Record<TextSlot, string>> };
-type Post = { brand: string; id: string; intent: string; goal: string; angle: string; aspect: "1:1" | "4:5"; photo: string | null; slots: Record<TextSlot, string | null>; stored?: Pick<Composition, "html" | "css" | "rationale"> };
+type PostSpec = { brand: string; id?: string; demo?: string; intent?: string; goal?: string; angle?: string; aspect?: "1:1" | "4:5"; photo?: string | null; reads_as?: string; slots?: Partial<Record<TextSlot, string>> };
+type Post = { brand: string; id: string; intent: string; goal: string; angle: string; aspect: "1:1" | "4:5"; photo: string | null; readsAs?: string; slots: Record<TextSlot, string | null>; stored?: Pick<Composition, "html" | "css" | "rationale"> };
 
 const specs = (YAML.parse(readFileSync(join(ROOT, "spike", "bold-posts.yaml"), "utf8")) as { posts: PostSpec[] }).posts;
 
@@ -59,7 +59,7 @@ function resolvePost(s: PostSpec): Post {
       stored: p.kit.composed,
     };
   }
-  return { brand: s.brand, id: s.id!, intent: s.intent!, goal: s.goal!, angle: s.angle ?? "(see the copy)", aspect: s.aspect ?? "4:5", photo: s.photo ?? null, slots: { ...blank, ...s.slots } };
+  return { brand: s.brand, id: s.id!, intent: s.intent!, goal: s.goal!, angle: s.angle ?? "(see the copy)", aspect: s.aspect ?? "4:5", photo: s.photo ?? null, readsAs: s.reads_as, slots: { ...blank, ...s.slots } };
 }
 
 const posts = specs.filter((s) => !brandArg || s.brand === brandArg).map(resolvePost).filter((p) => !only || only.includes(p.id));
@@ -125,7 +125,7 @@ async function runPost(post: Post): Promise<PostResult> {
   const alt = briefs.photos.find((x) => x.file === post.photo)?.alt.trim() ?? "";
   const size = post.aspect === "4:5" ? "1080 × 1350 px (4:5)" : "1080 × 1080 px (1:1)";
   const canvas = `${size}. The brand's safe margin is var(--safe-margin).`;
-  const copy = copyText(post.slots);
+  const copy = copyText(post.slots) + (post.readsAs ? `\nReads as: "${post.readsAs}"` : "");
   const photoImg: Image[] = photoAbs ? [{ mediaType: "image/jpeg", base64: readFileSync(photoAbs).toString("base64") }] : [];
   const logoImg: Image[] = logo ? [{ mediaType: "image/png", base64: readFileSync(logo).toString("base64") }] : [];
   const photoLine = photoAbs ? `The first image attached. ${alt}` : "None.";

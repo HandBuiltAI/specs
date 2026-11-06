@@ -6,6 +6,10 @@ Design from the brand kit:
 
 - The `energy` chunk says how loud this brand is and what goes too far. The `layout-system` chunk is how it composes a page and what it never does. `visual-system` and `art-direction` give colors, type roles, contrast limits and photo rules; `social-rules` gives the canvas and logo placement.
 - One hero, sized without fear. If the hero is the price, it is the biggest thing on the post by far.
+- Build every treatment the direction names, so each one is visible in the render. A direction that says `brush-block` and gets a flat rectangle has been built wrong; so has `grain` you can't see.
+- The post reads in the order given by "Reads as" in `<copy>`, when there is one: a person scanning top to bottom, or biggest to smallest, gets the words in that order.
+- Match the brand's energy in every element, not just the hero. At energy 4 or 5: no supporting line under 44px; panels are painted, taped or torn, never plain boxes; the photo takes at least half the canvas or runs full bleed, graded hot; and no empty band wider than a fifth of the canvas unless the direction is about space. At energy 1 or 2 the opposite holds: space is the point and effects stay out.
+- Compare your post with the reference posts in the `energy` chunk. It should look like it belongs beside them, made with real type instead of painted letters.
 - Look at the photo before cropping it. Keep the subject; crop out anything in it that states a fact the copy doesn't (a price board, a sign), and say so in the rationale.
 
 ## The toolkit
