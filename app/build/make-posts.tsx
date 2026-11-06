@@ -7,7 +7,7 @@
 // its template. The without-kit version is written alongside for the toggle.
 import { useCallback, useEffect, useState } from "react";
 import { LIMITS, POST_INTENTS, charCount, type PostIntent } from "../../core/limits.ts";
-import { buildComposedPage, LAYOUT_PROBE, TEXT_SLOTS, type Composition, type ProbeIssue, type TextSlot } from "../../core/compose.ts";
+import { buildComposedPage, TEXT_SLOTS, type Composition, type ProbeIssue, type TextSlot } from "../../core/compose.ts";
 import { buildPostPage, wordmarkHtml, type PostLook } from "../../core/post-html.ts";
 import { escapeHtml, findTemplate, parseTemplates, type TemplateId } from "../../core/templates.ts";
 import type { PropsOf } from "../../core/catalog.ts";
@@ -16,6 +16,8 @@ import { PostPreview } from "../ui/catalog/PostPreview.tsx";
 import { logoDataUrl } from "../lib/logo.ts";
 import { KitDownload } from "../ui/KitDownload.tsx";
 import { Working } from "../ui/working.tsx";
+import { renderPost } from "../lib/render-post.ts";
+import { BoldVersion, type BoldChoice } from "./bold-version.tsx";
 
 type Note = { decision: string; choice: string; reason: string; cites: string[] };
 type Kit = {
@@ -45,6 +47,8 @@ type Post = {
   /** The kit look the post was drawn with, so a kit change can restyle it in place. */
   look?: Look;
   restyled?: number;
+  /** What the bold pass needs to draw this post's candidates: its copy, photo and canvas, and the post as first made. */
+  bold?: { aspect: "1:1" | "4:5"; slots: Record<TextSlot, string | null>; photo: { src: string; alt: string } | null; quickPage: string; copyNotes: Note[]; original?: { html: string; rationale: PropsOf<"PostPreview">["rationale"] } };
 };
 
 const INTENT_LABEL: Record<PostIntent, string> = { promo: "Promo", announcement: "Announcement", event: "Event", testimonial: "Testimonial", tip: "Tip" };
@@ -77,6 +81,7 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
   const [posts, setPosts] = useState<Post[]>([]);
   const [left, setLeft] = useState<number>(LIMITS.postsPerSession);
   const [busy, setBusy] = useState(false);
+  const [boldLeft, setBoldLeft] = useState<number>(LIMITS.boldPerSession);
   // The post the page is following: scrolled to when it starts, flagged with a pill when it's ready off screen.
   const [follow, setFollow] = useState<string | null>(null);
   const [readyOffscreen, setReadyOffscreen] = useState<string | null>(null);
@@ -228,22 +233,37 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
         photo: photoSrc ? { src: photoSrc, alt } : null,
         onStage: (stage) => patch(id, { stage }),
       });
+      const copyNotes = written.rationale.filter((n) => !LAYOUT_NOTE.test(n.decision));
+      const bold = { aspect: t.aspect, slots: Object.fromEntries(TEXT_SLOTS.map((k) => [k, written.slots[k] ?? null])) as Record<TextSlot, string | null>, photo: photoSrc ? { src: photoSrc, alt } : null, copyNotes };
       if (composed.page) {
-        const copyNotes = written.rationale.filter((n) => !LAYOUT_NOTE.test(n.decision));
         const layoutNotes = composed.composition!.rationale.filter((n) => !RETRY_NOTE.test(n.decision.trim()));
         setPosts((ps) =>
           ps.map((p) =>
-            p.id === id && p.preview ? { ...p, stage: null, layoutNote: "Layout designed from your kit.", preview: { ...p.preview, html: composed.page!, rationale: notes([...layoutNotes, ...copyNotes]).slice(0, 16) } } : p,
+            p.id === id && p.preview ? { ...p, stage: null, layoutNote: "Layout designed from your kit.", bold: { ...bold, quickPage: composed.page! }, preview: { ...p.preview, html: composed.page!, rationale: notes([...layoutNotes, ...copyNotes]).slice(0, 16) } } : p,
           ),
         );
       } else {
-        patch(id, { stage: null, layoutNote: composed.why });
+        patch(id, { stage: null, layoutNote: composed.why, bold: { ...bold, quickPage: base.html } });
       }
     } catch (e) {
       patch(id, { stage: null, error: messageOf(e) });
     } finally {
       setBusy(false);
     }
+  }
+
+  /** The owner picked from the bold pass: that version becomes the post, with its own reasons. */
+  function choose(id: string, choice: BoldChoice) {
+    const chunkIds = new Set(Object.keys(kit?.files ?? {}).map((f) => f.replace(/\.(md|ya?ml|json|css)$/, "")));
+    setPosts((ps) =>
+      ps.map((p) => {
+        if (p.id !== id || !p.preview || !p.bold) return p;
+        const ns = [...(choice.candidate?.rationale ?? []), ...p.bold.copyNotes].map((n) => ({ decision: n.decision.slice(0, 160) || "decision", choice: n.choice, reason: n.reason, chunks: n.cites.filter((c) => chunkIds.has(c)).slice(0, 6) }));
+        const original = p.bold.original ?? { html: p.preview.html, rationale: p.preview.rationale };
+        const preview = choice.label === "quick" ? { ...p.preview, ...original } : { ...p.preview, html: choice.page, rationale: ns.slice(0, 16) };
+        return { ...p, preview, bold: { ...p.bold, original }, layoutNote: choice.label === "quick" ? "Kept as first made." : choice.candidate?.source === "sketch" ? "Bolder version, from a painted rough rebuilt with your kit." : "Bolder version, designed from your kit." };
+      }),
+    );
   }
 
   const tooLong = charCount(goal) > LIMITS.messageChars || charCount(details) > LIMITS.messageChars;
@@ -320,6 +340,18 @@ export default function MakePosts({ sessionId, kitVersion = 0 }: { sessionId: st
                   {p.error && <p className="error small">{p.error}</p>}
                 </header>
                 {p.preview ? <PostPreview {...p.preview} /> : !p.error && <PostPreview format="1:1" html="<p></p>" alt="" rationale={[]} status="loading" />}
+                {kit && p.bold && !p.stage && (
+                  <BoldVersion
+                    sessionId={sessionId}
+                    postId={p.id}
+                    aspect={p.bold.aspect}
+                    quickPage={p.bold.quickPage}
+                    available={boldLeft > 0}
+                    onStart={() => setBoldLeft(0)}
+                    pageFor={(c) => buildComposedPage({ composition: { html: c.html, css: c.css }, slots: p.bold!.slots, aspect: p.bold!.aspect, tokensCss: kit.tokensCss, fontsHref: kit.fontsHref, wordmarkLines: kit.wordmarkLines, logoSrc: logo, photo: c.usesPhoto ? p.bold!.photo : null })}
+                    onChoose={(choice) => choose(p.id, choice)}
+                  />
+                )}
               </article>
             ))}
           </div>
@@ -374,30 +406,9 @@ async function composeWithChecks(
   return { page: null, composition: null, why: "The custom layout didn't pass its checks (text fit, contrast, nothing on the photo), so this post uses a standard layout." };
 }
 
-/** Renders a composed post in a hidden, script-free frame and runs the layout probe on it from here. */
+/** Renders a composed post in a hidden frame and runs the layout probe on it (app/lib/render-post.ts). */
 async function probe(html: string, aspect: "1:1" | "4:5"): Promise<ProbeIssue[] | null> {
-  const frame = document.createElement("iframe");
-  frame.setAttribute("sandbox", "allow-same-origin");
-  frame.setAttribute("aria-hidden", "true");
-  frame.style.cssText = `position:fixed;left:-20000px;top:0;width:1080px;height:${aspect === "4:5" ? 1350 : 1080}px;border:0;visibility:hidden`;
-  document.body.appendChild(frame);
-  try {
-    await new Promise<void>((resolve) => {
-      frame.onload = () => resolve();
-      frame.srcdoc = html;
-    });
-    const doc = frame.contentDocument!;
-    const win = frame.contentWindow!;
-    await doc.fonts?.ready;
-    await Promise.all([...doc.images].map((img) => (img.complete ? null : new Promise((r) => ((img.onload = r), (img.onerror = r))))));
-    // The probe is written to run inside the page; here it runs from this window against the frame's document.
-    const run = new Function("document", "getComputedStyle", `return ${LAYOUT_PROBE}`) as (d: Document, g: typeof getComputedStyle) => ProbeIssue[];
-    return run(doc, win.getComputedStyle.bind(win));
-  } catch {
-    return null;
-  } finally {
-    frame.remove();
-  }
+  return (await renderPost(html, aspect))?.issues ?? null;
 }
 
 function dataUrl(blob: Blob): Promise<string> {
