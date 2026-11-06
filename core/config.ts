@@ -6,6 +6,11 @@ export const STEPS = {
   // Compose (phase 6): designs each post's layout from the kit's layout-system chunk. Code checks
   // the result (core/compose.ts); the six templates are the fallback.
   compose: { model: "claude-sonnet-5-5", max_tokens: 10000, effort: "medium" },
+  // Bolder posts spike (Nov 6): an art director proposes three directions, a designer builds each
+  // with a larger CSS toolkit, and a creative director picks the strongest from the renders.
+  directions: { model: "claude-sonnet-5-5", max_tokens: 6000, effort: "medium" },
+  compose_bold: { model: "claude-sonnet-5-5", max_tokens: 16000, effort: "medium" },
+  art_critique: { model: "claude-sonnet-5-5", max_tokens: 6000, effort: "medium" },
   critique: { model: "claude-haiku-5-5", max_tokens: 8000, effort: "medium" }, // upgrade if it misses issues
   // Extraction (phase 4). Each call has to finish inside the deployed function's ~26 s Claude
   // timeout, so reading runs at low effort and assembling drafts one chunk per call.

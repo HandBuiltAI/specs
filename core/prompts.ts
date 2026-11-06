@@ -1,7 +1,7 @@
 // Splits a prompt file from prompts/ into its system and user sections and fills the
 // user section's {{placeholders}}. Pure: callers pass the file's text.
 
-export type PromptName = "plan" | "write" | "compose" | "critique" | "read" | "assemble" | "intake" | "change";
+export type PromptName = "plan" | "write" | "compose" | "critique" | "read" | "assemble" | "intake" | "change" | "directions" | "compose-bold" | "art-critique";
 
 export function fillPrompt(name: PromptName, text: string, values: Record<string, string>) {
   const system = text.match(/^# System\s*\n([\s\S]*?)^# User\s*$/m)?.[1]?.trim();
