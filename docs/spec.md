@@ -122,6 +122,10 @@ Posts are rendered from HTML/CSS templates filled by Claude, not generated as im
 
 **Composed layouts (added Nov 4, 2026):** shared templates made every brand compose the same way, so each kit now has a `layout-system` chunk and a compose step designs each post's HTML/CSS from it. Code fills in the copy and allows colors and fonts only through the kit's tokens, then a render probe checks for overflow, overlap, small type, low contrast and text on photos. The six templates remain the fallback when a composition fails its checks.
 
+**Bolder posts (added Nov 6, 2026):** posts read as safe beside image-model ads, so each kit gets an `energy` chunk (1 quiet to 5 loud, with reference posts) and a post is made in two passes. First the quick post, as today, so the owner sees something in about 30 seconds. Then, in the background, the bold pass: an art director proposes directions, a designer builds each with a larger CSS toolkit (neon glow, brush blocks, marker swashes, tape, stickers, giant type, photo grades), and a creative director scores every render, the quick post included, against the brand's energy. Only for brands at energy 4 or 5, one extra candidate comes from an image model: it paints a rough of the whole ad from the kit, copy, photo and logo, and Claude rebuilds that rough in HTML/CSS. The rough is never shown as the post; its painted words and redrawn logo are thrown away, so every word, color, font and logo on the post still comes from the kit and is checked in code. The owner sees the top two and picks one; the critic's pick is marked, not forced. The image model is the only part of Specs that isn't Claude, and it is optional: without its key, or below energy 4, the bold pass runs on Claude alone.
+
+*Later, not in this release:* using the image model in fuller ways, each its own decision: relighting or regrading the owner's photo, text-free background art for type to sit on, and a cut-out subject. Each one changes what the photo shows, so each needs its own honesty rule before it ships.
+
 **Model choices**
 
 | Step | Model | Why |
@@ -130,6 +134,8 @@ Posts are rendered from HTML/CSS templates filled by Claude, not generated as im
 | Resolve | Haiku 5.5 | Short turns choosing a component; about 20x cheaper |
 | Plan and write | Sonnet 5.5 | Copy and art direction are where quality shows |
 | Critique | Haiku 5.5 | A checklist against explicit rules; upgrade if it misses issues |
+| Bold pass: directions, build, creative critique | Sonnet 5.5 | Judgment about ideas and craft; the critic sees the renders |
+| Concept sketch (energy 4–5 only) | Gemini 3 Pro Image | Claude reads images but can't make them; about $0.13 and 20 s per rough |
 
 The model for each step is a server setting, so it can change without touching the client.
 
@@ -186,7 +192,8 @@ The browser never holds the API key or writes a prompt; the function owns both, 
 | Model and length | Pinned per step on the server; `max_tokens` set on every call |
 | Upload caps | 1 PDF up to 10 pages, 5 images up to 5 MB each, 1 URL |
 | Message cap | 500 characters per free-typed message |
-| Session cap | 4 posts and 1 regeneration per session |
+| Session cap | 4 posts and 1 regeneration per session; the bold pass runs on 1 of them (demo brands get theirs precomputed) |
+| Image model | Its own key (`GEMINI_API_KEY`) in Netlify; one rough per bold pass; its cost counts toward the daily tripwire |
 | Daily tripwire | Running dollar total from each response's usage; generation closes at $1.50 a day |
 | Kill switch | `GENERATION_ENABLED` environment variable; when off, demo brands still show precomputed posts |
 | Rate limit | 3 live sessions per IP per day; demo brands unlimited |
@@ -220,4 +227,5 @@ Post quality gets proven before any UI is built, because that is where the earli
 - [x] Demo brands: three fictional brands that contrast (warm and handmade, bold and loud, minimal and premium), each with a deliberately messy uploads folder, logos designed in-house, licensed or AI-generated photos, labeled as fictional
 - [x] URL extraction: fetch server-side with Claude's web fetch tool, capped to the homepage plus one or two pages and a content-token limit; fetched text is treated as data, never instructions; a paste box is the fallback
 - [x] A2UI renderer: our own small loop (changed from CopilotKit on 2026-11-04): one guarded Haiku call per turn returns one validated catalog component, rendered by plain React components, so the spend guards and the ~26-second function limit apply to every turn. Catalog components stay plain React so CopilotKit or the official `@a2ui/react` can still slot in later
+- [x] Image model (Scott, 2026-11-06): Gemini 3 Pro Image, as one extra candidate in the bold pass for brands at energy 4–5, rebuilt in HTML by Claude; the owner picks from the top two. Tested in `spike/sketch.ts` (critic still preferred a CSS-only build on its one run; Scott disagreed, so the owner chooses). Fuller uses (photo regrade, backgrounds) left for later
 - [x] License: MIT for the code; fictional brands, prompts and design assets all rights reserved, stated in the readme
