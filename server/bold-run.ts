@@ -18,6 +18,7 @@ import { formatChunks, parseChunks } from "../core/kit.ts";
 import type { Image } from "../core/claude.ts";
 import { CONTENT } from "./generated/content.ts";
 import { guardedCall, type Deps } from "./handlers.ts";
+import { Refusal } from "./http.ts";
 import { reserve, settle } from "./spend.ts";
 import { loadSession, type PostRecord, type Session } from "./sessions.ts";
 import { kitFor, type KitSource } from "./kit-source.ts";
@@ -150,12 +151,26 @@ async function build(deps: Deps, t: BoldTrigger, geminiKey: string | undefined) 
   const usesPhotoOf = (html: string) => /data-slot=["']?photo/.test(html);
   async function design(label: string, name: string, idea: string, source: BoldCandidate["source"], direction: string, extraSystem: string, images: Image[], wantsPhoto: boolean): Promise<BoldCandidate | null> {
     let last: { c: Composition; errors: string[] } | null = null;
+    let ranOut = false;
     for (let n = 1; n <= 2; n++) {
       const feedback = last
         ? `<previous_attempt_sent_back>\nYour previous HTML:\n${last.c.html}\n\nYour previous CSS:\n${last.c.css}\n\nProblems found by code:\n${last.errors.map((e) => `- ${e}`).join("\n")}\n</previous_attempt_sent_back>`
-        : "";
+        : ranOut
+          ? "<previous_attempt_sent_back>\nYour previous answer ran out of room before it finished. Build the same idea with leaner CSS: fewer layers, no repeated rules, short rationale notes.\n</previous_attempt_sent_back>"
+          : "";
       const p = fillPrompt("compose-bold", CONTENT.prompts["compose-bold"], { kit: designKit, tokens: x.kit.tokensCss, business_name: business, intent: x.post.intent, goal, direction, canvas, copy, photo: wantsPhoto ? photoLine : "Not used in this direction.", logo: logoLine, feedback });
-      const out = await guardedCall(deps, "compose_bold", { system: extraSystem ? `${p.system}\n\n${extraSystem}` : p.system, user: p.user, images }, ComposeSchema);
+      let out;
+      try {
+        out = await guardedCall(deps, "compose_bold", { system: extraSystem ? `${p.system}\n\n${extraSystem}` : p.system, user: p.user, images }, ComposeSchema);
+      } catch (err) {
+        // A design that runs out of tokens (live, Nov 6) gets its second try, told to be leaner.
+        if (n === 1 && err instanceof Refusal && err.code === "model_output") {
+          console.error(`Bold build ${label} ran out of room; trying once more.`);
+          ranOut = true;
+          continue;
+        }
+        throw err;
+      }
       const usesPhoto = Boolean(x.photo) && usesPhotoOf(out.data.html);
       const check = checkBold(out.data, x.slots, usesPhoto);
       if (check.ok) {

@@ -8,6 +8,7 @@ import { startBold, boldStatus, boldRender, boldJudge, loadJob, type BoldTrigger
 import { runBold } from "../server/bold-run.ts";
 import { todaysSpend } from "../server/spend.ts";
 import type { CallStep } from "../server/claude.ts";
+import { StepError } from "../core/claude.ts";
 import type { Deps } from "../server/handlers.ts";
 import { makeDeps, jsonReq, body, brief, COMPOSED } from "./helpers.ts";
 
@@ -43,14 +44,19 @@ const critique = (n: number) => ({
 /** A JPEG-looking body: the right magic bytes, padded past the minimum size. */
 const JPEG = Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(2000, 1)]).toString("base64");
 
-async function setup(opts: { usd?: number } = {}) {
+async function setup(opts: { usd?: number; runOutOnce?: boolean } = {}) {
   const made = makeDeps({ usd: opts.usd });
   const base = made.deps.callStep;
   const steps: string[] = [];
   let judged = 0;
+  let ranOut = false;
   const callStep: CallStep = async (o) => {
     steps.push(o.step);
     if (o.step === "directions") return { data: DIRECTIONS as never, usage: { step: o.step, model: "claude-sonnet-5-5", input: 1, output: 1, cacheRead: 0, cacheWrite: 0, usd: 0.03 } };
+    if (o.step === "compose_bold" && opts.runOutOnce && !ranOut) {
+      ranOut = true;
+      throw new StepError("compose_bold: hit max_tokens", "max_tokens", { step: o.step, model: "claude-sonnet-5-5", input: 1, output: 20000, cacheRead: 0, cacheWrite: 0, usd: 0.3 });
+    }
     if (o.step === "compose_bold") return { data: BOLD as never, usage: { step: o.step, model: "claude-sonnet-5-5", input: 1, output: 1, cacheRead: 0, cacheWrite: 0, usd: 0.1 } };
     if (o.step === "art_critique") {
       judged = o.images?.length ?? 0;
@@ -172,4 +178,13 @@ test("a loud brand with the image model's key gets a rough rebuilt as a third ca
   const spend = await todaysSpend(deps.kv, deps.now());
   assert.ok(spend.spentUsd > 0.13, "the image counts toward the daily cap");
   assert.equal(spend.reservedUsd, 0);
+});
+
+test("a design that runs out of tokens gets its second try", async () => {
+  const { deps, sessionId, postId, steps, starter } = await setup({ runOutOnce: true });
+  await run(() => startBold(jsonReq("/api/posts/bold/start", { sessionId, postId }), deps, starter));
+  const job = (await loadJob(deps.kv, sessionId, postId))!;
+  assert.deepEqual(job.candidates.map((c) => c.label).sort(), ["A", "B"]);
+  assert.equal(steps.filter((s) => s === "compose_bold").length, 3);
+  assert.equal((await todaysSpend(deps.kv, deps.now())).reservedUsd, 0);
 });
