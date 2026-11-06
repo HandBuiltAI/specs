@@ -9,7 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { LIMITS, charCount } from "../../core/limits.ts";
 import { EXTRACT_CHUNKS, type ChunkDraft, type Conflicts, type Evidence } from "../../core/extract.ts";
 import type { Swatch } from "../../core/colors.ts";
-import { call, callPatiently, pool, sendForm, type ApiError } from "../lib/api.ts";
+import { call, callPatiently, isDropped, pool, sendForm, type ApiError } from "../lib/api.ts";
 import { LOGO_ACCEPT, isSvg, logoProblem, prepareImage } from "../lib/images.ts";
 import { Turnstile } from "../lib/turnstile.tsx";
 import Intake from "./intake.tsx";
@@ -48,6 +48,25 @@ const STATE_TEXT: Record<string, string> = {
 /** Reads running at once. Each is one Claude call on one upload, so they don't wait on each other. */
 const READ_AT_ONCE = 6;
 const messageOf = (e: unknown) => (e as Error).message ?? "Something went wrong.";
+const mb = (n: number) => `${Math.round((n / 1024 / 1024) * 10) / 10} MB`;
+
+/**
+ * A PDF over the cap is refused here, before it goes up: Netlify drops a request that big before
+ * our server sees it, and the browser only says "Load failed".
+ */
+function pdfProblem(file: File): string | null {
+  if (file.size <= LIMITS.pdfBytes) return null;
+  return `${file.name} is ${mb(file.size)}, and Specs takes a PDF of up to ${mb(LIMITS.pdfBytes)}. Save a smaller copy (in Preview: File, Export, Quartz Filter, Reduce File Size) or leave it out.`;
+}
+
+/** Why one upload didn't go up, in words, naming the file. */
+function uploadProblem(name: string, e: unknown): string {
+  const code = (e as ApiError).code;
+  if (isDropped(e) || code === "http_400" || code === "http_413") {
+    return `${name} didn't upload: the connection dropped, which usually means the file is too large.`;
+  }
+  return `${name} didn't upload: ${messageOf(e)}`;
+}
 
 export default function BuildKit({ siteKey }: { siteKey: string }) {
   const [generation, setGeneration] = useState("checking");
@@ -212,37 +231,46 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
       readSoon(d.upload);
     };
     // One file that won't go up (an odd format, a refused size) never stops the rest.
-    const attempt = async (step: () => Promise<void>) => {
+    const attempt = async (name: string, step: () => Promise<void>) => {
       try {
         await step();
       } catch (e) {
-        problems.push(messageOf(e));
+        problems.push(uploadProblem(name, e));
       }
     };
     try {
       // Words first: they go up instantly, so reading starts while photos are still being shrunk.
-      if (note.trim()) await attempt(() => send({ kind: "note", text: note }));
-      if (pasted.trim()) await attempt(() => send({ kind: "pasted", text: pasted }));
-      if (url.trim()) await attempt(() => send({ kind: "url", url: url.trim() }));
-      if (pdf) await attempt(() => send({ kind: "pdf", file: pdf }));
+      if (note.trim()) await attempt("Your note", () => send({ kind: "note", text: note }));
+      if (pasted.trim()) await attempt("The pasted website text", () => send({ kind: "pasted", text: pasted }));
+      if (url.trim()) await attempt("The website link", () => send({ kind: "url", url: url.trim() }));
+      if (pdf) {
+        await attempt(pdf.name, async () => {
+          const tooBig = pdfProblem(pdf);
+          if (tooBig) throw new Error(tooBig);
+          await send({ kind: "pdf", file: pdf });
+        });
+      }
       // A logo dropped in with the photos ("tss-logo.png") is still the logo, when the logo slot is empty.
       const logoFile = logo ?? photos.find((p) => /logo/i.test(p.name)) ?? null;
       if (logoFile) {
         setBusy(`Preparing and uploading ${logoFile.name}…`);
-        await attempt(async () => {
+        await attempt(logoFile.name, async () => {
           const { file, colors } = await prepareImage(logoFile, "logo");
           await send({ kind: "logo", file, colors: JSON.stringify(colors) }, file);
         });
       }
       for (const p of photos.filter((p) => p !== logoFile)) {
         setBusy(`Shrinking and uploading ${p.name}…`);
-        await attempt(async () => {
+        await attempt(p.name, async () => {
           const { file, colors } = await prepareImage(p, "image");
           await send({ kind: "image", file, colors: JSON.stringify(colors) }, file);
         });
       }
       setBusy(null);
-      if (problems.length) setError(`${problems.join(" ")}${added.length ? " Building from the rest." : ""}`);
+      if (problems.length) {
+        const rest = added.length ? ` Specs is building your kit from the other ${added.length === 1 ? "upload" : `${added.length} uploads`}.` : " Nothing went up, so there's nothing to build from yet.";
+        setError(`${problems.join(" ")}${rest}`);
+      }
       await Promise.all(reading);
       if (added.length) await readAndDraftSteps(sid, [...uploads, ...added], tried);
     } finally {
@@ -323,11 +351,23 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
     const design = files.map(logoProblem).find((p) => p && !/\.pdf/i.test(p));
     if (logoLike) setLogo(logoLike);
     if (images.length) setPhotos((p) => [...p, ...images].slice(0, LIMITS.imageCount));
-    if (pdfs[0]) setPdf(pdfs[0]);
+    const pdfTooBig = pdfs[0] ? pdfProblem(pdfs[0]) : null;
+    if (pdfs[0] && !pdfTooBig) setPdf(pdfs[0]);
     const left = files.length - (logoLike ? 1 : 0) - images.length - Math.min(1, pdfs.length);
     if (design) setError(design);
+    else if (pdfTooBig) setError(pdfTooBig);
     else if (left > 0) setError(`Specs takes photos, one logo (SVG, PNG, JPEG or WebP) and one PDF. ${left} ${left === 1 ? "file was" : "files were"} left out.`);
     else setError(null);
+  }
+
+  function pickPdf(f: File | null) {
+    const problem = f && pdfProblem(f);
+    if (problem) {
+      setError(problem);
+      return;
+    }
+    setPdf(f);
+    setError(null);
   }
 
   function pickLogo(f: File | null) {
@@ -396,7 +436,7 @@ export default function BuildKit({ siteKey }: { siteKey: string }) {
               <label htmlFor="pdf" className="c-btn ghost">
                 Choose a PDF
               </label>
-              <input id="pdf" className="visually-hidden" type="file" accept="application/pdf" onChange={(e) => setPdf(e.target.files?.[0] ?? null)} />
+              <input id="pdf" className="visually-hidden" type="file" accept="application/pdf" onChange={(e) => pickPdf(e.target.files?.[0] ?? null)} />
             </div>
             {(photos.length > 0 || pdf || logo) && (
               <ul className="dropped">
