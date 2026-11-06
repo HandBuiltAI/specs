@@ -1,0 +1,23 @@
+# Posts for the bolder-posts spike (spike/bold.ts). Each is either a new post with its own copy,
+# or a demo post reused by id (same photo, same approved copy as the live demo).
+# Fictional: every fact below is invented for the Specs demo.
+posts:
+  - brand: third-shift-slice
+    id: promo-three-dollar-slices
+    intent: promo
+    goal: Tell late-shift workers about $3 slices for one half hour.
+    angle: The price and the half hour are the whole pitch; make the $3 impossible to miss.
+    aspect: "4:5"
+    photo: uploads/photo-02-cheese-pull.jpg
+    # Scott's exact copy (Nov 6): "$3 slices from 3am - 3:30am!", split into slots, words unchanged.
+    reads_as: "$3 slices from 3am - 3:30am!"
+    slots:
+      badge: "$3"
+      headline: "slices"
+      subhead: "from 3am - 3:30am!"
+  - brand: third-shift-slice
+    demo: promo-open-till-3
+  - brand: half-acre-club
+    demo: promo-join
+  - brand: hollis-ware
+    demo: announce-batch-07
