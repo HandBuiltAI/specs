@@ -18,6 +18,8 @@ dist/
 .next/
 .netlify/
 next-env.d.ts
+# Bundled from functions/ by `npm run functions`
+netlify/functions/
 # Generated from prompts/, templates/ and brands/ by `npm run content`
 server/generated/
 # Fonts and demo photos copied for the browser by `npm run content`
