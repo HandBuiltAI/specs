@@ -217,8 +217,9 @@ async function runPost(post: Post): Promise<PostResult> {
   }
   const built = await Promise.all(directions.map((d) => build(d, d.label)));
 
-  // 4. Critique, blind: shuffled numbers, "before" among them.
-  const pool = [beforeBuilt, ...built].filter((b) => b.png);
+  // 4. Critique, blind: shuffled numbers, "before" among them. A build that still fails the code
+  // checks would fall back to the template in the app, so it isn't judged.
+  const pool = [beforeBuilt, ...built].filter((b) => b.png && (b === beforeBuilt || !issueText(b).length));
   const order = pool.map((b) => ({ b, k: Math.random() })).sort((x, y) => x.k - y.k).map((x) => x.b);
   const blind: Record<string, string> = {};
   order.forEach((b, i) => (blind[String(i + 1)] = b.label));
@@ -235,9 +236,15 @@ async function runPost(post: Post): Promise<PostResult> {
       .join("\n");
     const cPrompt = loadPrompt("art-critique", { kit: fullKit, business_name: briefs.business_name, intent: post.intent, goal: post.goal, copy, candidates });
     const images: Image[] = order.map((b) => ({ mediaType: "image/png", base64: readFileSync(join(runDir, b.png!)).toString("base64") }));
-    const cOut = await callStructured({ step: "art_critique", ...cPrompt, images, schema: ArtCritiqueSchema });
-    usage.push(cOut.usage);
-    critique = cOut.data;
+    // Run 2 got a critique whose first note swallowed the other candidates' scores; ask once more if any are missing.
+    for (let n = 1; n <= 2; n++) {
+      const cOut = await callStructured({ step: "art_critique", ...cPrompt, images, schema: ArtCritiqueSchema });
+      usage.push(cOut.usage);
+      critique = cOut.data;
+      const scored = new Set(critique.candidates.map((c) => c.label.replace(/\D/g, "")));
+      if (order.every((_, i) => scored.has(String(i + 1)))) break;
+    }
+    critique = critique!;
     winner = blind[critique.winner.replace(/\D/g, "")] ?? null;
 
     // 5. Revise the winner once, if it's a new direction and the critic asked for changes.
