@@ -85,6 +85,17 @@ test("the business name comes from the facts list", () => {
   assert.equal(businessNameOf({}), null);
 });
 
+test("a note the model added after the business name stays out of the wordmark", () => {
+  const withNote = (value: string): IntakeChunks => ({
+    ...chunks,
+    "positioning-core": { draft: draft([item("fact: business_name", value)]) },
+  });
+  assert.equal(businessNameOf(withNote("SŌMA (printed on the box front and engraved on the ring, with a macron)")), "SŌMA");
+  assert.equal(businessNameOf(withNote("Night Slice — from the menu board")), "Night Slice");
+  assert.equal(businessNameOf(withNote("\"Third Shift Slice\"")), "Third Shift Slice");
+  assert.equal(businessNameOf(withNote("Half-Acre Club")), "Half-Acre Club");
+});
+
 test("a palette can name the headline color, and posts are held to it", () => {
   const withHeading: IntakeChunks = {
     ...chunks,

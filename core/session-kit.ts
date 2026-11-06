@@ -269,7 +269,14 @@ export function kitFromChunks(chunks: IntakeChunks, business: { name: string }):
 /** The business's name, from the positioning facts list, or null when no upload gave it. */
 export function businessNameOf(chunks: IntakeChunks): string | null {
   const item = lastItem(chunks["positioning-core"]?.draft.items ?? [], "fact: business_name", "fact: business name", "fact: name", "business_name", "name");
-  const name = item?.value.split(/\n/)[0]?.replace(/^["“]|["”]$/g, "").trim();
+  const name = item?.value
+    .split(/\n/)[0]!
+    // The model sometimes tacks where it found the name onto the value ("SŌMA (printed on the box front…)").
+    // The wordmark is set from this, so keep only the name itself.
+    .replace(/\s+(\(|\[|[—–]\s|-\s|;\s).*$/, "")
+    .replace(/^["“]|["”]$/g, "")
+    .replace(/[,:;.]+$/, "")
+    .trim();
   return name ? name.slice(0, 60) : null;
 }
 
