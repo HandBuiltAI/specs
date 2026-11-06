@@ -37,12 +37,12 @@ The reason: the people this is for are scrolling in a break room or a parking lo
 
 ## Too far
 
-- More than one pink thing besides the wordmark. Loud is not messy; the glow is special because there's one.
+- More than one pink thing besides the logo. The logo is the brand's sign-off and doesn't count (social-rules: a wordmark and a price stamp read as two different things), so a glowing pink price plus the pink logo is fine; a glowing price, a pink underline and the logo is one too many. Loud is not messy; the glow is special because there's one.
 - Type you can't read in two seconds. Huge is good; huge and buried under three effects is not.
 - Rounded "app" stickers, gradients that aren't a glow or a fade to black, cartoon bursts with exclamation marks.
 
 ## Reference posts (what to take, what not to)
 
-1. **The neon $3 slice promo** (image-model reference, Nov 6). Neon logo glowing top left over a dark kitchen; "$3 SLICES / FROM 3AM–3:30AM!" on a yellow brush-stroke block with two pink marker underlines; the cheese pull cutting diagonally across the whole frame. *Take:* the brush-stroke block, the diagonal energy of the photo, the price set huge, the glow on the logo. *Don't take:* the redrawn logo (use the real one), two pink underlines plus a pink logo (that's three pink things), a stock-looking kitchen.
+1. **The neon $3 slice promo** (image-model reference, Nov 6). Neon logo glowing top left over a dark kitchen; "$3 SLICES / FROM 3AM–3:30AM!" on a yellow brush-stroke block with two pink marker underlines; the cheese pull cutting diagonally across the whole frame. *Take:* the brush-stroke block, the diagonal energy of the photo, the price set huge, the glow on the logo. *Don't take:* the redrawn logo (use the real one), two pink underlines (one pink thing besides the logo, not two), a stock-looking kitchen.
 2. **The 2:47AM window post** (image-model reference, Nov 6). The window at night, the wall line "HOT SLICE. 2:47AM. WINDOW'S OPEN." in yellow hand-painted capitals across the bottom with a pink underline, a big neon logo top left. *Take:* the wall line painted huge across the foot, the night photo going to black, the one pink underline. *Don't take:* the invented owner sign, menu prices and second logo the image model painted in. Every word on a post comes from the copy.
 3. **The window itself** (photo-01). The painted banner, taped price board and SLICE neon are the brand's own design system. A post can quote any one of them.
