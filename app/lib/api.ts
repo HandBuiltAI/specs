@@ -18,8 +18,9 @@ async function parse<T>(res: Response): Promise<T> {
   return data as T;
 }
 
-export async function call<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+export async function call<T>(path: string, body: unknown, opts: { timeoutMs?: number } = {}): Promise<T> {
+  const signal = opts.timeoutMs ? AbortSignal.timeout(opts.timeoutMs) : undefined;
+  const res = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body), signal });
   return parse<T>(res);
 }
 

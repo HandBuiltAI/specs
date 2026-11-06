@@ -54,18 +54,32 @@ export function BoldVersion(props: {
   const sent = useRef(false);
   const pages = useRef<Record<string, string>>({});
 
-  // Follow the job until it's done.
+  // Follow the job until it's done. Browsers pause timers in a hidden tab (live, Nov 6: polling
+  // stopped while the owner was away), so coming back to the tab checks at once.
   useEffect(() => {
     if (!job || job.status === "done" || job.status === "failed") return;
-    const t = setTimeout(async () => {
+    let stopped = false;
+    const poll = async () => {
+      if (stopped) return;
+      stopped = true;
       try {
-        setJob(await call<Job>("/api/posts/bold/status", { sessionId, postId }));
+        // A check that hangs would stop the polling, so it gives up after 15 s.
+        setJob(await call<Job>("/api/posts/bold/status", { sessionId, postId }, { timeoutMs: 15_000 }));
       } catch {
-        // A dropped poll just waits for the next one.
+        // A dropped or timed-out poll just waits for the next one.
         setJob((j) => (j ? { ...j } : j));
       }
-    }, POLL_MS);
-    return () => clearTimeout(t);
+    };
+    const t = setTimeout(() => void poll(), POLL_MS);
+    const onShow = () => document.visibilityState === "visible" && void poll();
+    document.addEventListener("visibilitychange", onShow);
+    window.addEventListener("focus", onShow);
+    return () => {
+      stopped = true;
+      clearTimeout(t);
+      document.removeEventListener("visibilitychange", onShow);
+      window.removeEventListener("focus", onShow);
+    };
   }, [job, sessionId, postId]);
 
   // Candidates are designed: render, check and send each, then start the critic.
@@ -135,7 +149,13 @@ export function BoldVersion(props: {
     );
   }
   if (error || job.status === "failed") return <p className="error small">{error ?? "The bolder version stopped partway. The post stays as it is, and nothing more was charged."}</p>;
-  if (job.status !== "done") return <Working kind="making" lead={STAGES[job.status]} />;
+  if (job.status !== "done")
+    return (
+      <>
+        <Working kind="making" lead={STAGES[job.status]} />
+        <p className="muted small">Keep this tab open: the last step, checking each layout, runs here in your browser.</p>
+      </>
+    );
   if (!options?.length || (options.length === 1 && options[0]!.label === "quick")) return <p className="muted small">{job.ranking?.why ?? "No bolder version beat the original, so the post stays as it is."}</p>;
 
   return (
