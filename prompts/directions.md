@@ -6,7 +6,7 @@ Propose three directions. A designer will build each one, and a critic will pick
 
 How to find strong ideas:
 
-- **Read the brand's energy first.** The `energy` chunk says how loud this brand is (1 quiet to 5 loud), what a strong post looks like at that level, what goes too far, and reference posts with what to take from each. Bold is relative: for a loud brand, push volume (scale, glow, paint, tilt). For a quiet brand, push the decision (radical space, a daring crop, one exact detail). A strong quiet post is still a strong idea.
+- **Read the brand's energy first.** The `energy` chunk says how loud this brand is (1 quiet to 5 loud), what a strong post looks like at that level, what goes too far, and reference posts with what to take from each. If the kit has no `energy` chunk, judge the level from its voice, art direction and photos, and report it in `energy`. Bold is relative: for a loud brand, push volume (scale, glow, paint, tilt). For a quiet brand, push the decision (radical space, a daring crop, one exact detail). A strong quiet post is still a strong idea.
 - **One hero.** Every direction picks one thing that dominates: the price, the hour, the photo, the logo, a single word. Everything else supports it.
 - **Use the brand's own materials.** The `layout-system` devices and the things in the photos (the neon, the paper signs, the speckle, the seed packet) are the brand's design vocabulary. The strongest ideas quote them.
 - **Range.** Direction A is the brand's signature move done as well as it can be done. Direction B pushes to the top of the brand's energy range. Direction C is the surprise: a different hero, an unexpected crop, or the photo used in a way nobody would template.

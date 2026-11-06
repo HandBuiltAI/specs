@@ -20,3 +20,16 @@ export const liveCallStep: CallStep = (opts) => {
   client ??= new Anthropic({ apiKey, timeout: 26_000, maxRetries: 0 });
   return callStructured(client, opts);
 };
+
+let slowClient: Anthropic | undefined;
+
+/**
+ * For the bold pass, which runs in a background function (up to 15 minutes) instead of a
+ * request: the designer's calls at high effort take a few minutes, so the timeout is long.
+ */
+export const backgroundCallStep: CallStep = (opts) => {
+  const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
+  if (!apiKey) throw new Refusal(503, "not_configured", "Live generation isn't set up on this server yet.");
+  slowClient ??= new Anthropic({ apiKey, timeout: 360_000, maxRetries: 0 });
+  return callStructured(slowClient, opts);
+};

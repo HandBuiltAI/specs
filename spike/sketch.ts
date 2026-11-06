@@ -26,7 +26,8 @@ import { brandDir, kitDir, OUTPUT_DIR, ROOT } from "./lib/paths.ts";
 import { loadChunks, formatChunks, wordmarkLines } from "./lib/kit.ts";
 import { loadPrompt } from "./lib/prompts.ts";
 import { callStructured, type Image, type Usage } from "./lib/claude.ts";
-import { ArtCritiqueSchema, checkBold, fillEchoes, relevantIssues, type ArtCritique } from "./lib/bold.ts";
+import { ArtCritiqueSchema, checkBold, fillEchoes, relevantIssues, type ArtCritique } from "../core/bold.ts";
+import { paintSketch, SKETCH_WORST_USD } from "../core/sketch.ts";
 
 const BRAND = "third-shift-slice";
 const POST_ID = "promo-three-dollar-slices";
@@ -113,56 +114,27 @@ async function render(c: Pick<Composition, "html" | "css">, name: string, usesPh
   return { png: `posts/${name}.png`, probe };
 }
 
-// 1. Sketch: the Gemini API's generateContent, image out. The key goes in a header, never a URL or a log.
+// 1. Sketch: core/sketch.ts calls the Gemini API. The key is passed in, never logged.
 let sketchModel: string | null = null;
 async function sketch(take: number): Promise<{ file: string; jpeg: string; note: string } | { error: string }> {
   const { system, user } = loadPrompt("sketch", { take: String(take), business_name: briefs.business_name, intent: post.intent, goal: post.goal, copy, kit: designKit });
-  const body = (withSize: boolean) => ({
-    contents: [{ role: "user", parts: [{ text: `${system}\n\n${user}` }, { inlineData: { mimeType: "image/jpeg", data: photoB64 } }, { inlineData: { mimeType: "image/png", data: logoB64 } }] }],
-    generationConfig: { responseModalities: ["TEXT", "IMAGE"], imageConfig: { aspectRatio: post.aspect, ...(withSize ? { imageSize: SKETCH.imageSize } : {}) } },
-  });
-  const models = sketchModel ? [sketchModel] : [...SKETCH.models];
-  let last = "";
-  for (const model of models) {
-    for (const withSize of [true, false]) {
-      const started = Date.now();
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-        method: "POST",
-        headers: { "content-type": "application/json", "x-goog-api-key": geminiKey! },
-        body: JSON.stringify(body(withSize)),
-        signal: AbortSignal.timeout(180_000),
-      });
-      const seconds = Math.round((Date.now() - started) / 1000);
-      if (res.status === 404) {
-        last = `${model}: not found`;
-        break; // try the next model name
-      }
-      const json = (await res.json().catch(() => ({}))) as any;
-      if (!res.ok) {
-        last = `${model}: ${res.status} ${json?.error?.message ?? ""}`.trim();
-        if (res.status === 400 && withSize && /size/i.test(last)) continue; // older models don't take imageSize
-        if (res.status === 400 || res.status === 403) break;
-        return { error: last };
-      }
-      sketchModel = model;
-      imageCalls.push({ model, usd: SKETCH.usdPerImage[model] ?? 0.24, seconds });
-      const parts: any[] = (json.candidates?.[0]?.content?.parts ?? []).filter((p: any) => !p.thought);
-      const img = parts.find((p) => p.inlineData?.mimeType?.startsWith("image/"))?.inlineData;
-      const note = parts.filter((p) => p.text).map((p) => p.text).join(" ").trim();
-      if (!img) return { error: `${model} returned no image${note ? `: ${note}` : ""} (finish: ${json.candidates?.[0]?.finishReason ?? "?"})` };
-      const ext = img.mimeType.includes("png") ? "png" : "jpg";
-      const file = `posts/sketch-${take}.${ext}`;
-      writeFileSync(join(runDir, file), Buffer.from(img.data, "base64"));
-      // A smaller JPEG copy for Claude (images over 5 MB are refused).
-      const jpeg = `posts/sketch-${take}-small.jpg`;
-      const page = await browser.newPage({ viewport: { width: 1080, height: post.aspect === "4:5" ? 1350 : 1080 } });
-      await page.setContent(`<body style="margin:0"><img src="data:${img.mimeType};base64,${img.data}" style="width:100vw;height:100vh;object-fit:contain;display:block">`);
-      await page.screenshot({ path: join(runDir, jpeg), type: "jpeg", quality: 88 });
-      await page.close();
-      return { file, jpeg, note };
-    }
+  const r = await paintSketch({ apiKey: geminiKey!, text: `${system}\n\n${user}`, images: [...photoImg, ...logoImg], aspect: post.aspect, model: sketchModel });
+  if (!r.ok) {
+    if (r.billed && r.model) imageCalls.push({ model: r.model, usd: SKETCH.usdPerImage[r.model] ?? SKETCH_WORST_USD, seconds: 0 });
+    return { error: r.error };
   }
-  return { error: `No image model worked. Last answer: ${last}` };
+  sketchModel = r.model;
+  imageCalls.push({ model: r.model, usd: r.usd, seconds: r.seconds });
+  const ext = r.mediaType.includes("png") ? "png" : "jpg";
+  const file = `posts/sketch-${take}.${ext}`;
+  writeFileSync(join(runDir, file), Buffer.from(r.base64, "base64"));
+  // A smaller JPEG copy for Claude (images over 5 MB are refused).
+  const jpeg = `posts/sketch-${take}-small.jpg`;
+  const page = await browser.newPage({ viewport: { width: 1080, height: post.aspect === "4:5" ? 1350 : 1080 } });
+  await page.setContent(`<body style="margin:0"><img src="data:${r.mediaType};base64,${r.base64}" style="width:100vw;height:100vh;object-fit:contain;display:block">`);
+  await page.screenshot({ path: join(runDir, jpeg), type: "jpeg", quality: 88 });
+  await page.close();
+  return { file, jpeg, note: "" };
 }
 
 // 2. Rebuild: the bold designer's prompt and toolkit, plus the rebuild notes and the sketch.

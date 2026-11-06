@@ -9,6 +9,8 @@ export type Settings = {
   turnstileSecret: string | undefined;
   ipHashSalt: string | undefined;
   apiKeyPresent: boolean;
+  /** Whether the image model's key is set. Without it the bold pass runs on Claude alone. */
+  geminiKeyPresent: boolean;
 };
 
 export function readSettings(env: Record<string, string | undefined> = process.env): Settings {
@@ -23,5 +25,6 @@ export function readSettings(env: Record<string, string | undefined> = process.e
     ipHashSalt: env.IP_HASH_SALT?.trim() || undefined,
     // Only whether it's there. The key itself is read once, in server/claude.ts.
     apiKeyPresent: Boolean(env.ANTHROPIC_API_KEY?.trim()),
+    geminiKeyPresent: Boolean(env.GEMINI_API_KEY?.trim()),
   };
 }

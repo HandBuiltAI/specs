@@ -32,6 +32,12 @@ export const LIMITS = {
 
   postsPerSession: 4,
   regenerationsPerSession: 1,
+  /** Bold passes per session (Scott, Nov 6): one, so the $1.50 daily cap still covers a few visitors. */
+  boldPerSession: 1,
+  /** The bold pass builds this many of the art director's directions (plus the image model's rough at energy 4–5). */
+  boldDirections: 2,
+  /** One render the browser sends to the critic: a JPEG about 540 px wide is plenty to judge. */
+  boldRenderBytes: 400 * 1024,
   sessionHours: 24,
   liveSessionsPerIpPerDay: 3,
 
