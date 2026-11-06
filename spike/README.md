@@ -57,3 +57,14 @@ For each post: **compose** (`prompts/compose.md`, Sonnet 5.5) returns HTML and C
 ### Pack composed layouts into the demo pages
 
 `npx tsx spike/pack-compose.ts output/compose-<run-id>` (free). Re-checks each attempt in the run with the current code check and render probe and saves the first one that passes into `brands/<brand>/demo-posts.json`. Pass several runs for one brand to combine them; later runs win for the posts they cover. Posts with no passing layout keep their template.
+
+## Image-model concept sketches (Nov 6)
+
+Tests whether an image model makes posts bolder, on one post (Third Shift's "$3 slices from 3am - 3:30am!"). An image model (Google Gemini, `SKETCH` in `core/config.ts`) paints three rough concepts from the kit, the copy, the owner's photo and the real logo (`prompts/sketch.md`). Claude rebuilds each in HTML with the bold designer's toolkit plus `prompts/rebuild.md`, under the usual code checks, so the sketch's words and redrawn logo never reach the post. The critic then judges the rebuilds blind beside today's post and the latest `spike/bold.ts` winner.
+
+```sh
+npm run spike -- spike/sketch.ts                      # needs GEMINI_API_KEY in .env
+npm run spike -- spike/sketch.ts --vs output/bold-<run-id> --takes 2
+```
+
+Output: `output/sketch-<run-id>/index.html`, `sheet-posts.png` and `sheet-sketches.png`. About $1 a run (three images at about 13 cents, plus Claude).
