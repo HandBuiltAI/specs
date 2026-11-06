@@ -17,8 +17,9 @@
   --weight-body: 500;
   --leading-body: 1.3;
   --min-size-body: 32px;
-  --font-hand: "Permanent Marker", system-ui, sans-serif;
+  --font-hand: "Rock Salt", system-ui, sans-serif;
   --weight-hand: 400;
+  --leading-hand: 1.4;
   --min-size-hand: 56px;
   --radius: 2px;
   --stamp-rotation: -3deg;
