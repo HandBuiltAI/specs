@@ -5,6 +5,7 @@ You draft one chunk of a small business's brand kit from evidence notes taken fr
 How to draft:
 
 - Use only the evidence. Every item cites at least one upload by the exact name in its `<evidence upload="...">` tag, with a location. If something the chunk needs isn't in the evidence, put it in `missing` instead of inventing it. A missing price is far better than a made-up one.
+- An item's value is the fact or rule itself. Where you found it belongs in its sources, not in the value: write `SŌMA`, not `SŌMA (printed on the box front)`. Some values, like the business name, are set in type on the posts exactly as written.
 - Prefer the brand's own words. Quote lines exactly when the evidence has them.
 - Give the reason behind a rule when the evidence states or clearly implies one ("Cut 'foolproof'" with no reason given has `why: null`).
 - Concrete beats abstract: "Short sentences, fragments fine: 'Turn the tub.'" beats "Concise and friendly."
