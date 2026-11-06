@@ -33,7 +33,7 @@ Turnstile is the small "verify you're human" check that runs before a live sessi
 4. Back in Netlify, pick `specs`. Leave the branch as `main`. The build settings fill in from the repo's `netlify.toml` (build command `npm run build`, publish directory `.next`), so you don't need to change anything.
 5. Before deploying, open **Add environment variables** on the same page if it's offered. If it isn't, deploy first and add them afterwards in **Project configuration**, then **Environment variables** (it may be called **Site configuration**).
 
-Add each of these. For the two marked secret, tick **Contains secret values**, and set the scope to **Functions** only, so the build and the browser never see them.
+Add each of these. For the ones marked secret, tick **Contains secret values**, and set the scope to **Functions** only, so the build and the browser never see them.
 
 | Key | Value | Secret? |
 | --- | --- | --- |
@@ -42,6 +42,7 @@ Add each of these. For the two marked secret, tick **Contains secret values**, a
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | The Turnstile **Site key** from step 2. This one is meant to be public. | No |
 | `GENERATION_ENABLED` | `true`. Set it to `false` any time to switch off every paid call (the kill switch). | No |
 | `DAILY_SPEND_CAP_USD` | `1.50`. Generation closes for the day once this much has been spent. | No |
+| `GEMINI_API_KEY` | Optional (added Nov 6). A Gemini API key from Google AI Studio, on a project with billing on. With it, the bold pass ("Make it bolder") adds an image-model rough for loud brands; without it, the bold pass runs on Claude alone. Use a separate key from the one in your Mac's `.env`, and set a budget alert in Google Cloud Billing. | Yes, Functions only |
 | `IP_HASH_SALT` | Any long random string; mash the keyboard for 30 or so characters. It scrambles visitors' IP addresses before they're stored for the rate limit. | Yes, Functions only |
 
 6. Click **Deploy**. The first build takes a few minutes. When it's done, Netlify shows the address (`something.netlify.app`). Add that address to the Turnstile widget's hostnames (step 2.3).

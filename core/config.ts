@@ -22,6 +22,17 @@ export const STEPS = {
 
 export type StepName = keyof typeof STEPS;
 
+// Image-model spike (Nov 6, spike/sketch.ts only; the app doesn't call an image model). Google's
+// Gemini image models via the Gemini API, key GEMINI_API_KEY in .env. The first model that the
+// account can use wins; the rest are fallbacks in case a name has moved. Prices are USD per 1K
+// image from Google's pricing page (checked Nov 6, 2026); check again before relying on them.
+export const SKETCH = {
+  models: ["gemini-3-pro-image", "gemini-3-pro-image-preview", "gemini-nano-banana-2.1"],
+  imageSize: "1K",
+  usdPerImage: { "gemini-3-pro-image": 0.134, "gemini-3-pro-image-preview": 0.134, "gemini-nano-banana-2.1": 0.067 } as Record<string, number>,
+  takes: 3,
+} as const;
+
 // USD per million tokens, for the cost line on the review page. Check current pricing before relying on it.
 export const PRICES: Record<string, { input: number; output: number; cacheRead: number }> = {
   "claude-sonnet-5-5": { input: 2, output: 10, cacheRead: 0.2 },

@@ -9,11 +9,12 @@
       { "upload": "photo-01-window-at-night.jpg", "location": "black wall, pink neon sign, yellow painted lettering, paper price board" },
       { "upload": "photo-03-till-3am-sign.jpg", "location": "black marker on white paper, pink underline" },
       { "upload": "notes-from-tavo.md", "location": "\"black wall, pink neon, yellow paint, paper signs taped up\"" },
-      { "upload": "founder-interview", "location": "Specs thread, 2026-11-04 (fonts: Anton, Archivo, Permanent Marker)" }
+      { "upload": "founder-interview", "location": "Specs thread, 2026-11-04 (fonts: Anton, Archivo, Permanent Marker)" },
+      { "upload": "founder-interview", "location": "Specs thread, 2026-11-06 (hand font changed to Rock Salt)" }
     ],
     "version": 1,
     "fictional": true,
-    "summary": "A hand-painted sign under a pink neon tube at 2am: near-black wall, sign-paint yellow headings, paper-white text, and neon pink for the one thing that has to glow. Fonts: Anton (wordmark, headings), Archivo (body), Permanent Marker (taped-up signs)."
+    "summary": "A hand-painted sign under a pink neon tube at 2am: near-black wall, sign-paint yellow headings, paper-white text, and neon pink for the one thing that has to glow. Fonts: Anton (wordmark, headings), Archivo (body), Rock Salt (taped-up signs)."
   },
   "concept": "A hand-painted sign under a pink neon tube at 2am. Black wall, yellow paint, paper signs taped up, one pink glow.",
   "color": {
@@ -94,11 +95,12 @@
       "confidence": "high"
     },
     "hand": {
-      "description": "Marker lettering, like a sign taped inside the window.",
-      "stand_in_font": "Permanent Marker",
+      "description": "Gritty marker lettering, like a sign taped inside the window. Rock Salt runs wide: keep it to a few words.",
+      "stand_in_font": "Rock Salt",
       "weight": 400,
       "color": "neon",
-      "rule": "At most one marker element per post, a few words long: a price, an hour, a 'tonight only'.",
+      "rule": "At most one marker element per post, a few words long: a price, an hour, a 'tonight only'. Rock Salt's letters are tall and loose, so give it line height 1.4 or more, or the lines collide.",
+      "line_height": 1.4,
       "confidence": "high",
       "min_px_at_1080": 56
     }

@@ -1,11 +1,11 @@
 /* Local copies of the demo brands' stand-in fonts, so renders don't depend on a network font service.
-   All are SIL Open Font License 1.1 except Permanent Marker (Apache 2.0); see the license files beside them. */
+   All are SIL Open Font License 1.1 except Rock Salt (Apache 2.0); see the license files beside them. */
 @font-face { font-family: "Caveat"; src: url("caveat-variable.ttf") format("truetype"); font-weight: 400 700; }
 @font-face { font-family: "Atkinson Hyperlegible"; src: url("atkinson-hyperlegible-regular.ttf") format("truetype"); font-weight: 400; }
 @font-face { font-family: "Atkinson Hyperlegible"; src: url("atkinson-hyperlegible-bold.ttf") format("truetype"); font-weight: 700; }
 @font-face { font-family: "Fraunces"; src: url("fraunces-variable.ttf") format("truetype"); font-weight: 100 900; }
 @font-face { font-family: "Anton"; src: url("anton-regular.ttf") format("truetype"); font-weight: 400; }
 @font-face { font-family: "Archivo"; src: url("archivo-variable.ttf") format("truetype"); font-weight: 100 900; font-stretch: 62% 125%; }
-@font-face { font-family: "Permanent Marker"; src: url("permanent-marker-regular.ttf") format("truetype"); font-weight: 400; }
+@font-face { font-family: "Rock Salt"; src: url("rock-salt-regular.ttf") format("truetype"); font-weight: 400; }
 @font-face { font-family: "Cormorant Garamond"; src: url("cormorant-garamond-variable.ttf") format("truetype"); font-weight: 300 700; }
 @font-face { font-family: "Inter"; src: url("inter-variable.ttf") format("truetype"); font-weight: 100 900; }

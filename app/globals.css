@@ -202,6 +202,8 @@ main.posts .posts-lede { max-width: 46rem; }
 .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: var(--s5); margin: var(--s6) 0; align-items: start; }
 .posts-item { display: grid; gap: var(--s3); min-width: 0; }
 .posts-item header { padding: 0 var(--s3); }
+.posts-item > .c-seg { margin: 0 var(--s3); flex-wrap: wrap; }
+.bold-note { margin: 0; padding: 0 var(--s3); }
 .posts-goal { margin: var(--s1) 0 0; font-weight: 500; letter-spacing: -0.01em; text-wrap: balance; }
 
 /* Start screen */
@@ -396,3 +398,14 @@ main.kitpage .kitpage-lede { max-width: 42rem; }
 .reveal-head { display: flex; justify-content: space-between; align-items: flex-end; gap: var(--s4); flex-wrap: wrap; }
 .reveal-head .reveal-title { margin-bottom: 0; }
 .reveal-head .c-btn { margin: 0 0 var(--s2); flex: none; }
+
+/* Bold pass: "Make it bolder" under a post, then the top two to choose from. */
+.bold-offer { display: grid; gap: var(--s2); padding: 0 var(--s3); justify-items: start; }
+.bold-choice { display: grid; gap: var(--s3); padding: 0 var(--s3); }
+.bold-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--s3); align-items: start; }
+.bold-option { margin: 0; display: grid; gap: var(--s2); }
+.bold-option figcaption { display: grid; gap: 6px; justify-items: start; }
+.bold-thumb { position: relative; width: 100%; overflow: hidden; border-radius: var(--r-inner, 14px); background: var(--sunken); box-shadow: var(--shadow); }
+.bold-thumb iframe { position: absolute; left: 0; top: 0; border: 0; pointer-events: none; }
+.bold-option[data-chosen] .bold-thumb { box-shadow: 0 0 0 3px var(--ink, currentColor); }
+.bold-pick { font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--signal-ink); }

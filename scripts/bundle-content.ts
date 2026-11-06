@@ -17,7 +17,7 @@ const DEMO_BRANDS = ["half-acre-club", "third-shift-slice", "hollis-ware"] as co
 
 const read = (path: string) => readFileSync(path, "utf8");
 
-const PROMPT_NAMES = ["plan", "write", "critique", "read", "assemble", "intake", "compose", "change"] as const;
+const PROMPT_NAMES = ["plan", "write", "critique", "read", "assemble", "intake", "compose", "change", "directions", "compose-bold", "art-critique", "sketch", "rebuild"] as const;
 
 type BriefFile = { business_name: string; business_line: string; photos: { file: string; alt: string }[] };
 
@@ -60,6 +60,8 @@ const brands = Object.fromEntries(
         wordmark: wordmarkLines(kitFiles, briefs.business_name),
         // The brand's own logo, designed for the demo; posts fall back to the type-built wordmark without one.
         logo: logoOf(brand),
+        // The PNG logo's bytes, for the bold pass: the designer and the image model see the real logo.
+        logoPng: existsSync(join(brandDir(brand), "logo.png")) ? readFileSync(join(brandDir(brand), "logo.png")).toString("base64") : null,
         demoPosts,
       },
     ];
@@ -93,6 +95,8 @@ export type DemoBrand = {
   wordmark: string[];
   /** URL of the brand's logo image, or null. */
   logo: string | null;
+  /** The logo as base64 PNG, when the brand has a PNG logo. */
+  logoPng: string | null;
   demoPosts: DemoPosts | null;
 };
 
